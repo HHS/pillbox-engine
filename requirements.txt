@@ -1,0 +1,5 @@
+django
+celery
+djcelery
+jsonfield
+lxml

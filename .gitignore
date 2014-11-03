@@ -1,0 +1,53 @@
+*.py[cod]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+.python-version
+
+#ignore static files
+staticfiles
+media
+
+# virtualenvs and temps
+.env
+env
+tmp
+
+#igonre other system files
+.DS_Store
+.settings
+
+# databases
+db.sqlite3
+
+*.sublime-workspace
+tmp-unzipped

@@ -1,0 +1,23 @@
+{
+	"build_systems":
+	[
+		{
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "~/.virtualenvs/pillbox-engine/bin/python -u \"$file\""
+		}
+	],
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"python_interpreter": "~/.virtualenvs/pillbox-engine/bin/python",
+		"pep8_max_line_length": 119,
+		"rulers":[119],
+	},
+}
