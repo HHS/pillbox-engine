@@ -49,5 +49,5 @@ tmp
 # databases
 db.sqlite3
 
-*.sublime-workspace
+pillbox_engine.sublime-project
 tmp-unzipped
