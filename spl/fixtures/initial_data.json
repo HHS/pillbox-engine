@@ -1,0 +1,52 @@
+[
+  {
+    "model": "spl.source",
+    "pk": 1,
+    "fields": {
+      "title": "ANIMAL",
+      "is_active": true,
+      "created_at": "2014-11-04 15:01:01",
+      "updated_at": "2014-11-04 15:01:01"
+    }
+  },
+  {
+    "model": "spl.source",
+    "pk": 2,
+    "fields": {
+      "title": "HOMETO",
+      "is_active": true,
+      "created_at": "2014-11-04 15:01:01",
+      "updated_at": "2014-11-04 15:01:01"
+    }
+  },
+  {
+    "model": "spl.source",
+    "pk": 3,
+    "fields": {
+      "title": "HOTC",
+      "is_active": true,
+      "created_at": "2014-11-04 15:01:01",
+      "updated_at": "2014-11-04 15:01:01"
+    }
+  },
+  {
+    "model": "spl.source",
+    "pk": 4,
+    "fields": {
+      "title": "HRX",
+      "is_active": true,
+      "created_at": "2014-11-04 15:01:01",
+      "updated_at": "2014-11-04 15:01:01"
+    }
+  },
+  {
+    "model": "spl.source",
+    "pk": 5,
+    "fields": {
+      "title": "REMAIN",
+      "is_active": true,
+      "created_at": "2014-11-04 15:01:01",
+      "updated_at": "2014-11-04 15:01:01"
+    }
+  }
+]
