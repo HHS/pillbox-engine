@@ -3,3 +3,4 @@ celery
 djcelery
 jsonfield
 lxml
+fabric
