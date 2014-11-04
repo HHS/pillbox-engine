@@ -8,7 +8,7 @@ import fnmatch
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from spl.models import SetInfo, ProductData, Source
+from spl.models import SetInfo, ProductData, Source, Ingredient
 from xml_processor.xpath import XPath
 
 
@@ -89,6 +89,21 @@ class Command(BaseCommand):
             id = data['id']
             data.pop('id')
 
+            ingredients = data['ingredients']
+            data.pop('ingredients')
+
+            # Update ingredients
+            for item in ingredients:
+                ingredient_id = item['id']
+                updated_values = {
+                    'code_system': item['code_system'],
+                    'name': item['name'],
+                    'class_code': item['class_code']
+                }
+
+                obj, created = Ingredient.objects.update_or_create(id=ingredient_id, defaults=updated_values)
+
+            # Update pills
             updated_values = data
 
             obj, created = ProductData.objects.update_or_create(id=id, defaults=updated_values)

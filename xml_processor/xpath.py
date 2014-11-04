@@ -93,8 +93,8 @@ class XPath(object):
             output['filename'] = filename
             output['source'] = self._get_source(path)
             output['author'] = self._get_text('t:author/t:assignedEntity/t:representedOrganization/t:name[1]')
-            output['author_legal'] = self._get_text('t:legalAuthenticator/t:assignedEntity/t:representedOrganization/' +
-                                                   't:name[1]')
+            output['author_legal'] = self._get_text('t:legalAuthenticator/t:assignedEntity/t:representedOrganization' +
+                                                    '/t:name[1]')
 
             return output
 
@@ -124,7 +124,7 @@ class XPath(object):
 
             # Check how many products exists in the document
             products = self._xpath('t:component/t:structuredBody/t:component/' +
-                                  't:section/t:subject/t:manufacturedProduct')
+                                   't:section/t:subject/t:manufacturedProduct')
 
             counter = 0
 
