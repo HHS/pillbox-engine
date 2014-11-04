@@ -21,6 +21,17 @@ class Source(CommonInfo):
         return self.title
 
 
+class Ingredient(CommonInfo):
+
+    id = models.CharField('Code', max_length=100, primary_key=True)
+    code_system = models.CharField('Code System', max_length=200, null=True, blank=True)
+    name = models.CharField('Name', max_length=300)
+    class_code = models.CharField('Class Code', max_length=100, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
 class SetInfo(CommonInfo):
 
     setid = models.CharField('setid', max_length=200, primary_key=True)
