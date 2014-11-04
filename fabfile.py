@@ -11,3 +11,8 @@ def pull():
 
 def serve():
     local('python manage.py runserver')
+
+
+def migrate():
+    local('python manage.py makemigrations')
+    local('python manage.py migrate')
