@@ -101,7 +101,7 @@ class Command(BaseCommand):
                     'class_code': item['class_code']
                 }
 
-                obj, created = Ingredient.objects.update_or_create(id=ingredient_id, defaults=updated_values)
+                obj, created = Ingredient.objects.get_or_create(id=ingredient_id, defaults=updated_values)
 
             # Update pills
             updated_values = data
