@@ -8,7 +8,7 @@ import fnmatch
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from spl.models import SetInfo, ProductData
+from spl.models import SetInfo, ProductData, Source
 from xml_processor.xpath import XPath
 
 
@@ -32,7 +32,9 @@ class Command(BaseCommand):
 
         x = XPath()
 
-        folders = ['ANIMAL', 'HOMEO', 'HOTC', 'HRX', 'REMAIN']
+        sources = Source.objects.all().values('title')
+
+        folders = [s['title'] for s in sources]
 
         counter = {
             'added': 0,
