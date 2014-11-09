@@ -26,7 +26,7 @@ class XPath(object):
             "C61005", "C42964", "C42963",
             "C42999", "C61006", "C42985",
             "C42992"
-            ]
+        ]
 
         self.tree = None
         self.active_tree = None
@@ -255,7 +255,11 @@ class XPath(object):
         output['dea_schedule_name'] = self._get_attribute('t:*//t:policy[@classCode="DEADrugSchedule"]/t:code',
                                                           'displayName')
         output['splscore'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSCORE"]')[0].getnext().get('value')
-        output['splimage'] = ''
+
+        try:
+            output['splimage'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLIMAGE"]')[0].getnext().getchildren()[0].get('value')
+        except IndexError:
+            output['splimage'] = ''
 
         try:
             output['splimprint'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLIMPRINT"]')[0].getnext().text
@@ -324,8 +328,8 @@ if __name__ == '__main__':
     x = XPath()
 
     d = '../tmp-unzipped/HRX'
-    o = x.pills('cf4a9b57-b31a-4e38-b3fe-fac2c4d2c509.xml', d)
-    # print(o)
+    o = x.pills('000b54bf-b411-4d28-b22d-df1bd8b6d9ca.xml', d)
+    print(o)
     # x.test('0548145e-6b20-4843-9bcc-cf270ea2f072.xml', d)
 
     # folders = ['ANIMAL', 'HOMEO', 'HOTC', 'HRX', 'REMAIN']
@@ -336,9 +340,9 @@ if __name__ == '__main__':
 
     #     for f in files:
     #         if fnmatch.fnmatch(f, '*.xml'):
-    #              # print(f)
+    # print(f)
     #             print(x.parse_set_info(f, d))
-    #             # print('hit:%s | skip:%s | error:%s' % (x.counter, x.skip, x.error), end='\r')
+    # print('hit:%s | skip:%s | error:%s' % (x.counter, x.skip, x.error), end='\r')
 
     # print('\nErrors: %s' % x.error)
     # x.parse("0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml")
