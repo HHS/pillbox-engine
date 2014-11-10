@@ -63,3 +63,18 @@ class PillBoxData(CommonInfo):
 
     def __unicode__(self):
         return self.medicine_name
+
+
+class Characteristic(CommonInfo):
+
+    type = models.CharField('Type', max_length=40)
+    spl_value = models.CharField('Type', max_length=200)
+    pillbox_value = models.CharField('Type', max_length=200)
+    is_different = models.BooleanField('Is Different?', default=False)
+    reason = models.TextField('Reason', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Pillbox Characteristic'
+
+    def __unicode__(self):
+        return self.pillbox_value
