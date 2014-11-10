@@ -1,5 +1,6 @@
 from django.db import models
 
+from spl.models import ProductData
 
 # Abstract Model
 class CommonInfo(models.Model):
@@ -66,10 +67,19 @@ class PillBoxData(CommonInfo):
 
 
 class Characteristic(CommonInfo):
+    VALUE_TYPES = (
+        ('splsize', 'SPL Size'),
+        ('splshape', 'SPL Shape'),
+        ('splscore', 'SPL Score'),
+        ('splcolor', 'SPL Color'),
+        ('splimprint', 'SSPL Imprint'),
+    )
 
-    type = models.CharField('Type', max_length=40)
-    spl_value = models.CharField('Type', max_length=200)
-    pillbox_value = models.CharField('Type', max_length=200)
+    type = models.CharField('Type', choices=VALUE_TYPES, max_length=40)
+    spl_value = models.CharField('SPL Value', max_length=200)
+    pillbox_value = models.CharField('Pillbox Value', max_length=200)
+    pillbox = models.ForeignKey(PillBoxData)
+    spl = models.ForeignKey(ProductData)
     is_different = models.BooleanField('Is Different?', default=False)
     reason = models.TextField('Reason', null=True, blank=True)
 
