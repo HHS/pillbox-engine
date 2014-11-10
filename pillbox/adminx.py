@@ -23,4 +23,3 @@ class CharacteristicAdmin(object):
 
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
 xadmin.site.register(Characteristic, CharacteristicAdmin)
-

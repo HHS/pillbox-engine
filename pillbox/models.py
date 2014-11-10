@@ -15,7 +15,7 @@ class CommonInfo(models.Model):
 class PillBoxData(CommonInfo):
 
     # Extracted from DailyMed
-    setid = models.CharField('setid', max_length=40, unique=True)
+    setid = models.CharField('setid', max_length=40, primary_key=True)
     setid_product = models.CharField('setid_product', max_length=100)
     splsize = models.CharField('SPLSIZE', max_length=100, null=True, blank=True)
     splshape = models.CharField('SPLSHAPE', max_length=100, null=True, blank=True)
