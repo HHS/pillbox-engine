@@ -11,7 +11,7 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class SPLData(CommonInfo):
+class PillBoxData(CommonInfo):
 
     # Extracted from DailyMed
     setid = models.CharField('setid', max_length=40, unique=True)
@@ -56,6 +56,10 @@ class SPLData(CommonInfo):
     physical_characteristics = models.CharField('MARKETING_ACT_CODE', max_length=100, null=True, blank=True)
     laberer_code = models.CharField('MARKETING_ACT_CODE', max_length=100, null=True, blank=True)
     application_number = models.CharField('MARKETING_ACT_CODE', max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Pillbox Data'
+        verbose_name_plural = 'Pillbox Data'
 
     def __unicode__(self):
         return self.medicine_name
