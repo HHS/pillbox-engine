@@ -47,8 +47,15 @@ class SetInfo(CommonInfo):
     is_osdf = models.BooleanField('Is In Oral Solid Dosage Form?', default=False)
     discontinued = models.BooleanField('Is Discontinued from SPL?', default=False)
 
+    class Meta:
+        verbose_name = 'SPL Product'
+        verbose_name_plural = 'SPL Products'
+
     def __unicode__(self):
-        return self.title
+        if self.title:
+            return self.title
+        else:
+            return self.setid
 
 
 class ProductData(CommonInfo):
@@ -76,6 +83,10 @@ class ProductData(CommonInfo):
     splimprint = models.CharField('SPL Imprint', max_length=100, null=True, blank=True)
     splimage = models.CharField('SPL Image', max_length=100, null=True, blank=True)
     splscore = models.CharField('SPL Score', max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'SPL OSDF Pill'
+        verbose_name_plural = 'SPL OSDF Pills'
 
     def __unicode__(self):
         return self.medicine_name
