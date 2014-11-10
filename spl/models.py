@@ -20,10 +20,13 @@ class Source(CommonInfo):
 
 class Ingredient(CommonInfo):
 
-    id = models.CharField('Code', max_length=100, primary_key=True)
+    id = models.CharField('Unii Code', max_length=100, primary_key=True)
     code_system = models.CharField('Code System', max_length=200, null=True, blank=True)
     name = models.CharField('Name', max_length=300)
     class_code = models.CharField('Class Code', max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'OSDF Ingredient'
 
     def __unicode__(self):
         return self.name
