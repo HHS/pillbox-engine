@@ -7,17 +7,35 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('spl', '0006_auto_20141110_1435'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PillBoxData',
+            name='Characteristic',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('is_active', models.BooleanField(default=True, verbose_name=b'Enabled?')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('setid', models.CharField(unique=True, max_length=40, verbose_name=b'setid')),
+                ('type', models.CharField(max_length=40, verbose_name=b'Type', choices=[(b'splsize', b'SPL Size'), (b'splshape', b'SPL Shape'), (b'splscore', b'SPL Score'), (b'splcolor', b'SPL Color'), (b'splimprint', b'SSPL Imprint')])),
+                ('spl_value', models.CharField(max_length=200, verbose_name=b'SPL Value')),
+                ('pillbox_value', models.CharField(max_length=200, verbose_name=b'Pillbox Value')),
+                ('is_different', models.BooleanField(default=False, verbose_name=b'Is Different?')),
+                ('reason', models.TextField(null=True, verbose_name=b'Reason', blank=True)),
+            ],
+            options={
+                'verbose_name': 'Pillbox Characteristic',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PillBoxData',
+            fields=[
+                ('is_active', models.BooleanField(default=True, verbose_name=b'Enabled?')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('setid', models.CharField(max_length=40, serialize=False, verbose_name=b'setid', primary_key=True)),
                 ('setid_product', models.CharField(max_length=100, verbose_name=b'setid_product')),
                 ('splsize', models.CharField(max_length=100, null=True, verbose_name=b'SPLSIZE', blank=True)),
                 ('splshape', models.CharField(max_length=100, null=True, verbose_name=b'SPLSHAPE', blank=True)),
@@ -62,5 +80,17 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Pillbox Data',
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='characteristic',
+            name='pillbox',
+            field=models.ForeignKey(to='pillbox.PillBoxData'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='characteristic',
+            name='spl',
+            field=models.ForeignKey(to='spl.ProductData'),
+            preserve_default=True,
         ),
     ]
