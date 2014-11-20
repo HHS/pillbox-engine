@@ -7,6 +7,9 @@ def initial_setup():
         local('python pillbox-engine/manage.py syncdb')
         local('python pillbox-engine/manage.py migrate')
 
+        # Load SPL sources
+        local('python pillbox-engine/manage.py syncspl all')
+
 
 def push():
     local('git push origin master')
@@ -33,3 +36,5 @@ def migrate():
 def collect():
     with shell_env(DJANGO_CONFIGURATION='Production'):
         local('python pillbox-engine/manage.py collectstatic')
+
+
