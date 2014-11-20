@@ -45,8 +45,7 @@ INSTALLED_APPS = (
     'kombu.transport.django',
     'downloader',
     'spl',
-    'pillbox',
-    'xml_processor'
+    'pillbox'
 )
 
 MIDDLEWARE_CLASSES = (
