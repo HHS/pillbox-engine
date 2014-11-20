@@ -1,22 +1,10 @@
+# Basics
 *.py[cod]
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
+*.pyc
 __pycache__
 
-# Installer logs
+# Logs
+*.log
 pip-log.txt
 
 # Unit test / coverage reports
@@ -26,29 +14,30 @@ nosetests.xml
 
 # Translations
 *.mo
+*.pot
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-.python-version
+# Pycharm
+.idea
 
-#ignore static files
-staticfiles
-media
+# Vim
 
-# virtualenvs and temps
-.env
-env
-tmp
+*~
+*.swp
+*.swo
 
-#igonre other system files
-.DS_Store
-.settings
+# npm
+node_modules/
+
+# Campass
+.sass-cache
 
 # databases
 db.sqlite3
 db.sqlite3-journal
+
+#igonre other system files
+.DS_Store
+.settings
 
 pillbox_engine.sublime-project
 tmp-unzipped
