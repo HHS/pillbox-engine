@@ -48,6 +48,7 @@ tmp
 
 # databases
 db.sqlite3
+db.sqlite3-journal
 
 pillbox_engine.sublime-project
 tmp-unzipped
