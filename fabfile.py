@@ -26,8 +26,8 @@ def test():
 
 
 def migrate():
-    local('python manage.py makemigrations')
-    local('python manage.py migrate')
+    local('python pillbox-engine/manage.py makemigrations')
+    local('python pillbox-engine/manage.py migrate')
 
 
 def collect():
