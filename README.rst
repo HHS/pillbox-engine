@@ -39,15 +39,15 @@ Sync SPL DailyMed
 
 To sync all xml headers from DailyMed::
 
-    $ python manage.py syncspl products
+    $ fab spl products
 
 To sync OSDF information::
 
-    $ python manage.py syncspl pills
+    $ fab spl pills
 
 To sync everything::
 
-    $ python manage.py syncspl all
+    $ fab spl all
 
 
 Development Version Setup
