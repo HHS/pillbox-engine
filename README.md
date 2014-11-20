@@ -21,12 +21,12 @@ If it is the first time you're setting up the app follow these steps
 
 To sync all xml headers from DailyMed
 
-    $: python manage.py pillbox products
+    $: python manage.py syncspl products
 
 To sync OSDF information
 
-    $: python manage.py pillbox pills
+    $: python manage.py syncspl pills
 
 To sync everything
 
-    $: python manage.py pillbox all
+    $: python manage.py syncspl all
