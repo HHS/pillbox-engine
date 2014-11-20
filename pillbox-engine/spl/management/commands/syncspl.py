@@ -42,7 +42,8 @@ class Command(BaseCommand):
         }
 
         for folder in folders:
-            d = '%s/tmp-unzipped/%s' % (settings.BASE_DIR, folder)
+            # d = '%s/tmp-unzipped/%s' % (settings.BASE_DIR, folder)
+            d = '%s/%s' % (settings.SPL_RAW_DATA, folder)
             files = os.listdir(d)
 
             for f in files:

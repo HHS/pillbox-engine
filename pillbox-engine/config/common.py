@@ -233,3 +233,4 @@ class Common(Configuration):
     # END LOGGING CONFIGURATION
 
     # Your common stuff: Below this line define 3rd party library settings
+    SPL_RAW_DATA = '/Users/ajdevseed/lib/repos/devseed/pillbox_engine_copy/tmp-unzipped'
