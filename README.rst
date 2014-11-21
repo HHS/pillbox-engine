@@ -6,10 +6,25 @@ This is the new Pillbox Engine, A local web-based application for download and m
 Getting up and running
 ----------------------
 
-The steps below will get you up and running with a local development environment. We assume you have the following installed:
+Mac OSX
+^^^^^^^^
+
+The steps below will get you up and running with a local development environment. If you use Mac OSX
+We assume you have the following installed:
 
 * pip
 * virtualenv
+
+If you don't, follow instructions on `this link <http://docs.python-guide.org/en/latest/starting/install/osx/>`_.
+
+Ubuntu 14
+^^^^^^^^^
+
+If you use Ubuntu 14, to prepare the system run::
+
+    $ sudo apt-get install ruby
+    $ sudo gem install foreman
+    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev
 
 Production Version Setup
 -----------------------
