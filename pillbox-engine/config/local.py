@@ -6,14 +6,15 @@ Local Configurations
 - Uses console backend for emails
 - Use Django Debug Toolbar
 '''
-# from configurations import values
+from configurations import values
 from .common import Common
 
 
 class Local(Common):
 
     # DEBUG
-    TEMPLATE_DEBUG = Common.DEBUG
+    DEBUG = values.BooleanValue(True)
+    TEMPLATE_DEBUG = DEBUG
     # END DEBUG
 
     # INSTALLED_APPS

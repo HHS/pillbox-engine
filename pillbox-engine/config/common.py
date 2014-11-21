@@ -21,7 +21,7 @@ BASE_DIR = dirname(dirname(__file__))
 class Common(Configuration):
 
     # DEBUG
-    DEBUG = values.BooleanValue(True)
+    DEBUG = values.BooleanValue(False)
     # END DEBUG
 
     # APP CONFIGURATION
@@ -44,6 +44,8 @@ class Common(Configuration):
         'xadmin',
         'crispy_forms',
         'reversion',
+        'djcelery',
+        'kombu.transport.django',
     )
 
     # Apps specific for this project go here.
@@ -234,3 +236,7 @@ class Common(Configuration):
 
     # Your common stuff: Below this line define 3rd party library settings
     SPL_RAW_DATA = '/Users/ajdevseed/lib/repos/devseed/pillbox_engine_copy/tmp-unzipped'
+
+    # Celery settings
+    BROKER_URL = 'django://'
+    CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
