@@ -1,3 +1,6 @@
+import subprocess
+import time
+
 from fabric.api import local
 from fabric.context_managers import shell_env
 
@@ -24,8 +27,14 @@ def pull():
 
 def serve():
     """ Run the server in production mode """
-    with shell_env(DJANGO_CONFIGURATION='Production'):
-        local('python pillbox-engine/manage.py runserver')
+    print 'Launching Pillbox Engine ...'
+    foreman = subprocess.Popen(['foreman', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Wait for 3 seconds to ensure the process is launched
+    time.sleep(3)
+    local('open "http://localhost:5000"')
+    print 'To exit Pillbox Engine use Control + C'
+    print foreman.stdout.read()
 
 
 def test():
