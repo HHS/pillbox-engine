@@ -240,3 +240,4 @@ class Common(Configuration):
     # Celery settings
     BROKER_URL = 'django://'
     CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+    CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
