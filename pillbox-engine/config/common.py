@@ -46,6 +46,7 @@ class Common(Configuration):
         'reversion',
         'djcelery',
         'kombu.transport.django',
+        'rest_framework',
     )
 
     # Apps specific for this project go here.
@@ -111,7 +112,7 @@ class Common(Configuration):
 
     # DATABASE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-    DATABASES = values.DatabaseURLValue('sqlite:///pillbox-engine/db/db.sqlite3')
+    DATABASES = values.DatabaseURLValue('sqlite:///%s' % join(BASE_DIR, 'db/db.sqlite3'))
     # END DATABASE CONFIGURATION
 
     # GENERAL CONFIGURATION

@@ -29,7 +29,7 @@ def pull():
 def serve():
     """ Run the server in production mode """
     print 'Launching Pillbox Engine ...'
-    foreman = subprocess.Popen(['foreman', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Wait for 3 seconds to ensure the process is launched
     time.sleep(3)
