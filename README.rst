@@ -10,6 +10,8 @@ If this is the first time you are running the Pillbox Engine, take steps under `
 
 Make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
 
+    $ git clone https://github.com/developmentseed/pillbox-engine.git
+    $ cd pillbox-engine
     $ pip install -r requirements.txt
 
 .. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
@@ -77,8 +79,7 @@ Ubuntu 14
 If you use Ubuntu 14, to prepare the system run::
 
     $ sudo apt-get install ruby
-    $ sudo gem install foreman
-    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev
+    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev git
 
 
 Development Version Setup
