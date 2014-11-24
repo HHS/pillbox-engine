@@ -21,7 +21,7 @@ BASE_DIR = dirname(dirname(__file__))
 class Common(Configuration):
 
     # DEBUG
-    DEBUG = values.BooleanValue(True)
+    DEBUG = values.BooleanValue(False)
     # END DEBUG
 
     # APP CONFIGURATION
