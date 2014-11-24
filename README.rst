@@ -3,33 +3,14 @@ Pillbox Engine
 
 This is the new Pillbox Engine, A local web-based application for downloading and management of DailyMed SPL Data.
 
-Getting up and running
-----------------------
-
-Mac OSX
-^^^^^^^^
-
-The steps below will get you up and running with a local development environment. If you use Mac OSX
-We assume you have the following installed:
-
-* pip
-* virtualenv
-
-If you don't, follow instructions on `this link <http://docs.python-guide.org/en/latest/starting/install/osx/>`_.
-
-Ubuntu 14
-^^^^^^^^^
-
-If you use Ubuntu 14, to prepare the system run::
-
-    $ sudo apt-get install ruby
-    $ sudo gem install foreman
-    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev
-
 Production Version Setup
 -----------------------
 
-First make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
+If this is the first time you are running the Pillbox Engine, take steps under Setup_ first.
+
+.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+Make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
 
     $ pip install -r requirements.txt
 
@@ -63,6 +44,44 @@ To sync OSDF information::
 To sync everything::
 
     $ fab spl all
+
+
+.. _Setup:
+Getting Up and Running
+----------------------
+
+Mac OSX
+^^^^^^^^
+
+If you use Mac OSX
+We assume you have the following installed:
+
+* pip
+* virtualenv
+
+If you don't, you can also follow these steps to setup pip and virtualenv::
+
+    $ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python
+    $ sudo easy_install python-pip
+    $ sudo easy_install virtualenv
+
+To start a virtualenv simply run::
+
+    $ virtualenv --no-site-packages name_of_the_environment
+    $ source name_of_the_environment/bin/activate
+
+To deactivate run::
+
+    $ deactivate
+
+Ubuntu 14
+^^^^^^^^^
+
+If you use Ubuntu 14, to prepare the system run::
+
+    $ sudo apt-get install ruby
+    $ sudo gem install foreman
+    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev
 
 
 Development Version Setup
