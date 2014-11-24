@@ -10,6 +10,7 @@ def initial_setup():
     with shell_env(DJANGO_CONFIGURATION='Production'):
         local('python pillbox-engine/manage.py syncdb')
         local('python pillbox-engine/manage.py migrate')
+        local('python pillbox-engine/manage.py collectstatic')
 
         # Load SPL sources
         local('python pillbox-engine/manage.py syncspl all')
