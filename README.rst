@@ -6,9 +6,7 @@ This is the new Pillbox Engine, A local web-based application for downloading an
 Production Version Setup
 -----------------------
 
-If this is the first time you are running the Pillbox Engine, take steps under Setup_ first.
-
-.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+If this is the first time you are running the Pillbox Engine, take steps under `Getting Up and Running <#getting-up-and-running>`_ first.
 
 Make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
 
@@ -46,7 +44,6 @@ To sync everything::
     $ fab spl all
 
 
-.. _Setup:
 Getting Up and Running
 ----------------------
 
