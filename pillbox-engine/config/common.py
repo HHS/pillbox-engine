@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+# import os
 from os.path import join, dirname
 
 from configurations import Configuration, values
@@ -21,7 +21,7 @@ BASE_DIR = dirname(dirname(__file__))
 class Common(Configuration):
 
     # DEBUG
-    DEBUG = values.BooleanValue(False)
+    DEBUG = values.BooleanValue(True)
     # END DEBUG
 
     # APP CONFIGURATION
@@ -160,7 +160,7 @@ class Common(Configuration):
 
     # STATIC FILE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-    STATIC_ROOT = join(os.path.dirname(BASE_DIR), 'staticfiles')
+    STATIC_ROOT = join(BASE_DIR, 'staticfiles')
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
     STATIC_URL = '/static/'
