@@ -1,0 +1,29 @@
+{% load humanize %}
+
+<div class="row">
+
+{% for box in boxes %}
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-{{box.color}}">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa {{box.icon}} fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">{{box.count | intcomma}}</div>
+                        <div>{{box.name}}</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{box.link}}">
+                <div class="panel-footer">
+                    <span class="pull-left">{{box.text}}</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+{% endfor %}
+</div>
