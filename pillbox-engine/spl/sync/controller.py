@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import sys
 import time
+from django.utils import timezone
 import fnmatch
 
 from django.conf import settings
@@ -29,6 +30,8 @@ class Controller(object):
         if action in arguments:
             self._update(action)
 
+        return
+
     def _update(self, action):
         start = time.time()
 
@@ -43,23 +46,25 @@ class Controller(object):
             'updated': 0
         }
 
-        for folder in folders:
-            d = '%s/%s' % (settings.SPL_RAW_DATA, folder)
-            files = os.listdir(d)
+        # for folder in folders:
+        d = '%s/%s' % (settings.SPL_RAW_DATA, folders[0])
+        files = os.listdir(d)
 
-            for f in files:
-                if fnmatch.fnmatch(f, '*.xml'):
-                    output = getattr(x, action)(f, d)
-                    if output:
-                        counter = getattr(self, '_%s' % action)(output, counter)
+        for f in files:
+            if fnmatch.fnmatch(f, '*.xml'):
+                output = getattr(x, action)(f, d)
+                if output:
+                    counter = getattr(self, '_%s' % action)(output, counter)
 
-                    self._status(added=counter['added'], updated=counter['updated'],
-                                 error=x.error, skipped=x.skip,
-                                 action=action)
+                self._status(added=counter['added'], updated=counter['updated'],
+                             error=x.error, skipped=x.skip,
+                             action=action)
 
         end = time.time()
 
         self._time_spent(start, end)
+
+        return
 
     def _all(self, data, counter):
         """ Triggers and manages products and pill methods """
@@ -124,13 +129,15 @@ class Controller(object):
         seconds = spent % 60
 
         if self.celery:
-            task = Task.objects.get(task_id=self.celery.task_id)
-            task.time_ended = end
+            task = Task.objects.get(task_id=self.celery.request.id)
+            task.time_ended = timezone.now()
             task.duration = spent
             task.save()
 
         if self.stdout:
             self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
+
+        return
 
     def _status(self, **kwarg):
 
