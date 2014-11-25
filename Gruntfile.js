@@ -87,7 +87,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('serve', [
-    'bgShell:runDjango',
+    // 'bgShell:runDjango',
     'watch'
   ]);
 
