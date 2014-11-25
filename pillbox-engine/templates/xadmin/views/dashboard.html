@@ -2,6 +2,7 @@
 {% load i18n xadmin_tags %}
 {% load url from future %}
 {% load spl_tags %}
+{% load pillbox_tags %}
 
 {% block bodyclass %}dashboard{% endblock %}
 {% block breadcrumbs %}{% endblock %}
@@ -27,5 +28,13 @@
     </div>
 
     {% spl_widgets %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Pillbox <small>updated: {% pillbox_sync_time %}</small></h2>
+        </div>
+    </div>
+
+    {% pillbox_widgets %}
 
 {% endblock %}
