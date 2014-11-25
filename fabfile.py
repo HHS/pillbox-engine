@@ -43,6 +43,10 @@ def test():
     local('python pillbox-engine/manage.py runserver')
 
 
+def shell():
+    local('python pillbox-engine/manage.py shell')
+
+
 def migrate():
     """ Migrate database in development mode """
     local('python pillbox-engine/manage.py makemigrations')
