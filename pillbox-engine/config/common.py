@@ -44,7 +44,7 @@ class Common(Configuration):
         'xadmin',
         'crispy_forms',
         'reversion',
-        'djcelery',
+        # 'djcelery',
         'kombu.transport.django',
         'rest_framework',
     )
@@ -240,5 +240,6 @@ class Common(Configuration):
 
     # Celery settings
     BROKER_URL = 'django://'
-    CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-    CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
+    CELERY_RESULT_BACKEND = 'db+sqlite:///%s' % join(BASE_DIR, 'db/results.sqlite3')
+    # CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+    CELERY_ACCEPT_CONTENT = ['pickle']

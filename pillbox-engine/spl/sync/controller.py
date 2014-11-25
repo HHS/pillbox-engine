@@ -44,7 +44,6 @@ class Controller(object):
         }
 
         for folder in folders:
-            # d = '%s/tmp-unzipped/%s' % (settings.BASE_DIR, folder)
             d = '%s/%s' % (settings.SPL_RAW_DATA, folder)
             files = os.listdir(d)
 
@@ -54,7 +53,9 @@ class Controller(object):
                     if output:
                         counter = getattr(self, '_%s' % action)(output, counter)
 
-                    self._status(added=counter['added'], updated=counter['updated'], error=x.error, skipped=x.skip)
+                    self._status(added=counter['added'], updated=counter['updated'],
+                                 error=x.error, skipped=x.skip,
+                                 action=action)
 
         end = time.time()
 
@@ -137,4 +138,5 @@ class Controller(object):
                                      meta={'added': kwarg['added'],
                                            'updated': kwarg['updated'],
                                            'error': kwarg['error'],
-                                           'skipped': kwarg['skipped']})
+                                           'skipped': kwarg['skipped'],
+                                           'action': kwarg['action']})
