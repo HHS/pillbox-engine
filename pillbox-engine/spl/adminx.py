@@ -10,6 +10,8 @@ class GlobalSetting(object):
     #     Source: 'fa fa-laptop', Ingredient: 'fa fa-cloud'
     # }
     menu_style = 'default'  # 'accordion'
+    site_title = 'Pillbox Engine'
+    site_footer = 'Pillbox'
 xadmin.site.register(views.CommAdminView, GlobalSetting)
 
 
