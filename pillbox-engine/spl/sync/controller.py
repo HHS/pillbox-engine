@@ -7,7 +7,7 @@ import fnmatch
 
 from django.conf import settings
 
-from spl.models import SetInfo, ProductData, Source, Ingredient
+from spl.models import SetInfo, ProductData, Source, Ingredient, Task
 from spl.sync.xpath import XPath
 
 
@@ -122,6 +122,12 @@ class Controller(object):
         spent = end - start
         minutes = spent / 60
         seconds = spent % 60
+
+        if self.celery:
+            task = Task.objects.get(task_id=self.celery.task_id)
+            task.time_ended = end
+            task.duration = spent
+            task.save()
 
         if self.stdout:
             self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))

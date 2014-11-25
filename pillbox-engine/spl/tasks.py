@@ -5,7 +5,7 @@ from _celery import app
 from spl.sync.controller import Controller
 
 
-@app.task(bind=True)
+@app.task(bind=True, ignore_result=True)
 def sync(self, action):
 
     arguments = ['products', 'pills', 'all']

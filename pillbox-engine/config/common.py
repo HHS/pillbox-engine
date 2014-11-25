@@ -243,3 +243,4 @@ class Common(Configuration):
     CELERY_RESULT_BACKEND = 'db+sqlite:///%s' % join(BASE_DIR, 'db/results.sqlite3')
     # CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
     CELERY_ACCEPT_CONTENT = ['pickle']
+    CELERY_DISABLE_RATE_LIMITS = True
