@@ -1,4 +1,5 @@
 from django import template
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 from spl.models import SetInfo, ProductData, Source, Ingredient
 
@@ -47,3 +48,13 @@ def spl_widgets():
         }]
 
     return {'boxes': boxes}
+
+
+@register.simple_tag
+def spl_sync_time():
+    last = ProductData.objects.all().order_by('-updated_at')[:1]
+
+    try:
+        return naturaltime(last[0].updated_at)
+    except:
+        return 'N/A'
