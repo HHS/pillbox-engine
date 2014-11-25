@@ -32,7 +32,7 @@ class EditablePlugin(BaseAdminPlugin):
         return active
 
     def result_item(self, item, obj, field_name, row):
-        if self.list_editable and item.field and item.field.editable and (field_name in self.list_editable):            
+        if self.list_editable and item.field and item.field.editable and (field_name in self.list_editable):
             pk = getattr(obj, obj._meta.pk.attname)
             field_label = label_for_field(field_name, obj,
                                           model_admin=self.admin_view,
@@ -129,7 +129,7 @@ class EditPatchView(ModelFormAdminView, ListAdminView):
 
     @filter_hook
     @csrf_protect_m
-    @transaction.commit_on_success
+    @transaction.atomic
     def post(self, request, object_id):
         model_fields = [f.name for f in self.opts.fields]
         fields = [f for f in request.POST.keys() if f in model_fields]
