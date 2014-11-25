@@ -34,6 +34,7 @@ node_modules/
 # databases
 db.sqlite3
 db.sqlite3-journal
+*.sqlite3
 
 #igonre other system files
 .DS_Store
