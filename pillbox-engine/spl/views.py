@@ -38,31 +38,31 @@ class SyncSpl(viewsets.ViewSet):
 
     def sync(self, action):
 
-        jobs = Task.objects.filter(name='sync',
-                                   time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
+        jobs = Task.objects.filter(time_ended__exact=None)
 
         if jobs:
-            active_jobs = jobs.filter(time_ended__exact=None)
-            if active_jobs:
-                job = AsyncResult(active_jobs[0].task_id)
-                output = {
-                    'status': 'There is a sync process already running',
-                    'task_id': job.task_id,
-                    'meta': job.info
-                }
-            else:
+            job = AsyncResult(jobs[0].task_id)
+            output = {
+                'status': 'There is a sync process already running',
+                'task_id': job.task_id,
+                'meta': job.info
+            }
+        else:
+            jobs = Task.bojects.filter(name=action,
+                                       time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
+            if jobs:
                 output = {
                     'status': 'The process has been executed at least once in the last 24 hours',
                 }
-        else:
-            sync = tasks.sync.delay(action)
-            output = {
-                'status': 'Process Started',
-                'task_id': sync.task_id
-            }
-            job = Task()
-            job.task_id = sync.task_id
-            job.name = 'sync'
-            job.save()
+            else:
+                sync = tasks.sync.delay(action)
+                output = {
+                    'status': 'Process Started',
+                    'task_id': sync.task_id
+                }
+                job = Task()
+                job.task_id = sync.task_id
+                job.name = 'sync'
+                job.save()
 
         return Response(output, status=status.HTTP_200_OK)
