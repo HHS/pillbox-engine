@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Abstract Model
 class CommonInfo(models.Model):
     is_active = models.BooleanField('Enabled?', default=True)
@@ -90,3 +91,16 @@ class ProductData(CommonInfo):
 
     def __unicode__(self):
         return self.medicine_name
+
+
+class Task(models.Model):
+
+    name = models.CharField('Task Name', max_length=250)
+    task_id = models.CharField('Task ID', max_length=250, null=True, blank=True, unique=True)
+    time_started = models.DateTimeField(auto_now_add=True)
+    time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
+    duration = models.CharField('Duration', max_length=10)
+    meta = models.TextField('Meta', null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
