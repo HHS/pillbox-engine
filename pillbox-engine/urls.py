@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from django.contrib.staticfiles import views
+# from django.contrib.staticfiles import views
+
+import spl.urls
 
 import xadmin
 xadmin.autodiscover()
@@ -20,12 +22,13 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^spl/', include(spl.urls)),
     url(r'^', include(xadmin.site.urls)),
-    # url(r'^static/(?P<path>.*)$', views.serve),
     # Your stuff: custom urls go here
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+### This hack let static files be served with DEBUG false
 if not settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
