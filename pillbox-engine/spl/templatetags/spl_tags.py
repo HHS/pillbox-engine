@@ -31,7 +31,7 @@ def spl_widgets():
             'color': 'green'
         },
         {
-            'icon': 'fa-recycle',
+            'icon': 'fa-dot-circle-o',
             'name': 'Ingredients',
             'count': ingredient_count,
             'text': 'View Details',
