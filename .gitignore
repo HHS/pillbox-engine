@@ -32,8 +32,7 @@ node_modules/
 .sass-cache
 
 # databases
-db.sqlite3
-db.sqlite3-journal
+*.sqlite3-journal
 *.sqlite3
 
 #igonre other system files
