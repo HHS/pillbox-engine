@@ -3,6 +3,14 @@ Pillbox Engine
 
 This is the new Pillbox Engine, A local web-based application for downloading and management of DailyMed SPL Data.
 
+Update
+------
+
+If PillBox Engine is already installed, run this to update::
+
+    $ fab update
+
+
 Production Version Setup
 -----------------------
 
