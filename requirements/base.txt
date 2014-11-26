@@ -3,7 +3,7 @@ django==1.7.1
 
 # Configuration
 django-configurations==0.8
-dj-database-url==0.3.0
+git+git://github.com/scisco/dj-database-url.git@master
 
 # Models
 django-model-utils==2.2
