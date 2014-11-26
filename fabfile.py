@@ -37,13 +37,10 @@ def initial_setup():
         except ValueError:
             print 'Try again! You should enter a number.'
 
-
-        # local('export DATABASE_URL=mysql://root:@localhost:3306/pillbox_new')
-
-        # local('python pillbox-engine/manage.py collectstatic')
+        local('python pillbox-engine/manage.py collectstatic')
 
         # # Load SPL sources
-        # local('python pillbox-engine/manage.py syncspl all')
+        local('python pillbox-engine/manage.py syncspl all')
 
 
 def push():
@@ -79,8 +76,11 @@ def shell():
 
 def migrate():
     """ Migrate database in development mode """
-    local('python pillbox-engine/manage.py makemigrations')
-    local('python pillbox-engine/manage.py migrate')
+
+    env = _check_env()
+    with shell_env(DATABASE_URL=env[1]):
+        local('python pillbox-engine/manage.py makemigrations')
+        local('python pillbox-engine/manage.py migrate')
 
 
 def collect():
@@ -101,8 +101,7 @@ def spl(choice=None):
     if choice is None:
         choice = 'all'
 
-    env = open('.env', 'r')
-    env = env.read()[:-1].split('=')
+    env = _check_env()
     with shell_env(DJANGO_CONFIGURATION='Production', DATABASE_URL=env[1]):
         if choice in ['products', 'pills', 'all']:
             local('python pillbox-engine/manage.py syncspl %s' % choice)
@@ -149,3 +148,9 @@ def _sync_db():
     local('python pillbox-engine/manage.py syncdb')
     local('python pillbox-engine/manage.py migrate')
     local('python pillbox-engine/manage.py loaddata spl_sources')
+
+
+def _check_env():
+    env = open('.env', 'r')
+    env = env.read()[:-1].split('=')
+    return env
