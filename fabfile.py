@@ -10,6 +10,7 @@ def initial_setup():
     with shell_env(DJANGO_CONFIGURATION='Production'):
         local('python pillbox-engine/manage.py syncdb')
         local('python pillbox-engine/manage.py migrate')
+        local('python pillbox-engine/manage.py loaddata spl_sources')
         local('python pillbox-engine/manage.py collectstatic')
 
         # Load SPL sources
@@ -59,6 +60,13 @@ def collect():
         local('python pillbox-engine/manage.py collectstatic')
 
 
+def update():
+    """ Fetch the latest updates from the repo"""
+    local('git pull origin master')
+    local('pip install -r requirements.txt')
+    local('python pillbox-engine/manage.py migrate')
+
+
 def spl(choice=None):
     """Sync SPL Data. Choices are products | pills | all"""
     if choice is None:
@@ -66,6 +74,6 @@ def spl(choice=None):
 
     with shell_env(DJANGO_CONFIGURATION='Production'):
         if choice in ['products', 'pills', 'all']:
-            local('python pillbox-engine/manage syncspl %s' % choice)
+            local('python pillbox-engine/manage.py syncspl %s' % choice)
         else:
             print 'wrong choice'
