@@ -20,7 +20,8 @@ def spl_widgets():
             'count': products_count,
             'text': 'Sync Data',
             'link': '#',
-            'color': 'primary'
+            'color': 'primary',
+            'action': 'products'
         },
         {
             'icon': 'fa-medkit',
@@ -28,7 +29,8 @@ def spl_widgets():
             'count': pills_count,
             'text': 'Sync Data',
             'link': '#',
-            'color': 'green'
+            'color': 'green',
+            'action': 'pills'
         },
         {
             'icon': 'fa-dot-circle-o',

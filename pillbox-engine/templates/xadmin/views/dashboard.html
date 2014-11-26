@@ -29,6 +29,8 @@
 
     {% spl_widgets %}
 
+    <div id="spl-sync"></div>
+
     <div class="row">
         <div class="col-lg-12">
             <h2 class="page-header">Pillbox <small>updated: {% pillbox_sync_time %}</small></h2>
@@ -37,4 +39,5 @@
 
     {% pillbox_widgets %}
 
+    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 {% endblock %}

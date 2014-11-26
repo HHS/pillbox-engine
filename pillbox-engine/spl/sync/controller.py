@@ -46,19 +46,19 @@ class Controller(object):
             'updated': 0
         }
 
-        # for folder in folders:
-        d = '%s/%s' % (settings.SPL_RAW_DATA, folders[0])
-        files = os.listdir(d)
+        for folder in folders:
+            d = '%s/%s' % (settings.SPL_RAW_DATA, folder)
+            files = os.listdir(d)
 
-        for f in files:
-            if fnmatch.fnmatch(f, '*.xml'):
-                output = getattr(x, action)(f, d)
-                if output:
-                    counter = getattr(self, '_%s' % action)(output, counter)
+            for f in files:
+                if fnmatch.fnmatch(f, '*.xml'):
+                    output = getattr(x, action)(f, d)
+                    if output:
+                        counter = getattr(self, '_%s' % action)(output, counter)
 
-                self._status(added=counter['added'], updated=counter['updated'],
-                             error=x.error, skipped=x.skip,
-                             action=action)
+                    self._status(added=counter['added'], updated=counter['updated'],
+                                 error=x.error, skipped=x.skip,
+                                 action=action)
 
         end = time.time()
 

@@ -40,13 +40,19 @@ class SyncSpl(viewsets.ViewSet):
 
         jobs = Task.objects.filter(time_ended__exact=None)
 
+        total = 0
+
         if jobs:
             job = AsyncResult(jobs[0].task_id)
+            meta = job.info
+            if meta:
+                total = int(meta['added']) + int(meta['updated'])
             output = {
                 'message': 'There is a sync process already running',
                 'status': job.state,
                 'task_id': job.task_id,
-                'meta': job.info
+                'meta': meta,
+                'total': total
             }
         else:
             jobs = Task.objects.filter(name=action,
@@ -55,11 +61,13 @@ class SyncSpl(viewsets.ViewSet):
                 output = {
                     'message': 'The sync process for %s has been executed at least once in the last 24 hours'
                     % (action),
+                    'total': 60000
                 }
             else:
                 sync = tasks.sync.delay(action)
                 output = {
                     'message': 'Process Started',
+                    'total': 0,
                     'task_id': sync.task_id
                 }
                 job = Task()
