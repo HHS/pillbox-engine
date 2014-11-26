@@ -101,7 +101,9 @@ def spl(choice=None):
     if choice is None:
         choice = 'all'
 
-    with shell_env(DJANGO_CONFIGURATION='Production'):
+    env = open('.env', 'r')
+    env = env.read()[:-1].split('=')
+    with shell_env(DJANGO_CONFIGURATION='Production', DATABASE_URL=env[1]):
         if choice in ['products', 'pills', 'all']:
             local('python pillbox-engine/manage.py syncspl %s' % choice)
         else:
