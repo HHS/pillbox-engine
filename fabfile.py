@@ -22,13 +22,17 @@ def initial_setup():
                 _sync_db()
             elif choice == 2:
 
-                response = _db_questions('3306')
+                response = _db_questions(0, '3306')
 
                 with shell_env(DATABASE_URL=response):
                     _install_mysql()
                     _sync_db()
             elif choice == 3:
-                pass
+                response = _db_questions(1, '5432')
+
+                with shell_env(DATABASE_URL=response):
+                    _install_postgres()
+                    _sync_db()
 
         except ValueError:
             print 'Try again! You should enter a number.'
@@ -109,10 +113,12 @@ def _install_mysql():
 
 
 def _install_postgres():
-    local('')
+    local('pip install psycopg2')
 
 
-def _db_questions(port):
+def _db_questions(type, port):
+
+    db_types = ['mysql-connector', 'postgres']
 
     output = {}
 
@@ -125,11 +131,12 @@ def _db_questions(port):
     output['host'] = output['host'] if output['host'] else 'localhost'
     output['port'] = output['port'] if output['port'] else port
 
-    db_url = 'mysql-connector://%s:%s@%s:%s/%s' % (output['username'],
-                                                   output['password'],
-                                                   output['host'],
-                                                   output['port'],
-                                                   output['db_name'])
+    db_url = '%s://%s:%s@%s:%s/%s' % (db_types[type],
+                                      output['username'],
+                                      output['password'],
+                                      output['host'],
+                                      output['port'],
+                                      output['db_name'])
 
     local('echo "DATABASE_URL=%s" > .env' % db_url)
 
