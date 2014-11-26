@@ -38,6 +38,7 @@ node_modules/
 #igonre other system files
 .DS_Store
 .settings
+.env
 
 pillbox_engine.sublime-project
 tmp-unzipped
