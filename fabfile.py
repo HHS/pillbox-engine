@@ -67,7 +67,9 @@ def serve():
 
 def test():
     """ Run the server in development mode """
-    local('python pillbox-engine/manage.py runserver')
+    env = _check_env()
+    with shell_env(DATABASE_URL=env[1]):
+        local('python pillbox-engine/manage.py runserver')
 
 
 def shell():
@@ -93,7 +95,10 @@ def update():
     """ Fetch the latest updates from the repo"""
     local('git pull origin master')
     local('pip install -r requirements.txt')
-    local('python pillbox-engine/manage.py migrate')
+
+    env = _check_env()
+    with shell_env(DATABASE_URL=env[1]):
+        local('python pillbox-engine/manage.py migrate')
 
 
 def spl(choice=None):

@@ -53,6 +53,7 @@ class Common(Configuration):
         # Your stuff: custom apps go here
         'spl',
         'pillbox',
+        'compare',
         'djcelery_pillbox'
     )
 
