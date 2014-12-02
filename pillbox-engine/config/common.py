@@ -263,4 +263,3 @@ class Common(Configuration):
         #Increase the timeout for sqlite database
         if cls.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
             cls.DATABASES['default']['OPTIONS'] = {'timeout': 30}
-            # pass
