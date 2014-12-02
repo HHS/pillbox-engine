@@ -1,11 +1,12 @@
+from __future__ import division
 import datetime
 
 from celery.result import AsyncResult
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import list_route
 from spl import tasks
-from spl.models import Task
+from spl.models import Task, SetInfo, ProductData
 
 
 class SyncSpl(viewsets.ViewSet):
@@ -38,41 +39,68 @@ class SyncSpl(viewsets.ViewSet):
 
     def sync(self, action):
 
-        jobs = Task.objects.filter(time_ended__exact=None)
+        model_map = {
+            'pills': ProductData,
+            'products': SetInfo
+        }
 
-        total = 0
+        try:
+            job = Task.objects.filter(time_ended__exact=None)[0]
+        except IndexError:
+            job = None
 
-        if jobs:
-            job = AsyncResult(jobs[0].task_id)
-            meta = job.info
-            if meta:
-                total = int(meta['added']) + int(meta['updated'])
-            output = {
-                'message': 'There is a sync process already running',
-                'status': job.state,
-                'task_id': job.task_id,
-                'meta': meta,
-                'total': total
-            }
-        else:
-            jobs = Task.objects.filter(name=action,
-                                       time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
-            if jobs:
+        processed = 0
+
+        if action in model_map.keys():
+            if job:
+                if job.name != action:
+                    return Response({'message': 'Another task is running'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+                task = AsyncResult(job.task_id)
+                meta = task.info
+                if meta:
+                    try:
+                        processed = int(meta['added']) + int(meta['updated'])
+                    except TypeError:
+                        pass
+
+                total = model_map[action].objects.all().count()
+                percent = round((processed / total) * 100, 2)
+
+                if percent > 100:
+                    percent = 99
+
                 output = {
-                    'message': 'The sync process for %s has been executed at least once in the last 24 hours'
-                    % (action),
-                    'total': 60000
+                    'message': 'Syncing...',
+                    'status': task.state,
+                    'task_id': task.task_id,
+                    'meta': meta,
+                    'total_processed': processed,
+                    'total': total,
+                    'percent': percent,
+                    'action': action
                 }
             else:
-                sync = tasks.sync.delay(action)
-                output = {
-                    'message': 'Process Started',
-                    'total': 0,
-                    'task_id': sync.task_id
-                }
-                job = Task()
-                job.task_id = sync.task_id
-                job.name = action
-                job.save()
+                jobs = Task.objects.filter(name=action,
+                                           time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
+                if jobs:
+                    output = {
+                        'message': 'The sync process for %s has been executed at least once in the last 24 hours.'
+                        % (action),
+                    }
+                else:
+                    sync = tasks.sync.delay(action)
+                    output = {
+                        'message': 'Process Started',
+                        'task_id': sync.task_id,
+                        'status': sync.state
+                    }
+                    job = Task()
+                    job.task_id = sync.task_id
+                    job.name = action
+                    job.save()
 
-        return Response(output, status=status.HTTP_200_OK)
+            return Response(output, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Action not supported'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
