@@ -256,3 +256,11 @@ class Common(Configuration):
     CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
 
     # CELERY_ALWAYS_EAGER
+
+    @classmethod
+    def setup(cls):
+        super(Common, cls).setup()
+        #Increase the timeout for sqlite database
+        if cls.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+            cls.DATABASES['default']['OPTIONS'] = {'timeout': 30}
+            # pass
