@@ -43,7 +43,7 @@ class PillBoxData(CommonInfo):
     dea_schedule_code = models.CharField('DEA_SCHEDULE_CODE', max_length=100, null=True, blank=True)
     dea_schedule_name = models.CharField('DEA_SCHEDULE_NAME', max_length=100, null=True, blank=True)
     author_type = models.CharField('author_type', max_length=100, null=True, blank=True)
-    author_type = models.CharField('author', max_length=100, null=True, blank=True)
+    author = models.CharField('author', max_length=100, null=True, blank=True)
     approval_code = models.CharField('approval_code', max_length=100, null=True, blank=True)
 
     # Extracted from other Sources
