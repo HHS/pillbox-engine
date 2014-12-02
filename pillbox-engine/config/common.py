@@ -252,5 +252,7 @@ class Common(Configuration):
     CELERY_RESULT_SERIALIZER = values.Value('json')
     CELERY_TRACK_STARTED = values.BooleanValue(True)
     CELERYD_TASK_TIME_LIMIT = values.IntegerValue(3600)
+    CELERY_IGNORE_RESULT = True
+    CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
 
     # CELERY_ALWAYS_EAGER
