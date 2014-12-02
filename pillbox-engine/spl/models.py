@@ -40,11 +40,11 @@ class SetInfo(CommonInfo):
     title = models.TextField('Title', null=True, blank=True)
     effective_time = models.CharField('Effective Time', max_length=100)
     version_number = models.IntegerField('Version Number')
-    code = models.CharField('Document Type (Code)', max_length=120)
-    filename = models.CharField('File Name', max_length=100)
-    source = models.CharField('Source', max_length=200)
-    author = models.CharField('Author (Laberer)', max_length=250, null=True, blank=True)
-    author_legal = models.CharField('Legal Author', max_length=250, null=True, blank=True)
+    code = models.CharField('Document Type (Code)', max_length=250)
+    filename = models.CharField('File Name', max_length=300)
+    source = models.CharField('Source', max_length=250)
+    author = models.CharField('Author (Laberer)', max_length=300, null=True, blank=True)
+    author_legal = models.CharField('Legal Author', max_length=300, null=True, blank=True)
     is_osdf = models.BooleanField('Is In Oral Solid Dosage Form?', default=False)
     discontinued = models.BooleanField('Is Discontinued from SPL?', default=False)
 
@@ -99,7 +99,7 @@ class Task(models.Model):
     task_id = models.CharField('Task ID', max_length=250, null=True, blank=True, unique=True)
     time_started = models.DateTimeField(auto_now_add=True)
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
-    duration = models.CharField('Duration', max_length=10)
+    duration = models.CharField('Duration', max_length=100)
     meta = models.TextField('Meta', null=True, blank=True)
 
     def __unicode__(self):
