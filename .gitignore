@@ -44,3 +44,4 @@ pillbox_engine.sublime-project
 tmp-unzipped
 celerybeat-schedule
 staticfiles
+media
