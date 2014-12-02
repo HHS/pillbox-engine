@@ -39,9 +39,6 @@ def initial_setup():
 
         local('python pillbox-engine/manage.py collectstatic')
 
-        # # Load SPL sources
-        local('python pillbox-engine/manage.py syncspl all')
-
 
 def push():
     """ Push master branch to github """
@@ -68,8 +65,15 @@ def serve():
 def test():
     """ Run the server in development mode """
     env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
-        local('python pillbox-engine/manage.py runserver')
+    try:
+        with shell_env(DATABASE_URL=env[1]):
+            _test()
+    except IndexError:
+        _test()
+
+
+def _test():
+    local('python pillbox-engine/manage.py runserver')
 
 
 def shell():
@@ -80,16 +84,18 @@ def shell():
 
 def migrate():
     """ Migrate database in development mode """
-    def execute():
-        local('python pillbox-engine/manage.py makemigrations')
-        local('python pillbox-engine/manage.py migrate')
 
     env = _check_env()
     try:
         with shell_env(DATABASE_URL=env[1]):
-            execute()
+            _migrate()
     except IndexError:
-        execute()
+        _migrate()
+
+
+def _migrate():
+    local('python pillbox-engine/manage.py makemigrations')
+    local('python pillbox-engine/manage.py migrate')
 
 
 def collect():
@@ -157,9 +163,9 @@ def _db_questions(type, port):
 
 
 def _sync_db():
-    local('python pillbox-engine/manage.py syncdb')
     local('python pillbox-engine/manage.py migrate')
     local('python pillbox-engine/manage.py loaddata spl_sources')
+    local('python pillbox-engine/manage.py makeusers')
 
 
 def _check_env():
