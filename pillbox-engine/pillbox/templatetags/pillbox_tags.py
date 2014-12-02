@@ -16,7 +16,7 @@ def pillbox_widgets():
             'name': 'Pillbox Data',
             'count': pillbox_count,
             'text': 'Import Data',
-            'link': '#',
+            'link': '/csvimport/csvimport/',
             'color': 'primary'
         }]
 
