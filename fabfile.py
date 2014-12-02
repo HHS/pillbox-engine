@@ -73,7 +73,9 @@ def test():
 
 
 def shell():
-    local('python pillbox-engine/manage.py shell')
+    env = _check_env()
+    with shell_env(DATABASE_URL=env[1]):
+        local('python pillbox-engine/manage.py shell')
 
 
 def migrate():
