@@ -18,7 +18,12 @@
             </div>
             <a href="{{box.link}}">
                 <div class="panel-footer" data-action="{{box.action}}">
-                    <span class="pull-left">{{box.text}}</span>
+                    <div class="progress hide">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                        60%
+                      </div>
+                    </div>
+                    <span class="pull-left" id="panel-msg">{{box.text}}</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
