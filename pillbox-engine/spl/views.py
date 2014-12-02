@@ -85,8 +85,7 @@ class SyncSpl(viewsets.ViewSet):
                                            time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
                 if jobs:
                     output = {
-                        'message': 'The sync process for %s has been executed at least once in the last 24 hours.'
-                        % (action),
+                        'message': 'Sync Done. You can run the sync again in 24 hours.'
                     }
                 else:
                     sync = tasks.sync.delay(action)
