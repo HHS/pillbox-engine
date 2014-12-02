@@ -1,7 +1,8 @@
 from __future__ import print_function
 
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
+from django.db import IntegrityError
 
 
 class Command(BaseCommand):
@@ -10,12 +11,35 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Create Admin
-        user = User.objects.create_user('admin', 'admin@example.com', 'admin')
-        user.is_superuser = True
-        user.is_staff = True
-        user.save()
+        try:
+            user = User.objects.create_user('admin', 'admin@example.com', 'admin')
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+        except IntegrityError:
+            pass
+
+        # Pillbox Group
+        group = Group()
+
+        group.name = 'Pillbox'
+        group.save()
+
+        # Grab need permission ids
+        permissions = Permission.objects.all()
+
+        for p in permissions:
+            if p.content_type.model not in ['group', 'permission', 'user']:
+                if 'add' not in p.name or (p.content_type.model == 'csvimport' and 'add' in p.name):
+                    group.permissions.add(p)
 
         # Create Pillbox User
-        user = User.objects.create_user('pillbox', 'pillbox@example.com', 'pillbox')
-        user.is_staff = True
-        user.save()
+        try:
+            user = User.objects.create_user('pillbox', 'pillbox@example.com', 'pillbox')
+            user.is_staff = True
+            user.groups.add(group)
+            user.save()
+        except IntegrityError:
+            pass
+
+
