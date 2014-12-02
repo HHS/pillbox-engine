@@ -37,16 +37,16 @@ def spl_widgets():
             'name': 'Ingredients',
             'count': ingredient_count,
             'text': 'View Details',
-            'link': '#',
-            'color': 'yellow'
+            'link': '/spl/ingredient/',
+            'color': 'yellow',
         },
         {
             'icon': 'fa-download',
             'name': 'Sources',
             'count': source_count,
             'text': 'View Details',
-            'link': '#',
-            'color': 'red'
+            'link': '/spl/source/',
+            'color': 'red',
         }]
 
     return {'boxes': boxes}
