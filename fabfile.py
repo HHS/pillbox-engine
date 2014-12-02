@@ -78,11 +78,16 @@ def shell():
 
 def migrate():
     """ Migrate database in development mode """
-
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    def execute():
         local('python pillbox-engine/manage.py makemigrations')
         local('python pillbox-engine/manage.py migrate')
+
+    env = _check_env()
+    try:
+        with shell_env(DATABASE_URL=env[1]):
+            execute()
+    except IndexError:
+        execute()
 
 
 def collect():
