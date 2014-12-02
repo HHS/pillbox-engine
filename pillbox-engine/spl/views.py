@@ -82,7 +82,7 @@ class SyncSpl(viewsets.ViewSet):
                 }
             else:
                 jobs = Task.objects.filter(name=action,
-                                           time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
+                                           time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1))
                 if jobs:
                     output = {
                         'message': 'Sync Done. You can run the sync again in 24 hours.'
