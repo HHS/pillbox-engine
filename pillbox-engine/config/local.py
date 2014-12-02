@@ -36,5 +36,3 @@ class Local(Common):
     # end django-debug-toolbar
 
     # Your local stuff: Below this line define 3rd party libary settings
-    BROKER_URL = 'amqp://localhost'
-    CELERY_RESULT_BACKEND = 'amqp'
