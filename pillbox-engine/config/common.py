@@ -241,8 +241,16 @@ class Common(Configuration):
     SPL_RAW_DATA = '/Users/ajdevseed/lib/repos/devseed/pillbox_engine_copy/tmp-unzipped'
 
     # Celery settings
-    BROKER_URL = 'django://'
-    # CELERY_RESULT_BACKEND = 'db+sqlite:///%s' % join(BASE_DIR, 'db/results.sqlite3')
-    CELERY_RESULT_BACKEND = 'djcelery_pillbox.database:DatabaseBackend'
-    CELERY_ACCEPT_CONTENT = ['pickle']
-    CELERY_DISABLE_RATE_LIMITS = True
+
+    BROKER_URL = values.Value('django://')
+    CELERY_RESULT_BACKEND = values.Value('djcelery_pillbox.database:DatabaseBackend')
+    CELERY_TASK_RESULT_EXPIRES = values.IntegerValue(3600)
+    CELERY_DISABLE_RATE_LIMITS = values.BooleanValue(True)
+    CELERYD_CONCURRENCY = values.IntegerValue(1)
+    CELERY_ACCEPT_CONTENT = values.ListValue(['json', 'msgpack', 'yaml'])
+    CELERY_TASK_SERIALIZER = values.Value('json')
+    CELERY_RESULT_SERIALIZER = values.Value('json')
+    CELERY_TRACK_STARTED = values.BooleanValue(True)
+    CELERYD_TASK_TIME_LIMIT = values.IntegerValue(3600)
+
+    # CELERY_ALWAYS_EAGER
