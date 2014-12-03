@@ -1,6 +1,8 @@
 import xadmin
 
-from pillbox.models import PillBoxData, Characteristic
+from xadmin.views.base import filter_hook
+from pillbox.models import PillBoxData, Import
+from pillbox.tasks import import_task
 
 
 class PillBoxDataAdmin(object):
@@ -12,14 +14,23 @@ class PillBoxDataAdmin(object):
     reversion_enable = True
 
 
-class CharacteristicAdmin(object):
+class ImportAdmin(object):
 
-    list_display = ('type', 'spl_value', 'pillbox_value', 'is_different', 'reason')
-    # list_filter = ['product_code', 'dosage_form']
-    list_quick_filter = ['type', 'is_different']
-    search_fields = ['type', 'spl_value', 'pillbox_value']
-    reversion_enable = True
+    list_display = ('file_name', 'completed', 'added', 'updated', 'created_at')
 
+    fields = ['csv_file', 'file_name', 'completed', 'added', 'updated', 'created_at']
+    readonly_fields = ['file_name', 'completed', 'added', 'updated', 'created_at']
+
+    @filter_hook
+    def save_models(self):
+
+        self.new_obj.file_name = self.new_obj.csv_file.name
+        self.new_obj.save()
+
+        # Start Celery Task
+        task = import_task.delay(self.new_obj.csv_file.path, self.new_obj.id)
+        self.new_obj.task_id = task.task_id
+        self.new_obj.save()
 
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
-xadmin.site.register(Characteristic, CharacteristicAdmin)
+xadmin.site.register(Import, ImportAdmin)
