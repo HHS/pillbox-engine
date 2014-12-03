@@ -106,3 +106,21 @@ class Task(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Download(models.Model):
+
+    started = models.DateTimeField('Time Started', null=True, blank=True)
+    ended = models.DateTimeField('Time Ended', null=True, blank=True)
+    duration = models.FloatField('Duration', default=0)
+    status = models.CharField('Status', max_length=200, null=True, blank=True)
+    completed = models.BooleanField('Completed?', default=False)
+    rx = models.BooleanField('RX Downloaded?', default=False)
+    otc = models.BooleanField('OTC Downloaded?', default=False)
+    homeopathic = models.BooleanField('Homeopathic Downloaded?', default=False)
+    animal = models.BooleanField('Animal Downloaded?', default=False)
+    remainder = models.BooleanField('Remainder Downloaded?', default=False)
+    unzipped = models.BooleanField('Unzipped?', default=False)
+
+    def __unicode__(self):
+        return self.started
