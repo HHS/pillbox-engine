@@ -26,7 +26,7 @@ def importer(csv_path, import_id=None, task_obj=None):
         'PART_MEDICINE_NAME': 'part_medicine_name',
         'author': 'author',
         'SPLIMPRINT': 'splimprint',
-        'SPLCOLOR': 'splscore',
+        'SPLCOLOR': 'splcolor',
         'SPLSCORE': 'splscore',
         'SPLSHAPE': 'splshape',
         'SPLSIZE': 'splsize',
