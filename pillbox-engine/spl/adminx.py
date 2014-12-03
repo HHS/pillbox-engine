@@ -54,6 +54,8 @@ class SetInfoAdmin(object):
 
     model_icon = 'fa fa-stethoscope'
 
+    list_per_page = 10
+
 
 class ProductDataAdmin(object):
 
@@ -72,6 +74,7 @@ class ProductDataAdmin(object):
     reversion_enable = True
 
     model_icon = 'fa fa-medkit'
+    list_per_page = 10
 
 
 class TaskAdmin(object):
