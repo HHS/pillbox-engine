@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 # from django.contrib.staticfiles import views
 
 import spl.urls
+import pillbox.urls
 
 import xadmin
 xadmin.autodiscover()
@@ -23,6 +24,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^spl/', include(spl.urls)),
+    url(r'^pillbox/', include(pillbox.urls)),
     url(r'^', include(xadmin.site.urls)),
     # Your stuff: custom urls go here
 
