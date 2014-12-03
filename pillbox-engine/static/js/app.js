@@ -13,9 +13,11 @@ $(document).ready(function() {
                 }
                 else {
                     that.find('#panel-msg').html(data.message);
+                    that.children('.progress').addClass('hide');
                 }
              })
              .fail(function(data){
+                that.children('.progress').addClass('hide');
                 that.find('#panel-msg').html(data.responseJSON.message);
              });
         }
