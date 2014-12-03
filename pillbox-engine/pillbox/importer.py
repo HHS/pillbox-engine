@@ -1,8 +1,12 @@
 import csv
+import time
+
 from pillbox.models import PillBoxData, Import
 
 
 def importer(csv_path, import_id=None, task_obj=None):
+
+    start = time.time()
 
     csv_file = open(csv_path, 'r')
     reader = csv.reader(csv_file, delimiter=',')
@@ -73,7 +77,11 @@ def importer(csv_path, import_id=None, task_obj=None):
     for line in reader:
         new = {}
         for k, v in enumerate(new_header):
-            new[v] = line[k]
+            # if column doesn't exist just pass
+            try:
+                new[v] = line[k]
+            except KeyError:
+                pass
 
         new.pop('')
 
@@ -93,9 +101,14 @@ def importer(csv_path, import_id=None, task_obj=None):
                                         'updated': counter['updated'],
                                         'action': 'pillbox_import'})
 
+    end = time.time()
+    spent = end - start
+
     if import_id:
         import_obj = Import.objects.get(pk=import_id)
         import_obj.completed = True
+        import_obj.status = 'SUCCESSFUL'
+        import_obj.duration = spent
         import_obj.added = counter['added']
         import_obj.updated = counter['updated']
         import_obj.save()
