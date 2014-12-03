@@ -13,6 +13,8 @@ class PillBoxDataAdmin(object):
     search_fields = ['medicine_name', 'part_medicine_name']
     reversion_enable = True
 
+    model_icon = 'fa fa-briefcase'
+
 
 class ImportAdmin(object):
 
@@ -32,6 +34,8 @@ class ImportAdmin(object):
         self.new_obj.task_id = task.task_id
         self.new_obj.status = 'PENDING'
         self.new_obj.save()
+
+    model_icon = 'fa fa-paperclip'
 
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
 xadmin.site.register(Import, ImportAdmin)

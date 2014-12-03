@@ -20,6 +20,8 @@ class SourceAdmin(object):
     search_fields = ['title']
     reversion_enable = True
 
+    model_icon = 'fa fa-download'
+
 
 class IngredientAdmin(object):
 
@@ -28,6 +30,8 @@ class IngredientAdmin(object):
     list_quick_filter = ['class_code']
     search_fields = ['name']
     reversion_enable = True
+
+    model_icon = 'fa fa-dot-circle-o'
 
 
 class SetInfoAdmin(object):
@@ -39,6 +43,8 @@ class SetInfoAdmin(object):
     search_fields = ['title', 'setid', 'author', 'author_legal', 'filename']
     reversion_enable = True
 
+    model_icon = 'fa fa-stethoscope'
+
 
 class ProductDataAdmin(object):
 
@@ -47,6 +53,8 @@ class ProductDataAdmin(object):
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
     search_fields = ['medicine_name', 'part_medicine_name']
     reversion_enable = True
+
+    model_icon = 'fa fa-medkit'
 
 
 class TaskAdmin(object):
@@ -65,9 +73,11 @@ class TaskAdmin(object):
     updated.short_description = "Updated"
     updated.is_column = True
 
-    list_display = ('task_id', 'name', 'duration', 'added', 'updated', 'time_started', 'time_ended')
-    fields = ['task_id', 'name', 'duration', 'time_started', 'time_ended']
-    readonly_fields = ['task_id', 'name', 'duration', 'time_started', 'time_ended']
+    list_display = ('task_id', 'name', 'status', 'duration', 'added', 'updated', 'time_started', 'time_ended')
+    fields = ['task_id', 'name', 'status', 'duration', 'time_started', 'time_ended']
+    readonly_fields = ['task_id', 'name', 'status', 'duration', 'time_started', 'time_ended']
+
+    model_icon = 'fa fa-tasks'
 
 xadmin.site.register(Source, SourceAdmin)
 xadmin.site.register(Ingredient, IngredientAdmin)
