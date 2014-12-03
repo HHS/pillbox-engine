@@ -4,7 +4,7 @@ $(document).ready(function() {
         if ($(this).parent().attr('href') == '#') {
             var action = $(this).data('action');
             var that = $(this);
-            $.get('/spl/sync/' + action + '/')
+            $.get(action)
              .done(function(data) {
                 if (data.status == 'PROGRESS') {
                     that.find('#panel-msg').html('Task Running: ' + data.total_processed + ' processed.');
