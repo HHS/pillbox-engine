@@ -71,7 +71,7 @@ class SyncSpl(viewsets.ViewSet):
                     percent = 99
 
                 output = {
-                    'message': 'Syncing...',
+                    'message': 'Syncing',
                     'status': task.state,
                     'task_id': task.task_id,
                     'meta': meta,
