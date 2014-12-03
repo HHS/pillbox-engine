@@ -1,12 +1,13 @@
 import csv
 from pillbox.models import PillBoxData
 
-def i():
 
-    c = open('/Users/ajdevseed/Desktop/pillbox.csv', 'r')
-    r = csv.reader(c, delimiter=',')
+def importer():
 
-    headers = r.next()
+    csv_file = open('/Users/ajdevseed/Desktop/pillbox.csv', 'r')
+    reader = csv.reader(csv_file, delimiter=',')
+
+    headers = reader.next()
 
     pillbox_map = {
         'spp': 'setid',
@@ -69,7 +70,7 @@ def i():
         'added': 0,
         'updated': 0
     }
-    for line in r:
+    for line in reader:
         new = {}
         for k, v in enumerate(new_header):
             new[v] = line[k]
