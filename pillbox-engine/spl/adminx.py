@@ -1,3 +1,5 @@
+import re
+
 import xadmin
 from xadmin import views
 
@@ -35,9 +37,16 @@ class IngredientAdmin(object):
 
 
 class SetInfoAdmin(object):
+    def name(self, instance):
+        if instance.title:
+            check = re.match('[a-zA-Z]', instance.title)
+            if check:
+                return instance.title
+        return instance.setid
+    name.short_description = "Title"
+    name.is_column = True
 
-    list_display = ('setid', 'title', 'source', 'version_number', 'author', 'is_osdf',
-                    'effective_time', 'version_number')
+    list_display = ('name', 'source', 'version_number', 'author', 'is_osdf')
     list_filter = ['version_number', 'is_osdf']
     list_quick_filter = ['is_osdf', 'source']
     search_fields = ['title', 'setid', 'author', 'author_legal', 'filename']
