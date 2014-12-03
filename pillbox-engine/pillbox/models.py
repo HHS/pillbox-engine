@@ -2,6 +2,7 @@ from django.db import models
 
 from spl.models import ProductData
 
+
 # Abstract Model
 class CommonInfo(models.Model):
     is_active = models.BooleanField('Enabled?', default=True)
@@ -66,25 +67,16 @@ class PillBoxData(CommonInfo):
         return self.medicine_name
 
 
-class Characteristic(CommonInfo):
-    VALUE_TYPES = (
-        ('splsize', 'SPL Size'),
-        ('splshape', 'SPL Shape'),
-        ('splscore', 'SPL Score'),
-        ('splcolor', 'SPL Color'),
-        ('splimprint', 'SSPL Imprint'),
-    )
+class Import(CommonInfo):
 
-    type = models.CharField('Type', choices=VALUE_TYPES, max_length=40)
-    spl_value = models.CharField('SPL Value', max_length=250)
-    pillbox_value = models.CharField('Pillbox Value', max_length=250)
-    pillbox = models.ForeignKey(PillBoxData)
-    spl = models.ForeignKey(ProductData)
-    is_different = models.BooleanField('Is Different?', default=False)
-    reason = models.TextField('Reason', null=True, blank=True)
+    file_name = models.CharField('File Name', max_length=200, null=True, blank=True)
+    csv_file = models.FileField('CSV File', upload_to='csv')
+    completed = models.BooleanField('Completed?', default=False)
+    added = models.IntegerField('Reocrds Added', null=True, blank=True)
+    updated = models.IntegerField('Records Updated', null=True, blank=True)
+    task_id = models.CharField('Task ID', max_length=200, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Pillbox Characteristic'
+        verbose_name = 'Data Import'
+        verbose_name_plural = 'Data Import'
 
-    def __unicode__(self):
-        return self.pillbox_value
