@@ -101,7 +101,7 @@ class Task(models.Model):
     time_started = models.DateTimeField(auto_now_add=True)
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
     duration = models.FloatField('Duration', default=0)
-    status = models.CharField('Status', null=True, blank=True)
+    status = models.CharField('Status', max_length=200, null=True, blank=True)
     meta = JSONField('Meta', null=True, blank=True)
 
     def __unicode__(self):
