@@ -97,6 +97,7 @@ class SyncSpl(viewsets.ViewSet):
                     job = Task()
                     job.task_id = sync.task_id
                     job.name = action
+                    job.status = 'PENDING'
                     job.save()
 
             return Response(output, status=status.HTTP_200_OK)

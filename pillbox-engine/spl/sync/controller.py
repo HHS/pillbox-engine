@@ -18,6 +18,7 @@ class Controller(object):
     def __init__(self, celery=None, stdout=None):
         self.stdout = stdout
         self.celery = celery
+        self.meta = None
 
     def sync(self, action):
         """ Class's main method/hook for activating sync sequence
@@ -132,6 +133,8 @@ class Controller(object):
             task = Task.objects.get(task_id=self.celery.request.id)
             task.time_ended = timezone.now()
             task.duration = spent
+            task.meta = self.meta
+            task.status = 'SUCCESSFUL'
             task.save()
 
         if self.stdout:
@@ -147,9 +150,10 @@ class Controller(object):
             sys.stdout.flush()
 
         if self.celery:
+            self.meta = {'added': kwarg['added'],
+                         'updated': kwarg['updated'],
+                         'error': kwarg['error'],
+                         'skipped': kwarg['skipped'],
+                         'action': kwarg['action']}
             self.celery.update_state(state='PROGRESS',
-                                     meta={'added': kwarg['added'],
-                                           'updated': kwarg['updated'],
-                                           'error': kwarg['error'],
-                                           'skipped': kwarg['skipped'],
-                                           'action': kwarg['action']})
+                                     meta=self.meta)
