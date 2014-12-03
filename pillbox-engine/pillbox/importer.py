@@ -85,7 +85,7 @@ def importer(csv_path, import_id=None, task_obj=None):
 
         new.pop('')
 
-        setid = new['setid']
+        setid = new['setid'].replace('_', '-').replace(' ', '')
         new.pop('setid')
         print new
         obj, created = PillBoxData.objects.update_or_create(setid=setid, defaults=new)
