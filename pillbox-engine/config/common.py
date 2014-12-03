@@ -46,7 +46,6 @@ class Common(Configuration):
         'reversion',
         'kombu.transport.django',
         'rest_framework',
-        'csvimport'
     )
 
     # Apps specific for this project go here.
