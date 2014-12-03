@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
         for p in permissions:
             if p.content_type.model not in ['group', 'permission', 'user']:
-                if 'add' not in p.name or (p.content_type.model == 'csvimport' and 'add' in p.name):
+                if 'add' not in p.name or (p.content_type.model == 'import' and 'add' in p.name):
                     group.permissions.add(p)
 
         # Create Pillbox User
