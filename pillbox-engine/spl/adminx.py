@@ -1,7 +1,7 @@
 import xadmin
 from xadmin import views
 
-from spl.models import Source, Ingredient, SetInfo, ProductData
+from spl.models import Source, Ingredient, SetInfo, ProductData, Task
 
 
 class GlobalSetting(object):
@@ -49,7 +49,28 @@ class ProductDataAdmin(object):
     reversion_enable = True
 
 
+class TaskAdmin(object):
+
+    def added(self, instance):
+        if instance.meta:
+            return instance.meta['added']
+        return 0
+    added.short_description = "Added"
+    added.is_column = True
+
+    def updated(self, instance):
+        if instance.meta:
+            return instance.meta['updated']
+        return 0
+    updated.short_description = "Updated"
+    updated.is_column = True
+
+    list_display = ('task_id', 'name', 'duration', 'added', 'updated', 'time_started', 'time_ended')
+    fields = ['task_id', 'name', 'duration', 'time_started', 'time_ended']
+    readonly_fields = ['task_id', 'name', 'duration', 'time_started', 'time_ended']
+
 xadmin.site.register(Source, SourceAdmin)
 xadmin.site.register(Ingredient, IngredientAdmin)
 xadmin.site.register(SetInfo, SetInfoAdmin)
 xadmin.site.register(ProductData, ProductDataAdmin)
+xadmin.site.register(Task, TaskAdmin)
