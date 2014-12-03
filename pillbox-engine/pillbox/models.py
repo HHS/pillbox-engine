@@ -1,7 +1,5 @@
 from django.db import models
 
-from spl.models import ProductData
-
 
 # Abstract Model
 class CommonInfo(models.Model):
