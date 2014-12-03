@@ -1,10 +1,10 @@
 import csv
-from pillbox.models import PillBoxData
+from pillbox.models import PillBoxData, Import
 
 
-def importer():
+def importer(csv_path, import_id=None, task_obj=None):
 
-    csv_file = open('/Users/ajdevseed/Desktop/pillbox.csv', 'r')
+    csv_file = open(csv_path, 'r')
     reader = csv.reader(csv_file, delimiter=',')
 
     headers = reader.next()
@@ -86,5 +86,18 @@ def importer():
             counter['added'] += 1
         else:
             counter['updated'] += 1
+
+        if task_obj:
+            task_obj.update_state(state='PROGRESS',
+                                  meta={'added': counter['added'],
+                                        'updated': counter['updated'],
+                                        'action': 'pillbox_import'})
+
+    if import_id:
+        import_obj = Import.objects.get(pk=import_id)
+        import_obj.completed = True
+        import_obj.added = counter['added']
+        import_obj.updated = counter['updated']
+        import_obj.save()
 
     return counter
