@@ -75,6 +75,8 @@ class Import(CommonInfo):
     added = models.IntegerField('Reocrds Added', null=True, blank=True)
     updated = models.IntegerField('Records Updated', null=True, blank=True)
     task_id = models.CharField('Task ID', max_length=200, null=True, blank=True)
+    status = models.CharField('Status', max_length=200, null=True, blank=True)
+    duration = models.FloatField('Duration (Sec.)', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Data Import'
