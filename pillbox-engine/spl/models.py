@@ -1,4 +1,5 @@
 from django.db import models
+from jsonfield import JSONField
 
 
 # Abstract Model
@@ -99,8 +100,9 @@ class Task(models.Model):
     task_id = models.CharField('Task ID', max_length=250, null=True, blank=True, unique=True)
     time_started = models.DateTimeField(auto_now_add=True)
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
-    duration = models.CharField('Duration', max_length=100)
-    meta = models.TextField('Meta', null=True, blank=True)
+    duration = models.FloatField('Duration', default=0)
+    status = models.CharField('Status', null=True, blank=True)
+    meta = JSONField('Meta', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
