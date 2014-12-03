@@ -16,10 +16,10 @@ class PillBoxDataAdmin(object):
 
 class ImportAdmin(object):
 
-    list_display = ('file_name', 'completed', 'added', 'updated', 'created_at')
+    list_display = ('file_name', 'completed', 'status', 'added', 'updated', 'duration', 'created_at')
 
-    fields = ['csv_file', 'file_name', 'completed', 'added', 'updated', 'created_at']
-    readonly_fields = ['file_name', 'completed', 'added', 'updated', 'created_at']
+    fields = ['csv_file', 'file_name', 'completed', 'status', 'added', 'duration', 'updated', 'created_at']
+    readonly_fields = ['file_name', 'completed', 'status', 'added', 'updated', 'duration', 'created_at']
 
     @filter_hook
     def save_models(self):
@@ -30,6 +30,7 @@ class ImportAdmin(object):
         # Start Celery Task
         task = import_task.delay(self.new_obj.csv_file.path, self.new_obj.id)
         self.new_obj.task_id = task.task_id
+        self.new_obj.status = 'PENDING'
         self.new_obj.save()
 
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
