@@ -48,7 +48,15 @@ class SetInfoAdmin(object):
 
 class ProductDataAdmin(object):
 
-    list_display = ('medicine_name', 'setid', 'product_code', 'part_num', 'dosage_form')
+    fields = ['id', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
+              'equal_product_code', 'approval_code', 'medicine_name', 'part_num',
+              'part_medicine_name', 'rxtty', 'rxstring', 'rxcui', 'dea_schedule_code',
+              'dea_schedule_name', 'marketing_act_code', 'splcolor', 'splsize',
+              'splshape', 'splimprint', 'splimage', 'splscore']
+
+    readonly_fields = fields
+
+    list_display = ('medicine_name', 'product_code', 'part_num', 'dosage_form')
     list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
     search_fields = ['medicine_name', 'part_medicine_name']
