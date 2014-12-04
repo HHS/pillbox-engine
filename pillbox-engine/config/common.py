@@ -256,6 +256,22 @@ class Common(Configuration):
 
     # CELERY_ALWAYS_EAGER
 
+    DAILYMED_FTP_SITE = values.Value('public.nlm.nih.gov')
+    DAILYMED_FTP_PATH = values.Value('nlmdata/.dailymed/')
+    DAILYMED_FTP_USER = values.Value('')
+    DAILYMED_FTP_PASS = values.Value('')
+    DOWNLOAD_PATH = join(BASE_DIR, 'downloads/zip')
+    SOURCE_PATH = join(BASE_DIR, 'downloads/unzip')
+    DAILYMED_FILES = {
+        'rx': ['dm_spl_release_human_rx_part1.zip', 'dm_spl_release_human_rx_part2.zip'],
+        'otc': ['dm_spl_release_human_otc_part1.zip',
+                'dm_spl_release_human_otc_part2.zip',
+                'dm_spl_release_human_otc_part3.zip'],
+        'homeopathic': ['dm_spl_release_homeopathic.zip'],
+        'animal': ['dm_spl_release_animal.zip'],
+        'remainder': ['dm_spl_release_remainder.zip']
+    }
+
     @classmethod
     def setup(cls):
         super(Common, cls).setup()
