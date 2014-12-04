@@ -121,6 +121,7 @@ class Download(models.Model):
     animal = models.BooleanField('Animal Downloaded?', default=False)
     remainder = models.BooleanField('Remainder Downloaded?', default=False)
     unzipped = models.BooleanField('Unzipped?', default=False)
+    task_id = models.CharField('Task ID', max_length=250, null=True, blank=True)
 
     def __unicode__(self):
         return self.started
