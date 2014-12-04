@@ -1,7 +1,7 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
-from spl.models import SetInfo, ProductData, Source, Ingredient
+from spl.models import SetInfo, ProductData, Ingredient, Download
 
 register = template.Library()
 
@@ -10,7 +10,6 @@ register = template.Library()
 def spl_widgets():
     products_count = SetInfo.objects.all().count()
     pills_count = ProductData.objects.all().count()
-    source_count = Source.objects.all().count()
     ingredient_count = Ingredient.objects.all().count()
 
     boxes = [
@@ -39,24 +38,35 @@ def spl_widgets():
             'text': 'View Details',
             'link': '/spl/ingredient/',
             'color': 'yellow',
-        },
-        {
-            'icon': 'fa-download',
-            'name': 'Sources',
-            'count': source_count,
-            'text': 'View Details',
-            'link': '/spl/source/',
-            'color': 'red',
         }]
 
     return {'boxes': boxes}
 
 
+@register.inclusion_tag('pillbox-engine/tags/download_widgets.html')
+def download_widgets():
+    # download = Download.objects.filter(completed=True).order_by('-ended')[0:1].get()
+    download = Download.objects.all()[0:1].get()
+    box = {
+        'icon': 'fa-download',
+        'name': 'Download',
+        'time': download.started,
+        'text': 'Download New Data',
+        'link': '#',
+        'color': 'red',
+        'action': '/spl/download/',
+    }
+    return {'box': box}
+
+
 @register.simple_tag
 def spl_sync_time():
-    last = ProductData.objects.all().order_by('-updated_at')[:1]
+    last = ProductData.objects.all().order_by('-updated_at')[0:1].get()
+    time_since(last.updated_at)
 
+
+def time_since(t):
     try:
-        return naturaltime(last[0].updated_at)
+        return naturaltime(t)
     except:
         return 'N/A'
