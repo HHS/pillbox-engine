@@ -64,38 +64,24 @@ def serve():
 
 def test():
     """ Run the server in development mode """
-    env = _check_env()
-    try:
-        with shell_env(DATABASE_URL=env[1]):
-            _test()
-    except IndexError:
-        _test()
-
-
-def _test():
-    local('python pillbox-engine/manage.py runserver')
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py runserver')
 
 
 def shell():
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         local('python pillbox-engine/manage.py shell')
 
 
 def migrate():
     """ Migrate database in development mode """
 
-    env = _check_env()
-    try:
-        with shell_env(DATABASE_URL=env[1]):
-            _migrate()
-    except IndexError:
-        _migrate()
-
-
-def _migrate():
-    local('python pillbox-engine/manage.py makemigrations')
-    local('python pillbox-engine/manage.py migrate')
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py makemigrations')
+        local('python pillbox-engine/manage.py migrate')
 
 
 def collect():
@@ -109,8 +95,8 @@ def update():
     local('git pull origin master')
     local('pip install -r requirements.txt')
 
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         local('python pillbox-engine/manage.py migrate')
 
 
@@ -169,6 +155,15 @@ def _sync_db():
 
 
 def _check_env():
-    env = open('.env', 'r')
-    env = env.read()[:-1].split('=')
-    return env
+    kwarg = {}
+    with open('.env', 'r') as env:
+        content = env.readlines()
+
+    for item in content:
+        split = item.split('=')
+        kwarg[split[0]] = split[1][:-1]
+    return kwarg
+
+
+if __name__ == "__main__":
+    print _check_env()
