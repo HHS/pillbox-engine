@@ -5,13 +5,12 @@ import glob
 import errno
 import shutil
 from zipfile import ZipFile
-
 from django.conf import settings
 from django.utils import timezone
 
 from _celery import app
 from spl.sync.controller import Controller
-from spl.download import PyFTPclient
+from spl.ftp import PillboxFTP
 from spl.models import Download
 
 
@@ -41,15 +40,13 @@ def download_task(self, download_id, download_type, files):
 
     self.update_state(state='STARTED')
 
-    obj = PyFTPclient(settings.DAILYMED_FTP_SITE, 21,
-                      settings.DAILYMED_FTP_USER,
-                      settings.DAILYMED_FTP_PASS,
-                      1, self.request.id)
-    success = False
+    success = True
     for f in files:
-        success = obj.download_file(settings.DAILYMED_FTP_PATH + f, '%s/%s' % (path, f))
-        if not success:
-            return False
+        ftp = PillboxFTP(settings.DAILYMED_FTP_SITE,
+                         settings.DAILYMED_FTP_USER,
+                         settings.DAILYMED_FTP_PASS,
+                         self.request.id)
+        state = ftp.download(settings.DAILYMED_FTP_PATH, f, path)
 
     end = time.time()
     spent = end - start
