@@ -45,3 +45,4 @@ tmp-unzipped
 celerybeat-schedule
 staticfiles
 media
+downloads
