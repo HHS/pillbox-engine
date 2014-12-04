@@ -33,6 +33,11 @@ import ftplib
 import socket
 import time
 
+try:
+    from djcelery_pillbox.models import TaskMeta
+    from django.conf import settings
+except ImportError:
+    pass
 
 def setInterval(interval, times=-1):
     # This will be the actual decorator,
@@ -60,8 +65,9 @@ def setInterval(interval, times=-1):
     return outer_wrap
 
 
-class PyFTPclient:
-    def __init__(self, host, port, login, passwd, monitor_interval=30):
+class PyFTPclient(object):
+
+    def __init__(self, host, port, login, passwd, monitor_interval=30, task_id=None):
         self.host = host
         self.port = port
         self.login = login
@@ -70,8 +76,25 @@ class PyFTPclient:
         self.ptr = None
         self.max_attempts = 15
         self.waiting = True
+        self.task_id = task_id
 
-    def DownloadFile(self, dst_filename, local_filename=None):
+    def set_state(self, state, meta=None):
+        """ Updates Celery's taskmeta with a new state """
+        if self.task_id:
+            try:
+                task = TaskMeta.objects.get(task_id=self.task_id)
+                if task.status != 'SUCCESS':
+                    task.status = state
+                    if meta:
+                        task.meta = meta
+                    task.save()
+            except TaskMeta.DoesNotExist:
+                pass
+        else:
+            print("%d  -  %0.1f Kb/s" % (meta['downloaded'], meta['speed']), end='\r')
+            sys.stdout.flush()
+
+    def download_file(self, dst_filename, local_filename=None):
         res = ''
         if local_filename is None:
             local_filename = dst_filename
@@ -82,13 +105,24 @@ class PyFTPclient:
             @setInterval(self.monitor_interval)
             def monitor():
                 if not self.waiting:
-                    i = f.tell()
-                    if self.ptr < i:
-                        print("%d  -  %0.1f Kb/s" % (i, (i-self.ptr)/(1024*self.monitor_interval)), end='\r')
-                        sys.stdout.flush()
-                        self.ptr = i
-                    else:
-                        ftp.close()
+                    try:
+                        i = f.tell()
+                        if self.ptr < i:
+                            speed = (i-self.ptr)/(1024*self.monitor_interval)
+                            meta = {
+                                'downloaded': i,
+                                'speed': speed,
+                                'action': 'download',
+                                'file': dst_filename,
+                                'size': dst_filesize
+                            }
+                            self.set_state('PROGESS', meta)
+                            self.ptr = i
+                        else:
+                            ftp.close()
+                    except ValueError:
+                        # If the download was completed just pass
+                        pass
 
             def connect():
                 ftp.connect(self.host, self.port)
@@ -131,11 +165,12 @@ class PyFTPclient:
 
             if not res.startswith('226 Transfer complete'):
                 logging.error('Downloaded file {0} is not full.'.format(dst_filename))
-                # os.remove(local_filename)
-                return None
-            return 1
+                # self.set_state('FAILURE')
+                return False
+            self.set_state('SUCCESS')
+            return True
 
 
 if __name__ == "__main__":
-    obj = PyFTPclient('public.nlm.nih.gov', 21, '', '', 1)
-    obj.DownloadFile('nlmdata/.dailymed/dm_spl_release_human_rx_part1.zip', 'test.zip')
+    obj = PyFTPclient('54.225.98.204', 21, 'saaadftp', 'oT2tVfyGXNDawLB4Mxq', 1)
+    obj.download_file('pbs/zip/dm_spl_release_human_rx_part1.zip', 'test.zip')
