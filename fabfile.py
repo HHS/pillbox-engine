@@ -113,6 +113,12 @@ def spl(choice=None):
             print 'wrong choice'
 
 
+def loaddata():
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py loaddata spl_sources')
+
+
 def _install_mysql():
     local('pip install mysql-connector-python --allow-external mysql-connector-python')
 
