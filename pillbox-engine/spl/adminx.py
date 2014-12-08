@@ -3,7 +3,7 @@ import re
 import xadmin
 from xadmin import views
 
-from spl.models import Source, Ingredient, SetInfo, ProductData, Task
+from spl.models import Source, Ingredient, SetInfo, ProductData, Task, Download
 
 
 class GlobalSetting(object):
@@ -79,23 +79,26 @@ class ProductDataAdmin(object):
 
 class TaskAdmin(object):
 
-    def added(self, instance):
+    def meta_info(self, instance):
+        text = ''
         if instance.meta:
-            return instance.meta['added']
-        return 0
-    added.short_description = "Added"
-    added.is_column = True
+            for k, v in instance.meta.iteritems():
+                text += '%s: %s |' % (k, v)
+        return text
+    meta_info.short_description = "Meta"
+    meta_info.is_column = True
 
     def updated(self, instance):
         if instance.meta:
-            return instance.meta['updated']
+            # return instance.meta['updated']
+            return 0
         return 0
     updated.short_description = "Updated"
     updated.is_column = True
 
-    list_display = ('task_id', 'name', 'status', 'duration', 'added', 'updated', 'time_started', 'time_ended')
-    fields = ['task_id', 'name', 'status', 'duration', 'time_started', 'time_ended']
-    readonly_fields = ['task_id', 'name', 'status', 'duration', 'time_started', 'time_ended']
+    list_display = ('name', 'status', 'duration', 'meta_info', 'time_started', 'time_ended')
+    fields = ['task_id', 'name', 'meta', 'status', 'duration', 'time_started', 'time_ended']
+    readonly_fields = ['task_id', 'meta', 'name', 'status', 'duration', 'time_started', 'time_ended']
 
     model_icon = 'fa fa-tasks'
 
