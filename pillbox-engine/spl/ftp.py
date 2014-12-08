@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 import ftputil
-from djcelery_pillbox.models import TaskMeta
+from spl.models import Task
 
 
 class PillboxFTP(object):
@@ -12,10 +12,13 @@ class PillboxFTP(object):
         self.ftp = ftputil.FTPHost(host, username, password)
         self.file_size = 0
         self.received = 0
-        self.task_id = task_id
+        try:
+            self.task = Task.objects.get(pk=task_id)
+        except Task.DoesNotExist:
+            self.task = None
         self.filename = None
 
-    def progress(self, chunk):
+    def progress(self, chunk=''):
         """ A callback function that receives chunk info from ftp downloader
         and calculates progress
         """
@@ -29,19 +32,13 @@ class PillboxFTP(object):
             'percent': percent
         }
 
-        if self.task_id:
-            task = TaskMeta.objects.get(task_id=self.task_id)
-            task.status = 'PROGRESS'
-            task.meta = meta
-            task.save()
+        self.ftp.keep_alive()
+
+        if self.task:
+            self.task.meta = meta
+            self.task.save()
         else:
             print(meta)
-
-    def success(self):
-        if self.task_id:
-            task = TaskMeta.objects.get(task_id=self.task_id)
-            task.status = 'SUCCESS'
-            task.save()
 
     def download(self, src_path, filename, dst_path):
         """ Download the file if it is newer """
@@ -49,8 +46,9 @@ class PillboxFTP(object):
         self.file_size = self.ftp.path.getsize(src_path + '/' + filename)
         self.filename = filename
 
+        self.progress()
+
         state = self.ftp.download_if_newer(src_path + '/' + filename,
                                            dst_path + '/' + filename,
                                            callback=self.progress)
-        self.success()
         return state
