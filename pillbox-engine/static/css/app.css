@@ -97,22 +97,3 @@
 .panel-red a:hover {
   color: #b52b27;
 }
-
-/* line 78, ../sass/app.scss */
-.panel-yellow {
-  border-color: #f0ad4e;
-}
-/* line 80, ../sass/app.scss */
-.panel-yellow .panel-heading {
-  border-color: #f0ad4e;
-  color: #fff;
-  background-color: #f0ad4e;
-}
-/* line 85, ../sass/app.scss */
-.panel-yellow a {
-  color: #f0ad4e;
-}
-/* line 88, ../sass/app.scss */
-.panel-yellow a:hover {
-  color: #df8a13;
-}
