@@ -7,7 +7,7 @@ from zipfile import BadZipfile
 from _celery import app
 from spl.sync.controller import Controller
 from spl.download import DownloadAndUnzip
-from spl.models import Task
+from spl.models import Task, Source
 
 
 @app.task()
@@ -26,7 +26,9 @@ def sync(self, action, task_id):
 
 
 @app.task(bind=True, ignore_result=True)
-def download_unzip(self, task_id, download_type, files):
+def download_unzip(self, task_id, source_id):
+
+    source = Source.objects.get(pk=source_id)
 
     ## SET START STATUS
     start = time.time()
@@ -37,7 +39,7 @@ def download_unzip(self, task_id, download_type, files):
 
     # RUN THE TASK
     try:
-        dl = DownloadAndUnzip(task.id, download_type, files)
+        dl = DownloadAndUnzip(task.id, source.title, source.files)
         if dl.run():
 
             # SET END STATUS ON SUCCESS
@@ -49,6 +51,10 @@ def download_unzip(self, task_id, download_type, files):
             task.time_ended = timezone.now()
             task.is_active = False
             task.save()
+
+            source.last_downloaded = task.time_ended
+            source.save()
+
     except BadZipfile:
         end = time.time()
         spent = end - start
