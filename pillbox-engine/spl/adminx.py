@@ -3,7 +3,7 @@ import re
 import xadmin
 from xadmin import views
 
-from spl.models import Source, Ingredient, SetInfo, ProductData, Task, Download
+from spl.models import Source, Ingredient, SetInfo, ProductData, Task
 
 
 class GlobalSetting(object):
