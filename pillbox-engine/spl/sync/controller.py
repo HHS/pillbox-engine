@@ -15,10 +15,12 @@ from spl.sync.xpath import XPath
 class Controller(object):
     """ This class is specificaly written to work with celery task management """
 
-    def __init__(self, celery=None, stdout=None):
+    def __init__(self, task_id=None, stdout=None):
         self.stdout = stdout
-        self.celery = celery
-        self.meta = None
+        try:
+            self.task = Task.objects.get(pk=task_id)
+        except Task.DoesNotExist:
+            self.task = None
 
     def sync(self, action):
         """ Class's main method/hook for activating sync sequence
@@ -48,7 +50,7 @@ class Controller(object):
         }
 
         for folder in folders:
-            d = '%s/%s' % (settings.SPL_RAW_DATA, folder)
+            d = '%s/%s' % (settings.SOURCE_PATH, folder)
             files = os.listdir(d)
 
             for f in files:
@@ -129,13 +131,11 @@ class Controller(object):
         minutes = spent / 60
         seconds = spent % 60
 
-        if self.celery:
-            task = Task.objects.get(task_id=self.celery.request.id)
-            task.time_ended = timezone.now()
-            task.duration = spent
-            task.meta = self.meta
-            task.status = 'SUCCESSFUL'
-            task.save()
+        if self.task:
+            self.task.time_ended = timezone.now()
+            self.task.duration = spent
+            self.task.status = 'SUCCESSFUL'
+            self.task.save()
 
         if self.stdout:
             self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
@@ -149,11 +149,12 @@ class Controller(object):
                               (kwarg['added'], kwarg['updated'], kwarg['error'], kwarg['skipped']), ending='\r')
             sys.stdout.flush()
 
-        if self.celery:
-            self.meta = {'added': kwarg['added'],
-                         'updated': kwarg['updated'],
-                         'error': kwarg['error'],
-                         'skipped': kwarg['skipped'],
-                         'action': kwarg['action']}
-            self.celery.update_state(state='PROGRESS',
-                                     meta=self.meta)
+        if self.task:
+            meta = {'added': kwarg['added'],
+                    'updated': kwarg['updated'],
+                    'error': kwarg['error'],
+                    'skipped': kwarg['skipped'],
+                    'action': kwarg['action']}
+            self.task.meta = meta
+            self.task.status = 'PROGRESS'
+
