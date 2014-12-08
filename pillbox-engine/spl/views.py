@@ -37,24 +37,36 @@ class DownloadViewSet(viewsets.ViewSet):
                                 status=status.HTTP_200_OK)
         except Task.DoesNotExist:
 
-            # Start a new task
-            task = Task()
-            task.name = 'Download/Unzip'
-            task.download_type = source.title
-            task.time_started = timezone.now()
-            task.save()
+            try:
+                task = Task.objects.filter(
+                    download_type=source.title,
+                    status='SUCCESS',
+                    time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
+                )[:1].get()
 
-            celery_task = tasks.download_unzip.delay(task.id, source.title, source.files)
+                return Response({'message': 'No need to re-download this source for another 24 hours!'},
+                                status=status.HTTP_200_OK)
 
-            task.task_id = celery_task.task_id
-            task.save()
+            except Task.DoesNotExist:
 
-            return Response({'message': 'New download started',
-                             'status': task.status,
-                             'meta': task.meta,
-                             'task_id': task.task_id,
-                             'pid': task.pid},
-                            status=status.HTTP_200_OK)
+                # Start a new task
+                task = Task()
+                task.name = 'Download/Unzip'
+                task.download_type = source.title
+                task.time_started = timezone.now()
+                task.save()
+
+                celery_task = tasks.download_unzip.delay(task.id, source.id)
+
+                task.task_id = celery_task.task_id
+                task.save()
+
+                return Response({'message': 'New download started',
+                                 'status': task.status,
+                                 'meta': task.meta,
+                                 'task_id': task.task_id,
+                                 'pid': task.pid},
+                                status=status.HTTP_200_OK)
 
 
 class SyncSpl(viewsets.ViewSet):
