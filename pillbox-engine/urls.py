@@ -8,6 +8,9 @@ from django.conf.urls.static import static
 
 import spl.urls
 import pillbox.urls
+from kombu.transport.django.models import Message
+from djcelery_pillbox.models import TaskMeta
+from spl.models import Task
 
 import xadmin
 xadmin.autodiscover()
@@ -19,6 +22,16 @@ xversion.register_models()
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+# REST ALL WORKERS
+Message.objects.all().delete()
+TaskMeta.objects.all().delete()
+tasks = Task.objects.filter(is_active=True)
+for task in tasks:
+    task.is_active = False
+    task.status = 'FAILED'
+    task.save()
+
 
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
