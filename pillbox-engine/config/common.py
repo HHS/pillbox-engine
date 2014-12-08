@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import os
 from os.path import join, dirname
-
 from configurations import Configuration, values
 
 BASE_DIR = dirname(dirname(__file__))
@@ -96,10 +95,6 @@ class Common(Configuration):
         join(BASE_DIR, 'fixtures'),
     )
     # END FIXTURE CONFIGURATION
-
-    # EMAIL CONFIGURATION
-    # EMAIL_BACKEND = values.Value('django.core.mail.backends.smtp.EmailBackend')
-    # END EMAIL CONFIGURATION
 
     # MANAGER CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
@@ -237,8 +232,6 @@ class Common(Configuration):
     # END LOGGING CONFIGURATION
 
     # Your common stuff: Below this line define 3rd party library settings
-    SPL_RAW_DATA = '/Users/ajdevseed/lib/repos/devseed/pillbox_engine_copy/tmp-unzipped'
-
     # Celery settings
 
     BROKER_URL = values.Value('django://')
@@ -250,27 +243,14 @@ class Common(Configuration):
     CELERY_TASK_SERIALIZER = values.Value('json')
     CELERY_RESULT_SERIALIZER = values.Value('json')
     CELERY_TRACK_STARTED = values.BooleanValue(True)
-    CELERYD_TASK_TIME_LIMIT = values.IntegerValue(3600)
-    CELERY_IGNORE_RESULT = True
     CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
-
-    # CELERY_ALWAYS_EAGER
 
     DAILYMED_FTP_SITE = values.Value('public.nlm.nih.gov')
     DAILYMED_FTP_PATH = values.Value('nlmdata/.dailymed/')
-    DAILYMED_FTP_USER = values.Value('')
+    DAILYMED_FTP_USER = values.Value('anonymous')
     DAILYMED_FTP_PASS = values.Value('')
     DOWNLOAD_PATH = join(BASE_DIR, 'downloads/zip')
     SOURCE_PATH = join(BASE_DIR, 'downloads/unzip')
-    DAILYMED_FILES = {
-        'rx': ['dm_spl_release_human_rx_part1.zip', 'dm_spl_release_human_rx_part2.zip'],
-        'otc': ['dm_spl_release_human_otc_part1.zip',
-                'dm_spl_release_human_otc_part2.zip',
-                'dm_spl_release_human_otc_part3.zip'],
-        'homeopathic': ['dm_spl_release_homeopathic.zip'],
-        'animal': ['dm_spl_release_animal.zip'],
-        'remainder': ['dm_spl_release_remainder.zip']
-    }
 
     @classmethod
     def setup(cls):
@@ -278,3 +258,4 @@ class Common(Configuration):
         #Increase the timeout for sqlite database
         if cls.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
             cls.DATABASES['default']['OPTIONS'] = {'timeout': 30}
+
