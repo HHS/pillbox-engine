@@ -18,6 +18,7 @@ class Source(CommonInfo):
     host = models.CharField('FTP Host', help_text='FTP host to download the files from', max_length=200)
     path = models.CharField('PATH', help_text='Path where the files are located on the ftp server', max_length=200)
     files = JSONField('File Names', help_text='Enter in form python list')
+    last_downloaded = models.DateTimeField('Last Downloaded and Unzipped', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
