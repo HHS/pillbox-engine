@@ -15,6 +15,9 @@ class CommonInfo(models.Model):
 class Source(CommonInfo):
 
     title = models.CharField('Title', max_length=100)
+    host = models.CharField('FTP Host', help_text='FTP host to download the files from', max_length=200)
+    path = models.CharField('PATH', help_text='Path where the files are located on the ftp server', max_length=200)
+    files = JSONField('File Names', help_text='Enter in form python list')
 
     def __unicode__(self):
         return self.title
@@ -103,25 +106,10 @@ class Task(models.Model):
     duration = models.FloatField('Duration', default=0)
     status = models.CharField('Status', max_length=200, null=True, blank=True)
     meta = JSONField('Meta', null=True, blank=True)
+    pid = models.CharField('PID', max_length=100, null=True, blank=True)
+    is_active = models.BooleanField('Task is active (running)?', default=True)
+    download_type = models.CharField('Download source name', max_length=200, null=True, blank=True)
+    traceback = models.TextField('Traceback', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
-
-
-class Download(models.Model):
-
-    started = models.DateTimeField('Time Started', null=True, blank=True)
-    ended = models.DateTimeField('Time Ended', null=True, blank=True)
-    duration = models.FloatField('Duration', default=0)
-    status = models.CharField('Status', max_length=200, null=True, blank=True)
-    completed = models.BooleanField('Completed?', default=False)
-    rx = models.BooleanField('RX Downloaded?', default=False)
-    otc = models.BooleanField('OTC Downloaded?', default=False)
-    homeopathic = models.BooleanField('Homeopathic Downloaded?', default=False)
-    animal = models.BooleanField('Animal Downloaded?', default=False)
-    remainder = models.BooleanField('Remainder Downloaded?', default=False)
-    unzipped = models.BooleanField('Unzipped?', default=False)
-    task_id = models.CharField('Task ID', max_length=250, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.started
