@@ -26,11 +26,7 @@ admin.autodiscover()
 # REST ALL WORKERS
 Message.objects.all().delete()
 TaskMeta.objects.all().delete()
-tasks = Task.objects.filter(is_active=True)
-for task in tasks:
-    task.is_active = False
-    task.status = 'FAILED'
-    task.save()
+tasks = Task.objects.filter(is_active=True).update(is_active=False, status='FAILED')
 
 
 urlpatterns = patterns('',
