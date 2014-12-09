@@ -26,9 +26,9 @@
             <h2 class="page-header">SPL <small>updated: {% spl_sync_time %}</small></h2>
         </div>
     </div>
-
-    {% spl_widgets %}
-
+    <div class="row">
+        {% spl_widgets %}
+    </div>
     <div id="spl-sync"></div>
 
     <div class="row">
@@ -37,7 +37,22 @@
         </div>
     </div>
 
-    {% pillbox_widgets %}
+    <div class="row">
+        {% pillbox_widgets %}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Download</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% download_widgets %}
+        {% size_widgets %}
+        <div class="col-lg-3 col-md-6">
+
+        </div>
+    </div>
 
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 {% endblock %}

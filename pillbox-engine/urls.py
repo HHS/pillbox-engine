@@ -7,6 +7,10 @@ from django.conf.urls.static import static
 # from django.contrib.staticfiles import views
 
 import spl.urls
+import pillbox.urls
+from kombu.transport.django.models import Message
+from djcelery_pillbox.models import TaskMeta
+from spl.models import Task
 
 import xadmin
 xadmin.autodiscover()
@@ -19,10 +23,17 @@ xversion.register_models()
 from django.contrib import admin
 admin.autodiscover()
 
+# REST ALL WORKERS
+Message.objects.all().delete()
+TaskMeta.objects.all().delete()
+tasks = Task.objects.filter(is_active=True).update(is_active=False, status='FAILED')
+
+
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^spl/', include(spl.urls)),
+    url(r'^pillbox/', include(pillbox.urls)),
     url(r'^', include(xadmin.site.urls)),
     # Your stuff: custom urls go here
 

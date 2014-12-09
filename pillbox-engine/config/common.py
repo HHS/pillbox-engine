@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import os
 from os.path import join, dirname
-
 from configurations import Configuration, values
 
 BASE_DIR = dirname(dirname(__file__))
@@ -96,10 +95,6 @@ class Common(Configuration):
         join(BASE_DIR, 'fixtures'),
     )
     # END FIXTURE CONFIGURATION
-
-    # EMAIL CONFIGURATION
-    # EMAIL_BACKEND = values.Value('django.core.mail.backends.smtp.EmailBackend')
-    # END EMAIL CONFIGURATION
 
     # MANAGER CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
@@ -237,11 +232,30 @@ class Common(Configuration):
     # END LOGGING CONFIGURATION
 
     # Your common stuff: Below this line define 3rd party library settings
-    SPL_RAW_DATA = '/Users/ajdevseed/lib/repos/devseed/pillbox_engine_copy/tmp-unzipped'
-
     # Celery settings
-    BROKER_URL = 'django://'
-    # CELERY_RESULT_BACKEND = 'db+sqlite:///%s' % join(BASE_DIR, 'db/results.sqlite3')
-    CELERY_RESULT_BACKEND = 'djcelery_pillbox.database:DatabaseBackend'
-    CELERY_ACCEPT_CONTENT = ['pickle']
-    CELERY_DISABLE_RATE_LIMITS = True
+
+    BROKER_URL = values.Value('django://')
+    CELERY_RESULT_BACKEND = values.Value('djcelery_pillbox.database:DatabaseBackend')
+    CELERY_TASK_RESULT_EXPIRES = values.IntegerValue(3600)
+    CELERY_DISABLE_RATE_LIMITS = values.BooleanValue(True)
+    CELERYD_CONCURRENCY = values.IntegerValue(1)
+    CELERY_ACCEPT_CONTENT = values.ListValue(['json', 'msgpack', 'yaml'])
+    CELERY_TASK_SERIALIZER = values.Value('json')
+    CELERY_RESULT_SERIALIZER = values.Value('json')
+    CELERY_TRACK_STARTED = values.BooleanValue(True)
+    CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
+
+    DAILYMED_FTP_SITE = values.Value('public.nlm.nih.gov')
+    DAILYMED_FTP_PATH = values.Value('nlmdata/.dailymed/')
+    DAILYMED_FTP_USER = values.Value('anonymous')
+    DAILYMED_FTP_PASS = values.Value('')
+    DOWNLOAD_PATH = join(BASE_DIR, 'downloads/zip')
+    SOURCE_PATH = join(BASE_DIR, 'downloads/unzip')
+
+    @classmethod
+    def setup(cls):
+        super(Common, cls).setup()
+        #Increase the timeout for sqlite database
+        if cls.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+            cls.DATABASES['default']['OPTIONS'] = {'timeout': 30}
+

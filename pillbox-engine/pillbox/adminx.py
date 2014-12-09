@@ -1,25 +1,41 @@
 import xadmin
-# from xadmin import views
 
-from pillbox.models import PillBoxData, Characteristic
+from xadmin.views.base import filter_hook
+from pillbox.models import PillBoxData, Import
+from pillbox.tasks import import_task
 
 
 class PillBoxDataAdmin(object):
 
-    list_display = ('medicine_name', 'setid', 'has_image')
+    list_display = ('medicine_name', 'source', 'author', 'has_image')
     # list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
     search_fields = ['medicine_name', 'part_medicine_name']
     reversion_enable = True
 
+    model_icon = 'fa fa-briefcase'
 
-class CharacteristicAdmin(object):
 
-    list_display = ('type', 'spl_value', 'pillbox_value', 'is_different', 'reason')
-    # list_filter = ['product_code', 'dosage_form']
-    list_quick_filter = ['type', 'is_different']
-    search_fields = ['type', 'spl_value', 'pillbox_value']
-    reversion_enable = True
+class ImportAdmin(object):
+
+    list_display = ('file_name', 'completed', 'status', 'added', 'updated', 'duration', 'created_at')
+
+    fields = ['csv_file', 'file_name', 'completed', 'status', 'added', 'duration', 'updated', 'created_at']
+    readonly_fields = ['file_name', 'completed', 'status', 'added', 'updated', 'duration', 'created_at']
+
+    @filter_hook
+    def save_models(self):
+
+        self.new_obj.file_name = self.new_obj.csv_file.name
+        self.new_obj.save()
+
+        # Start Celery Task
+        task = import_task.delay(self.new_obj.csv_file.path, self.new_obj.id)
+        self.new_obj.task_id = task.task_id
+        self.new_obj.status = 'PENDING'
+        self.new_obj.save()
+
+    model_icon = 'fa fa-paperclip'
 
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
-xadmin.site.register(Characteristic, CharacteristicAdmin)
+xadmin.site.register(Import, ImportAdmin)

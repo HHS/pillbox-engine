@@ -15,9 +15,10 @@ def pillbox_widgets():
             'icon': 'fa-briefcase',
             'name': 'Pillbox Data',
             'count': pillbox_count,
-            'text': 'Import Data',
+            'text': 'Check Import Status',
             'link': '#',
-            'color': 'primary'
+            'color': 'primary',
+            'action': '/pillbox/status/'
         }]
 
     return {'boxes': boxes}

@@ -10,27 +10,33 @@ class GenericAdmin(object):
 
 
 class ColorAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-adjust'
 
 
 class ScoreAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-trophy'
 
 
 class SizeAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-magic'
 
 
 class ShapeAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-stop'
 
 
 class ImageAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-camera-retro'
 
 
 class ImprintAdmin(GenericAdmin):
-    pass
+
+    model_icon = 'fa fa-asterisk'
 
 
 xadmin.site.register(Color, ColorAdmin)

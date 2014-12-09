@@ -39,9 +39,6 @@ def initial_setup():
 
         local('python pillbox-engine/manage.py collectstatic')
 
-        # # Load SPL sources
-        local('python pillbox-engine/manage.py syncspl all')
-
 
 def push():
     """ Push master branch to github """
@@ -67,20 +64,22 @@ def serve():
 
 def test():
     """ Run the server in development mode """
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         local('python pillbox-engine/manage.py runserver')
 
 
 def shell():
-    local('python pillbox-engine/manage.py shell')
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py shell')
 
 
 def migrate():
     """ Migrate database in development mode """
 
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         local('python pillbox-engine/manage.py makemigrations')
         local('python pillbox-engine/manage.py migrate')
 
@@ -96,8 +95,8 @@ def update():
     local('git pull origin master')
     local('pip install -r requirements.txt')
 
-    env = _check_env()
-    with shell_env(DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         local('python pillbox-engine/manage.py migrate')
 
 
@@ -112,6 +111,12 @@ def spl(choice=None):
             local('python pillbox-engine/manage.py syncspl %s' % choice)
         else:
             print 'wrong choice'
+
+
+def loaddata():
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py loaddata spl_sources')
 
 
 def _install_mysql():
@@ -150,12 +155,21 @@ def _db_questions(type, port):
 
 
 def _sync_db():
-    local('python pillbox-engine/manage.py syncdb')
     local('python pillbox-engine/manage.py migrate')
     local('python pillbox-engine/manage.py loaddata spl_sources')
+    local('python pillbox-engine/manage.py makeusers')
 
 
 def _check_env():
-    env = open('.env', 'r')
-    env = env.read()[:-1].split('=')
-    return env
+    kwarg = {}
+    with open('.env', 'r') as env:
+        content = env.readlines()
+
+    for item in content:
+        split = item.split('=')
+        kwarg[split[0]] = split[1][:-1]
+    return kwarg
+
+
+if __name__ == "__main__":
+    print _check_env()

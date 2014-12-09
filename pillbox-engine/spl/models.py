@@ -1,4 +1,5 @@
 from django.db import models
+from jsonfield import JSONField
 
 
 # Abstract Model
@@ -14,6 +15,12 @@ class CommonInfo(models.Model):
 class Source(CommonInfo):
 
     title = models.CharField('Title', max_length=100)
+    host = models.CharField('FTP Host', help_text='FTP host to download the files from', max_length=200)
+    path = models.CharField('PATH', help_text='Path where the files are located on the ftp server', max_length=200)
+    files = JSONField('File Names', help_text='Enter in form python list')
+    last_downloaded = models.DateTimeField('Last Downloaded and Unzipped', null=True, blank=True)
+    zip_size = models.FloatField('Total zip folder size (bytes)', null=True, blank=True)
+    unzip_size = models.FloatField('Total unzip folder size (bytes)', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -40,11 +47,11 @@ class SetInfo(CommonInfo):
     title = models.TextField('Title', null=True, blank=True)
     effective_time = models.CharField('Effective Time', max_length=100)
     version_number = models.IntegerField('Version Number')
-    code = models.CharField('Document Type (Code)', max_length=120)
-    filename = models.CharField('File Name', max_length=100)
-    source = models.CharField('Source', max_length=200)
-    author = models.CharField('Author (Laberer)', max_length=250, null=True, blank=True)
-    author_legal = models.CharField('Legal Author', max_length=250, null=True, blank=True)
+    code = models.CharField('Document Type (Code)', max_length=250)
+    filename = models.CharField('File Name', max_length=300)
+    source = models.CharField('Source', max_length=250)
+    author = models.CharField('Author (Laberer)', max_length=300, null=True, blank=True)
+    author_legal = models.CharField('Legal Author', max_length=300, null=True, blank=True)
     is_osdf = models.BooleanField('Is In Oral Solid Dosage Form?', default=False)
     discontinued = models.BooleanField('Is Discontinued from SPL?', default=False)
 
@@ -99,8 +106,13 @@ class Task(models.Model):
     task_id = models.CharField('Task ID', max_length=250, null=True, blank=True, unique=True)
     time_started = models.DateTimeField(auto_now_add=True)
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
-    duration = models.CharField('Duration', max_length=10)
-    meta = models.TextField('Meta', null=True, blank=True)
+    duration = models.FloatField('Duration', default=0)
+    status = models.CharField('Status', max_length=200, null=True, blank=True)
+    meta = JSONField('Meta', null=True, blank=True)
+    pid = models.CharField('PID', max_length=100, null=True, blank=True)
+    is_active = models.BooleanField('Task is active (running)?', default=True)
+    download_type = models.CharField('Download source name', max_length=200, null=True, blank=True)
+    traceback = models.TextField('Traceback', null=True, blank=True)
 
     def __unicode__(self):
         return self.name

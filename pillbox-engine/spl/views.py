@@ -1,28 +1,81 @@
+from __future__ import division
 import datetime
+
+from django.utils import timezone
 
 from celery.result import AsyncResult
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import list_route
 from spl import tasks
-from spl.models import Task
+from spl.models import Task, SetInfo, ProductData, Source
+
+
+class DownloadViewSet(viewsets.ViewSet):
+    """ Download SPL Data """
+
+    def list(self, request):
+        return Response({'message': 'empty'}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        source = Source.objects.get(pk=pk)
+
+        try:
+            ## Check if there are any active tasks
+            task = Task.objects.filter(is_active=True)[:1].get()
+
+            ## Check if it is download task
+            if task.download_type == source.title:
+                return Response({'message': 'Downloading',
+                                 'meta': task.meta,
+                                 'status': task.status,
+                                 'task_id': task.task_id,
+                                 'pid': task.pid},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'There is another task running.'},
+                                status=status.HTTP_200_OK)
+        except Task.DoesNotExist:
+
+            try:
+                task = Task.objects.filter(
+                    download_type=source.title,
+                    status='SUCCESS',
+                    time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
+                )[:1].get()
+
+                return Response({'message': 'No need to re-download this source for another 24 hours!'},
+                                status=status.HTTP_200_OK)
+
+            except Task.DoesNotExist:
+
+                # Start a new task
+                task = Task()
+                task.name = 'Download/Unzip'
+                task.download_type = source.title
+                task.time_started = timezone.now()
+                task.save()
+
+                celery_task = tasks.download_unzip.delay(task.id, source.id)
+
+                task.task_id = celery_task.task_id
+                task.save()
+
+                return Response({'message': 'New download started',
+                                 'status': task.status,
+                                 'meta': task.meta,
+                                 'task_id': task.task_id,
+                                 'pid': task.pid},
+                                status=status.HTTP_200_OK)
 
 
 class SyncSpl(viewsets.ViewSet):
     """
     Run SPL Sync
     """
-    # def get(self, request, *args, **kwargs):
-        # sync = tasks.sync.delay(kwargs['action'])
-        # output = {
-        #     'status': 'Process Started',
-        #     'task_id': sync.task_id
-        # }
-
-        # return Response(output, status=status.HTTP_200_OK)
 
     def list(self, request):
-        return Response({'me': 'Yoohoo'})
+        return Response({'message': 'It\'s working'})
 
     @list_route()
     def pills(self, request):
@@ -38,41 +91,67 @@ class SyncSpl(viewsets.ViewSet):
 
     def sync(self, action):
 
-        jobs = Task.objects.filter(time_ended__exact=None)
+        model_map = {
+            'pills': ProductData,
+            'products': SetInfo
+        }
 
-        total = 0
+        try:
+            job = Task.objects.filter(time_ended__exact=None)[0]
+        except IndexError:
+            job = None
 
-        if jobs:
-            job = AsyncResult(jobs[0].task_id)
-            meta = job.info
-            if meta:
-                total = int(meta['added']) + int(meta['updated'])
-            output = {
-                'message': 'There is a sync process already running',
-                'status': job.state,
-                'task_id': job.task_id,
-                'meta': meta,
-                'total': total
-            }
-        else:
-            jobs = Task.objects.filter(name=action,
-                                       time_started__gte=datetime.datetime.today()-datetime.timedelta(days=1))
-            if jobs:
+        processed = 0
+
+        if action in model_map.keys():
+            if job:
+                if job.name != action:
+                    return Response({'message': 'Another task is running'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+                task = AsyncResult(job.task_id)
+                meta = task.info
+                if meta:
+                    try:
+                        processed = int(meta['added']) + int(meta['updated'])
+                    except TypeError:
+                        pass
+
+                total = model_map[action].objects.all().count()
+                percent = round((processed / total) * 100, 2)
+
+                if percent > 100:
+                    percent = 99
+
                 output = {
-                    'message': 'The sync process for %s has been executed at least once in the last 24 hours'
-                    % (action),
-                    'total': 60000
+                    'message': 'Syncing',
+                    'status': task.state,
+                    'task_id': task.task_id,
+                    'meta': meta,
+                    'total_processed': processed,
+                    'total': total,
+                    'percent': percent,
+                    'action': action
                 }
             else:
-                sync = tasks.sync.delay(action)
-                output = {
-                    'message': 'Process Started',
-                    'total': 0,
-                    'task_id': sync.task_id
-                }
-                job = Task()
-                job.task_id = sync.task_id
-                job.name = action
-                job.save()
+                jobs = Task.objects.filter(name=action,
+                                           time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1))
+                if jobs:
+                    output = {
+                        'message': 'Sync Done. You can run the sync again in 24 hours.'
+                    }
+                else:
+                    job = Task()
+                    job.name = action
+                    job.status = 'PENDING'
+                    job.save()
+                    sync = tasks.sync.delay(action, job.id)
+                    output = {
+                        'message': 'Process Started',
+                        'task_id': sync.task_id,
+                        'status': sync.state
+                    }
 
-        return Response(output, status=status.HTTP_200_OK)
+            return Response(output, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Action not supported'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
