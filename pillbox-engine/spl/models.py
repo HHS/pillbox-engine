@@ -21,6 +21,7 @@ class Source(CommonInfo):
     last_downloaded = models.DateTimeField('Last Downloaded and Unzipped', null=True, blank=True)
     zip_size = models.FloatField('Total zip folder size (bytes)', null=True, blank=True)
     unzip_size = models.FloatField('Total unzip folder size (bytes)', null=True, blank=True)
+    xml_count = models.IntegerField('Total xml files', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -108,7 +109,7 @@ class Task(models.Model):
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
     duration = models.FloatField('Duration', default=0)
     status = models.CharField('Status', max_length=200, null=True, blank=True)
-    meta = JSONField('Meta', null=True, blank=True)
+    meta = JSONField('Meta', default={})
     pid = models.CharField('PID', max_length=100, null=True, blank=True)
     is_active = models.BooleanField('Task is active (running)?', default=True)
     download_type = models.CharField('Download source name', max_length=200, null=True, blank=True)
