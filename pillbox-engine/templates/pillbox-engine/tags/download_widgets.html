@@ -1,6 +1,7 @@
 {% load humanize %}
 
 
+{% for box in boxes %}
 <div class="col-lg-3 col-md-6">
     <div class="panel panel-{{box.color}}">
         <div class="panel-heading">
@@ -10,27 +11,25 @@
                 </div>
                 <div class="col-xs-9 text-right">
                     <div class="huge">{{box.name}}</div>
-                    <div>{{box.time|timesince}} ago</div>
+                    <div>{% if box.time %}{{box.time|timesince}} ago{% else %} Download Now!{% endif %}</div>
                 </div>
             </div>
         </div>
         <a href="{{box.link}}">
-            <div class="panel-footer" id="download-widget-footer" data-action="{{box.action}}">
-                <div class="progress hide">
-                  <div class="progress-bar" id='overall' role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                    60%
-                  </div>
+            <div class="panel-footer download-widget-footer" data-action="{{box.action}}">
+                <div class="widget-progress {% if not box.meta %} hide {% endif %}">
+                    <div class="task-name">{{box.meta.file}}</div>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="{{box.meta.percent|default:'0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{box.meta.percent|default:'0'}}%;">
+                        {{box.meta.percent|default:'0'}}%
+                      </div>
+                    </div>
                 </div>
-
-                <div class="progress hide">
-                  <div class="progress-bar" id='file-specific' role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                    60%
-                  </div>
-                </div>
-                <span class="pull-left" id="panel-msg">{{box.text}}</span>
-                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <span class="pull-left" id="panel-msg">{% if box.status %} {{box.status}} {% else %} {{box.text}} {% endif %}</span>
+                <span class="pull-right"><i class="fa {% if box.status %} fa-refresh {% else %} fa-arrow-circle-right {% endif %}"></i></span>
                 <div class="clearfix"></div>
             </div>
         </a>
     </div>
 </div>
+{% endfor %}
