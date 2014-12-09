@@ -11,7 +11,7 @@ from spl.ftp import PillboxFTP
 
 class DownloadAndUnzip(object):
 
-    def __init__(self, task_id, source, files):
+    def __init__(self, task_id, source, files, host, ftp_path):
         """
         @param
         task_id - The id of the task created in the task model of spl
@@ -21,6 +21,8 @@ class DownloadAndUnzip(object):
         self.task = Task.objects.get(pk=task_id)
         self.source = source
         self.files = files
+        self.host = host
+        self.ftp_path = ftp_path
 
     def run(self):
 
@@ -40,12 +42,13 @@ class DownloadAndUnzip(object):
         self.task.status = 'PROGRESS: DOWNLOAD'
         self.task.save()
 
+        # Download all files
         for f in self.files:
-            ftp = PillboxFTP(settings.DAILYMED_FTP_SITE,
+            ftp = PillboxFTP(self.host,
                              settings.DAILYMED_FTP_USER,
                              settings.DAILYMED_FTP_PASS,
                              self.task.id)
-            ftp.download(settings.DAILYMED_FTP_PATH, f, path)
+            ftp.download(self.ftp_path, f, path)
 
         return True
 
@@ -56,11 +59,11 @@ class DownloadAndUnzip(object):
         self.task.status = 'PROGRESS: UNZIP'
         meta = {
             'action': 'unzip',
-            'file': self.source,
+            'file': 'Unzip %s' % self.source,
             'percent': percent,
             'items_unzipped': 0
         }
-        self.task.meta = meta
+        self.task.meta.update(meta)
         self.task.save()
 
         zip_path = settings.DOWNLOAD_PATH
@@ -80,7 +83,7 @@ class DownloadAndUnzip(object):
             zip.extractall(path=tmp_path)
             zip.close()
             percent += (weight/total_weight) * 100
-            self.task.meta['precent'] = percent
+            self.task.meta['percent'] = percent
             self.task.save()
 
             # Second round of unzipping of files inside the unzip file
@@ -96,8 +99,9 @@ class DownloadAndUnzip(object):
                 zip.extractall(path=tmp_path2)
                 zip.close()
                 percent += (file_counter / total_files) * ((weight/total_weight) * 100)
-                if file_counter % 40 == 0:
-                    self.task.meta['precent'] = percent
+                if file_counter % 20 == 0:
+                    self.task.meta['items_unzipped'] = file_counter
+                    self.task.meta['percent'] = percent
                     self.task.save()
 
         # copy xml files to the correct place
