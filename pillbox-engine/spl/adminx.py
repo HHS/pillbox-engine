@@ -1,4 +1,6 @@
 import re
+import os
+import signal
 
 import xadmin
 from xadmin import views
@@ -22,6 +24,8 @@ class SourceAdmin(object):
     search_fields = ['title']
     reversion_enable = True
 
+    list_display = ('title', 'host', 'path', 'files', 'last_downloaded')
+    readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size']
     model_icon = 'fa fa-download'
 
 
@@ -79,6 +83,18 @@ class ProductDataAdmin(object):
 
 class TaskAdmin(object):
 
+    def cancel_task(self, request, queryset):
+        tasks = queryset.filter(is_active=True)
+        for item in tasks:
+            try:
+                os.kill(int(item.pid), signal.SIGKILL)
+            except OSError:
+                pass
+            item.is_active = False
+            item.status = 'CANCELED'
+            item.save()
+    cancel_task.short_description = "Cancel Running Task"
+
     def meta_info(self, instance):
         text = ''
         if instance.meta:
@@ -96,9 +112,14 @@ class TaskAdmin(object):
     updated.short_description = "Updated"
     updated.is_column = True
 
-    list_display = ('name', 'status', 'duration', 'meta_info', 'time_started', 'time_ended')
-    fields = ['task_id', 'name', 'meta', 'status', 'duration', 'time_started', 'time_ended']
-    readonly_fields = ['task_id', 'meta', 'name', 'status', 'duration', 'time_started', 'time_ended']
+    actions = ['cancel_task']
+
+    list_display = ('name', 'status', 'duration', 'meta_info',
+                    'time_started', 'time_ended')
+    fields = ['is_active', 'task_id', 'name', 'meta', 'status', 'pid',
+              'traceback', 'duration', 'time_started', 'time_ended']
+    readonly_fields = ['is_active', 'task_id', 'meta', 'name', 'status',
+                       'pid', 'traceback', 'duration', 'time_started', 'time_ended']
 
     model_icon = 'fa fa-tasks'
 
