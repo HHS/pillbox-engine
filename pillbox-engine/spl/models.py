@@ -19,6 +19,8 @@ class Source(CommonInfo):
     path = models.CharField('PATH', help_text='Path where the files are located on the ftp server', max_length=200)
     files = JSONField('File Names', help_text='Enter in form python list')
     last_downloaded = models.DateTimeField('Last Downloaded and Unzipped', null=True, blank=True)
+    zip_size = models.FloatField('Total zip folder size (bytes)', null=True, blank=True)
+    unzip_size = models.FloatField('Total unzip folder size (bytes)', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
