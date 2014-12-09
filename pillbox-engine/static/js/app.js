@@ -1,12 +1,14 @@
 
 $(document).ready(function() {
 
+    $('[data-toggle="tooltip"]').tooltip()
+
     var addBar = function(elem) {
-        elem.children('.progress').removeClass('hide');
+        elem.children('.widget-progress').removeClass('hide');
     }
 
     var removeBar = function(elem) {
-        elem.children('.progress').addClass('hide');
+        elem.children('.widget-progress').addClass('hide');
     }
 
     var changeButton = function(elem, icon) {
@@ -29,7 +31,7 @@ $(document).ready(function() {
                     that.find('.progress-bar').css('width', data.percent + '%').html(data.percent + '%')
                 }
                 else {
-                    that.find('#panel-msg').html(data.message);
+                    that.find('#panel-msg').html(data.message + ': ' + data.status);
                     removeBar(that);
                 }
              })
@@ -40,24 +42,33 @@ $(document).ready(function() {
         }
     })
 
-    $('#download-widget-footer').click(function(event) {
+    $('.download-widget-footer').click(function(event) {
         event.preventDefault();
         var action = $(this).data('action');
         var that = $(this);
         changeButton(that, 'refresh');
         $.get(action)
          .done(function(data) {
-            if (data.status == 'DOWNLOAD') {
-                that.find('#panel-msg').html(data.message);
+            if (typeof data.meta !== 'undefined' && data.meta != null) {
+                that.find('#panel-msg').html(data.status);
                 addBar(that);
-
-                $('#overall').css('width', data.percent + '%').html(data.percent + '%')
-                $('#file-specific').css('width', data.meta.percent + '%').html(data.meta.percent + '%')
+                if (typeof data.meta.percent === 'undefined') {
+                    var percent = 0;
+                }
+                else {
+                    var percent = data.meta.percent;
+                }
+                if (! typeof data.meta.file !== 'undefined') {
+                    // console.log(data.meta.file);
+                    that.find('.task-name').html(data.meta.file);
+                }
+                that.find('.progress-bar').css('width', percent + '%').html(percent.toFixed(2) + '%')
             }
             else {
-                that.find('#panel-msg').html(data.message);
                 removeBar(that);
+                that.find('#panel-msg').html(data.message);
             }
+
          });
     });
 });
