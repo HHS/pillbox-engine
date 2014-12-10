@@ -85,8 +85,10 @@ def size_widgets():
     szip = 0
 
     for s in sources:
-        sunzip += s.unzip_size
-        szip += s.zip_size
+        if s.unzip_size:
+            sunzip += s.unzip_size
+        if s.zip_size:
+            szip += s.zip_size
 
     boxes = [
         {
@@ -108,8 +110,11 @@ def size_widgets():
 
 @register.simple_tag
 def spl_sync_time():
-    last = ProductData.objects.all().order_by('-updated_at')[0:1].get()
-    return time_since(last.updated_at)
+    try:
+        last = ProductData.objects.all().order_by('-updated_at')[0:1].get()
+        return time_since(last.updated_at)
+    except ProductData.DoesNotExist:
+        return ''
 
 
 def time_since(t):
