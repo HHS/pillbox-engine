@@ -112,13 +112,6 @@ def size_widgets():
 def spl_sync_time():
     try:
         last = ProductData.objects.all().order_by('-updated_at')[0:1].get()
-        return time_since(last.updated_at)
+        return naturaltime(last.updated_at)
     except ProductData.DoesNotExist:
-        return ''
-
-
-def time_since(t):
-    try:
-        return naturaltime(t)
-    except:
         return 'N/A'
