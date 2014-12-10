@@ -22,12 +22,29 @@ def add(x, y):
 
 @app.task(bind=True, ignore_result=True)
 def sync(self, action, task_id):
-
+    start = time.time()
     arguments = ['products', 'pills', 'all']
 
+    task = Task.objects.get(pk=task_id)
+    task.status = 'STARTED'
+    task.pid = os.getpid()
+    task.save()
+
     if action in arguments:
-        controller = Controller(task_id=task_id)
+        controller = Controller(task.id)
         controller.sync(action)
+
+    end = time.time()
+    spent = end - start
+
+    task = Task.objects.get(pk=task_id)
+    task.status = 'SUCCESS'
+    task.duration = round(spent, 2)
+    task.time_ended = timezone.now()
+    task.is_active = False
+    task.save()
+
+    return
 
 
 @app.task(bind=True, ignore_result=True)
@@ -40,7 +57,6 @@ def download_unzip(self, task_id, source_id):
     task = Task.objects.get(pk=task_id)
     task.status = 'STARTED'
     task.pid = os.getpid()
-    task.meta = {}
     task.save()
 
     # RUN THE TASK
@@ -50,22 +66,27 @@ def download_unzip(self, task_id, source_id):
         if dl.run():
 
             # Calculate folder size for zip and unzip files
-            source.zip_size = folder_size(settings.DOWNLOAD_PATH + '/' + source.title)
-            source.unzip_size = folder_size(settings.SOURCE_PATH + '/' + source.title)
+            source.zip_size = folder_size_count(settings.DOWNLOAD_PATH + '/' + source.title)['size']
+            unzip_count = folder_size_count(settings.SOURCE_PATH + '/' + source.title)
+            source.xml_count = unzip_count['count']
+            source.unzip_size = unzip_count['size']
             source.save()
 
             # SET END STATUS ON SUCCESS
             end = time.time()
             spent = end - start
 
+            task = Task.objects.get(pk=task_id)
             task.status = 'SUCCESS'
-            task.duration = spent
+            task.duration = round(spent, 2)
             task.time_ended = timezone.now()
             task.is_active = False
             task.save()
 
             source.last_downloaded = task.time_ended
             source.save()
+
+            return
 
     except BadZipfile:
         record_error(task, start, sys.exc_info())
@@ -75,14 +96,18 @@ def download_unzip(self, task_id, source_id):
         raise self.retry(exc=exc)
 
 
-def folder_size(path):
-    """ Returns the folder size in Bytes of the give path """
-    total = 0
+def folder_size_count(path):
+    """ Returns the folder size in Bytes and files count of the give path """
+    total = {
+        'size': 0,
+        'count': 0
+    }
     for dirpath, folders, filenames in os.walk(path):
+        total['count'] += len(filenames)
         for filename in filenames:
             _file = os.path.join(dirpath, filename)
-            total += os.path.getsize(_file)
-            total = total
+            total['size'] += os.path.getsize(_file)
+
     return total
 
 
