@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 
 import os
 import sys
@@ -17,6 +17,9 @@ class Controller(object):
 
     def __init__(self, task_id=None, stdout=None):
         self.stdout = stdout
+        self.total = 0
+        self.action = None
+        self.update_interval = 0
         try:
             self.task = Task.objects.get(pk=task_id)
         except Task.DoesNotExist:
@@ -37,20 +40,21 @@ class Controller(object):
 
     def _update(self, action):
         start = time.time()
+        self.action = action
 
         x = XPath()
 
-        sources = Source.objects.all().values('title')
+        sources = Source.objects.all()
 
-        folders = [s['title'] for s in sources]
+        self.total = sum([s.xml_count for s in sources])
 
         counter = {
             'added': 0,
             'updated': 0
         }
 
-        for folder in folders:
-            d = '%s/%s' % (settings.SOURCE_PATH, folder)
+        for source in sources:
+            d = os.path.join(settings.SOURCE_PATH, source.title)
             files = os.listdir(d)
 
             for f in files:
@@ -131,12 +135,6 @@ class Controller(object):
         minutes = spent / 60
         seconds = spent % 60
 
-        if self.task:
-            self.task.time_ended = timezone.now()
-            self.task.duration = spent
-            self.task.status = 'SUCCESSFUL'
-            self.task.save()
-
         if self.stdout:
             self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
 
@@ -144,17 +142,28 @@ class Controller(object):
 
     def _status(self, **kwarg):
 
+        processed = kwarg['added'] + kwarg['updated']
+        percent = round((processed / self.total) * 100, 2)
+
         if self.stdout:
-            self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s' %
-                              (kwarg['added'], kwarg['updated'], kwarg['error'], kwarg['skipped']), ending='\r')
+            self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
+                              (kwarg['added'], kwarg['updated'],
+                               kwarg['error'], kwarg['skipped'], percent), ending='\r')
             sys.stdout.flush()
 
         if self.task:
-            meta = {'added': kwarg['added'],
-                    'updated': kwarg['updated'],
-                    'error': kwarg['error'],
-                    'skipped': kwarg['skipped'],
-                    'action': kwarg['action']}
-            self.task.meta = meta
-            self.task.status = 'PROGRESS'
+
+            ## To decrease the number of times the database is called, update meta data
+            ## in integer intervals
+            if int(percent) > self.update_interval:
+                self.update_interval = int(percent)
+                meta = {'added': kwarg['added'],
+                        'updated': kwarg['updated'],
+                        'error': kwarg['error'],
+                        'skipped': kwarg['skipped'],
+                        'action': kwarg['action'],
+                        'percent': percent}
+                self.task.meta.update(meta)
+                self.task.status = 'PROGRESS: SYNC %s' % kwarg['action']
+                self.task.save()
 
