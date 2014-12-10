@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from zipfile import BadZipfile
-from ftputil.error import TemporaryError
+from ftputil.error import TemporaryError, FTPOSError
 
 from _celery import app
 from spl.sync.controller import Controller
@@ -91,7 +91,7 @@ def download_unzip(self, task_id, source_id):
     except BadZipfile:
         record_error(task, start, sys.exc_info())
         return
-    except TemporaryError as exc:
+    except (TemporaryError, FTPOSError) as exc:
         # Retry again if the connection timeout
         raise self.retry(exc=exc)
 
