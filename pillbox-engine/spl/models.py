@@ -29,7 +29,7 @@ class Source(CommonInfo):
 
 class Ingredient(CommonInfo):
 
-    id = models.CharField('Unii Code', max_length=100, primary_key=True)
+    spl_id = models.CharField('Unii Code', max_length=100, unique=True)
     code_system = models.CharField('Code System', max_length=200, null=True, blank=True)
     name = models.CharField('Name', max_length=300)
     class_code = models.CharField('Class Code', max_length=100, null=True, blank=True)
@@ -43,7 +43,7 @@ class Ingredient(CommonInfo):
 
 class SetInfo(CommonInfo):
 
-    setid = models.CharField('setid', max_length=200, primary_key=True)
+    setid = models.CharField('setid', max_length=200, unique=True)
     id_root = models.CharField('id root', max_length=200)
     title = models.TextField('Title', null=True, blank=True)
     effective_time = models.CharField('Effective Time', max_length=100)
@@ -69,7 +69,7 @@ class SetInfo(CommonInfo):
 
 class ProductData(CommonInfo):
 
-    id = models.CharField('id', max_length=200, primary_key=True)
+    ssp = models.CharField('Pillbox Unique ID', max_length=200, unique=True)
     setid = models.ForeignKey(SetInfo)
     dosage_form = models.CharField('Dosage Form', max_length=20)
     ndc = models.CharField('NDC9', max_length=100, null=True, blank=True)
