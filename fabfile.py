@@ -37,7 +37,7 @@ def initial_setup():
         except ValueError:
             print 'Try again! You should enter a number.'
 
-        local('python pillbox-engine/manage.py collectstatic')
+        local('python pillbox-engine/manage.py collectstatic --noinput')
 
 
 def push():
