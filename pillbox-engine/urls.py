@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db.utils import ProgrammingError
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-# from django.contrib.staticfiles import views
 
 import spl.urls
 import pillbox.urls
@@ -24,10 +24,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 # REST ALL WORKERS
-Message.objects.all().delete()
-TaskMeta.objects.all().delete()
-tasks = Task.objects.filter(is_active=True).update(is_active=False, status='FAILED')
-
+try:
+    Message.objects.all().delete()
+    TaskMeta.objects.all().delete()
+    tasks = Task.objects.filter(is_active=True).update(is_active=False, status='FAILED')
+except ProgrammingError:
+    pass
 
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
