@@ -97,3 +97,8 @@
 .panel-red a:hover {
   color: #b52b27;
 }
+
+/* line 78, ../sass/app.scss */
+.progress {
+  background-color: #CCCCCC;
+}
