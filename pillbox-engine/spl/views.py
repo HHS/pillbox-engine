@@ -7,7 +7,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from spl import tasks
-from spl.models import Task, SetInfo, ProductData, Source
+from spl.models import Task, Product, Pill, Source
 
 
 class DownloadViewSet(viewsets.ViewSet):
@@ -92,8 +92,8 @@ class SyncSpl(viewsets.ViewSet):
     def sync(self, action):
 
         model_map = {
-            'pills': ProductData,
-            'products': SetInfo
+            'pills': Pill,
+            'products': Product
         }
 
         if action in model_map:

@@ -5,7 +5,7 @@ import signal
 import xadmin
 from xadmin import views
 
-from spl.models import Source, Ingredient, SetInfo, ProductData, Task
+from spl.models import Source, Ingredient, Product, Pill, Task
 
 
 class GlobalSetting(object):
@@ -28,6 +28,8 @@ class SourceAdmin(object):
     readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size', 'xml_count']
     model_icon = 'fa fa-download'
 
+    list_editable = ('files')
+
 
 class IngredientAdmin(object):
 
@@ -40,7 +42,7 @@ class IngredientAdmin(object):
     model_icon = 'fa fa-dot-circle-o'
 
 
-class SetInfoAdmin(object):
+class ProductAdmin(object):
     def name(self, instance):
         if instance.title:
             check = re.match('[a-zA-Z]', instance.title)
@@ -61,7 +63,7 @@ class SetInfoAdmin(object):
     list_per_page = 10
 
 
-class ProductDataAdmin(object):
+class PillAdmin(object):
 
     fields = ['id', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
               'equal_product_code', 'approval_code', 'medicine_name', 'part_num',
@@ -125,6 +127,6 @@ class TaskAdmin(object):
 
 xadmin.site.register(Source, SourceAdmin)
 xadmin.site.register(Ingredient, IngredientAdmin)
-xadmin.site.register(SetInfo, SetInfoAdmin)
-xadmin.site.register(ProductData, ProductDataAdmin)
+xadmin.site.register(Product, ProductAdmin)
+xadmin.site.register(Pill, PillAdmin)
 xadmin.site.register(Task, TaskAdmin)

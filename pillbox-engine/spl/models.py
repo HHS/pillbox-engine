@@ -41,7 +41,7 @@ class Ingredient(CommonInfo):
         return self.name
 
 
-class SetInfo(CommonInfo):
+class Product(CommonInfo):
 
     setid = models.CharField('setid', max_length=200, unique=True)
     id_root = models.CharField('id root', max_length=200)
@@ -67,10 +67,10 @@ class SetInfo(CommonInfo):
             return self.setid
 
 
-class ProductData(CommonInfo):
+class Pill(CommonInfo):
 
     ssp = models.CharField('Pillbox Unique ID', max_length=200, unique=True)
-    setid = models.ForeignKey(SetInfo)
+    setid = models.ForeignKey(Product)
     dosage_form = models.CharField('Dosage Form', max_length=20)
     ndc = models.CharField('NDC9', max_length=100, null=True, blank=True)
     ndc9 = models.CharField('NDC9', max_length=100, null=True, blank=True)

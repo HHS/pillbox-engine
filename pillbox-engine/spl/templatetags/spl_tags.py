@@ -3,15 +3,15 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.conf import settings
 
-from spl.models import SetInfo, ProductData, Ingredient, Source, Task
+from spl.models import Product, Pill, Ingredient, Source, Task
 
 register = template.Library()
 
 
 @register.inclusion_tag('pillbox-engine/tags/widgets.html')
 def spl_widgets():
-    products_count = SetInfo.objects.all().count()
-    pills_count = ProductData.objects.all().count()
+    products_count = Product.objects.all().count()
+    pills_count = Pill.objects.all().count()
     ingredient_count = Ingredient.objects.all().count()
 
     boxes = [
@@ -111,7 +111,7 @@ def size_widgets():
 @register.simple_tag
 def spl_sync_time():
     try:
-        last = ProductData.objects.all().order_by('-updated_at')[0:1].get()
+        last = Pill.objects.all().order_by('-updated_at')[0:1].get()
         return naturaltime(last.updated_at)
-    except ProductData.DoesNotExist:
+    except Pill.DoesNotExist:
         return 'N/A'
