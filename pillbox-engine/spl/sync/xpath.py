@@ -146,7 +146,7 @@ class XPath(object):
                         else:
                             output.update(generic)
                             output.update(self._get_specific(part_counter, part=True))
-                            output['id'] = self._generate_id(output, part_counter)
+                            output['ssp'] = self._generate_id(output, part_counter)
                             output['ingredients'] = self._get_ingredients()
                             product_set.append(output)
                             part_counter += 1
@@ -162,7 +162,7 @@ class XPath(object):
                     else:
                         output.update(self._get_generic(counter, setid))
                         output.update(self._get_specific())
-                        output['id'] = self._generate_id(output, counter)
+                        output['ssp'] = self._generate_id(output, counter)
                         output['ingredients'] = self._get_ingredients()
                         product_set.append(output)
                         counter += 1

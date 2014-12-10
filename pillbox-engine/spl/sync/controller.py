@@ -3,12 +3,11 @@ from __future__ import print_function, division
 import os
 import sys
 import time
-from django.utils import timezone
 import fnmatch
 
 from django.conf import settings
 
-from spl.models import SetInfo, ProductData, Source, Ingredient, Task
+from spl.models import Product, Pill, Source, Ingredient, Task
 from spl.sync.xpath import XPath
 
 
@@ -88,7 +87,7 @@ class Controller(object):
 
         updated_values = data
 
-        obj, created = SetInfo.objects.update_or_create(setid=setid, defaults=updated_values)
+        obj, created = Product.objects.update_or_create(setid=setid, defaults=updated_values)
 
         if created:
             counter['added'] += 1
@@ -100,11 +99,14 @@ class Controller(object):
     def _pills(self, data_set, counter):
 
         for data in data_set:
-            id = data['id']
-            data.pop('id')
+            ssp = data.pop('ssp')
 
-            ingredients = data['ingredients']
-            data.pop('ingredients')
+            # Find the related product and get it's db id
+            setid = data.pop('setid_id')
+            product = Product.objects.get(setid=setid)
+            data['setid_id'] = product.id
+
+            ingredients = data.pop('ingredients')
 
             # Update ingredients
             for item in ingredients:
@@ -115,12 +117,12 @@ class Controller(object):
                     'class_code': item['class_code']
                 }
 
-                obj, created = Ingredient.objects.get_or_create(id=ingredient_id, defaults=updated_values)
+                obj, created = Ingredient.objects.get_or_create(spl_id=ingredient_id, defaults=updated_values)
 
             # Update pills
             updated_values = data
 
-            obj, created = ProductData.objects.update_or_create(id=id, defaults=updated_values)
+            obj, created = Pill.objects.update_or_create(ssp=ssp, defaults=updated_values)
 
             if created:
                 counter['added'] += 1
@@ -166,4 +168,3 @@ class Controller(object):
                 self.task.meta.update(meta)
                 self.task.status = 'PROGRESS: SYNC %s' % kwarg['action']
                 self.task.save()
-
