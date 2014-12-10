@@ -25,7 +25,7 @@ class SourceAdmin(object):
     reversion_enable = True
 
     list_display = ('title', 'host', 'path', 'files', 'last_downloaded')
-    readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size']
+    readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size', 'xml_count']
     model_icon = 'fa fa-download'
 
 
