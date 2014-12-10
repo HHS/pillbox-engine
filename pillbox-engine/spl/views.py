@@ -43,7 +43,7 @@ class DownloadViewSet(viewsets.ViewSet):
                     time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
                 )[:1].get()
 
-                return Response({'message': 'No need to re-download this source for another 24 hours!'},
+                return Response({'message': 'Downloaded! Wait 24 hours to redownload the source!'},
                                 status=status.HTTP_200_OK)
 
             except Task.DoesNotExist:
