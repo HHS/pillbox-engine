@@ -56,6 +56,9 @@ class PillBoxData(CommonInfo):
     physical_characteristics = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
     laberer_code = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
     application_number = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
+    updated = models.BooleanField('Updated from SPL', default=False)
+    stale = models.BooleanField('Stale record', default=True)
+    new = models.BooleanField('New Record', default=False)
 
     class Meta:
         verbose_name = 'Pillbox Data'
