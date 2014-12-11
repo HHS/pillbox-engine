@@ -65,7 +65,7 @@ class ProductAdmin(object):
 
 class PillAdmin(object):
 
-    fields = ['id', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
+    fields = ['id', 'ssp', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
               'equal_product_code', 'approval_code', 'medicine_name', 'part_num',
               'part_medicine_name', 'rxtty', 'rxstring', 'rxcui', 'dea_schedule_code',
               'dea_schedule_name', 'marketing_act_code', 'splcolor', 'splsize',
@@ -76,7 +76,7 @@ class PillAdmin(object):
     list_display = ('medicine_name', 'product_code', 'part_num', 'dosage_form')
     list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
-    search_fields = ['medicine_name', 'part_medicine_name']
+    search_fields = ['medicine_name', 'part_medicine_name', 'setid__setid']
     reversion_enable = True
 
     model_icon = 'fa fa-medkit'
