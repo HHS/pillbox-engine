@@ -1,8 +1,10 @@
+from django.utils import timezone
 import xadmin
 
 from xadmin.views.base import filter_hook
 from pillbox.models import PillBoxData, Import
 from pillbox.tasks import import_task
+from spl.models import Task
 
 
 class PillBoxDataAdmin(object):
@@ -29,10 +31,20 @@ class ImportAdmin(object):
         self.new_obj.file_name = self.new_obj.csv_file.name
         self.new_obj.save()
 
+        # create a task object
+        task = Task()
+        task.name = 'import'
+        task.status = 'PENDING'
+        task.time_started = timezone.now()
+        task.save()
+
         # Start Celery Task
-        task = import_task.delay(self.new_obj.csv_file.path, self.new_obj.id)
-        self.new_obj.task_id = task.task_id
-        self.new_obj.status = 'PENDING'
+        celery_task = import_task.delay(self.new_obj.csv_file.path, task.id, self.new_obj.id)
+        task.task_id = celery_task.task_id
+        task.save()
+
+        self.new_obj.task_id = task.id
+        self.new_obj.status = task.status
         self.new_obj.save()
 
     model_icon = 'fa fa-paperclip'

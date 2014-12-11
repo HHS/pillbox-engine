@@ -1,12 +1,32 @@
+from __future__ import division
 import csv
-import time
 
-from pillbox.models import PillBoxData, Import
+from pillbox.models import PillBoxData
+from spl.models import Task
 
 
-def importer(csv_path, import_id=None, task_obj=None):
+def importer(csv_path, task_id=None):
 
-    start = time.time()
+    update_interval = 0
+    processed = 0
+    total = 0
+
+    # Count number of lines
+
+    with open(csv_path) as f:
+        for line in f:
+            total += 1
+
+    task = Task.objects.get(pk=task_id)
+    task.status = 'IMPORT'
+    task.meta.update({
+        'added': 0,
+        'updated': 0,
+        'error': 0,
+        'action': 'import',
+        'percent': 0
+    })
+    task.save()
 
     csv_file = open(csv_path, 'r')
     reader = csv.reader(csv_file, delimiter=',')
@@ -74,6 +94,7 @@ def importer(csv_path, import_id=None, task_obj=None):
         'added': 0,
         'updated': 0
     }
+
     for line in reader:
         new = {}
         for k, v in enumerate(new_header):
@@ -87,7 +108,6 @@ def importer(csv_path, import_id=None, task_obj=None):
 
         setid = new['setid'].replace('_', '-').replace(' ', '')
         new.pop('setid')
-        print new
         obj, created = PillBoxData.objects.update_or_create(setid=setid, defaults=new)
 
         if created:
@@ -95,22 +115,16 @@ def importer(csv_path, import_id=None, task_obj=None):
         else:
             counter['updated'] += 1
 
-        if task_obj:
-            task_obj.update_state(state='PROGRESS',
-                                  meta={'added': counter['added'],
-                                        'updated': counter['updated'],
-                                        'action': 'pillbox_import'})
+        processed = counter['added'] + counter['updated']
+        percent = round((processed / total) * 100, 2)
 
-    end = time.time()
-    spent = end - start
-
-    if import_id:
-        import_obj = Import.objects.get(pk=import_id)
-        import_obj.completed = True
-        import_obj.status = 'SUCCESSFUL'
-        import_obj.duration = spent
-        import_obj.added = counter['added']
-        import_obj.updated = counter['updated']
-        import_obj.save()
+        ## To decrease the number of times the database is called, update meta data
+        ## in integer intervals
+        if int(percent) > update_interval:
+            update_interval = percent
+            task.meta['added'] = counter['added']
+            task.meta['updated'] = counter['updated']
+            task.meta['percent'] = percent
+            task.save()
 
     return counter
