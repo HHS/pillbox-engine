@@ -92,6 +92,9 @@ class Pill(CommonInfo):
     splimprint = models.CharField('SPL Imprint', max_length=100, null=True, blank=True)
     splimage = models.CharField('SPL Image', max_length=100, null=True, blank=True)
     splscore = models.CharField('SPL Score', max_length=100, null=True, blank=True)
+    spl_strength = models.TextField('SPL_STRENGTH', null=True, blank=True)
+    spl_ingredients = models.TextField('SPL_INGREDIENTS', null=True, blank=True)
+    spl_inactive_ing = models.TextField('SPL_INACTIVE_ING', null=True, blank=True)
 
     class Meta:
         verbose_name = 'SPL OSDF Pill'
