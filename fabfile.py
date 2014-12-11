@@ -84,6 +84,12 @@ def migrate():
         local('python pillbox-engine/manage.py migrate')
 
 
+def makemigrations(app):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py makemigrations %s' % app)
+
+
 def collect():
     """ Collect Static Files """
     with shell_env(DJANGO_CONFIGURATION='Production'):
