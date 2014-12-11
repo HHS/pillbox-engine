@@ -47,6 +47,10 @@ class Controller(object):
 
         self.total = sum([s.xml_count for s in sources])
 
+        if action == 'pills':
+            # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
+            self.total = self.total * 0.55
+
         counter = {
             'added': 0,
             'updated': 0
@@ -104,6 +108,8 @@ class Controller(object):
             # Find the related product and get it's db id
             setid = data.pop('setid_id')
             product = Product.objects.get(setid=setid)
+            product.is_osdf = True
+            product.save()
             data['setid_id'] = product.id
 
             ingredients = data.pop('ingredients')
