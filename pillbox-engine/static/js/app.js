@@ -37,19 +37,7 @@ $(document).ready(function() {
         }
     }
 
-    $('.spl-widget').click(function(event) {
-        event.preventDefault();
-        var action = $(this).data('action');
-        var that = $(this);
-        changeButton(that, 'refresh');
-
-        $.get(action)
-         .done(function(data) {
-            status_update(that, data);
-         });
-    });
-
-    $('.download-widget-footer').click(function(event) {
+    $('.widget-footer').click(function(event) {
         event.preventDefault();
         var action = $(this).data('action');
         var that = $(this);

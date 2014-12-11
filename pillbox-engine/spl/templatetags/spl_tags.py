@@ -1,4 +1,3 @@
-import os
 from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.conf import settings
@@ -23,6 +22,7 @@ def spl_widgets():
             'link': '#',
             'color': 'primary',
             'action': '/spl/sync/products/',
+            'action_name': 'products'
         },
         {
             'icon': 'fa-medkit',
@@ -32,6 +32,7 @@ def spl_widgets():
             'link': '#',
             'color': 'green',
             'action': '/spl/sync/pills/',
+            'action_name': 'pills'
         },
         {
             'icon': 'fa-dot-circle-o',
@@ -40,12 +41,23 @@ def spl_widgets():
             'text': 'View Details',
             'link': '/spl/ingredient/',
             'color': 'yellow',
+            'action_name': None
         }]
+
+    try:
+        task = Task.objects.filter(is_active=True, download_type__isnull=True)[:1].get()
+        for box in boxes:
+            if task.name == box['action_name']:
+                box['meta'] = task.meta
+                box['status'] = task.status
+
+    except Task.DoesNotExist:
+        pass
 
     return {'boxes': boxes}
 
 
-@register.inclusion_tag('pillbox-engine/tags/download_widgets.html')
+@register.inclusion_tag('pillbox-engine/tags/widgets.html')
 def download_widgets():
 
     sources = Source.objects.all().order_by('title')
