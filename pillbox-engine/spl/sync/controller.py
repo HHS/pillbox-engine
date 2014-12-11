@@ -114,16 +114,33 @@ class Controller(object):
 
             ingredients = data.pop('ingredients')
 
-            # Update ingredients
-            for item in ingredients:
-                ingredient_id = item['id']
-                updated_values = {
-                    'code_system': item['code_system'],
-                    'name': item['name'],
-                    'class_code': item['class_code']
-                }
+            data['spl_strength'] = ''
+            data['spl_ingredients'] = ''
+            data['spl_inactive_ing'] = ''
 
-                obj, created = Ingredient.objects.get_or_create(spl_id=ingredient_id, defaults=updated_values)
+            for key, items in ingredients.iteritems():
+                for item in items:
+                    if key == 'active':
+                        data['spl_strength'] += '%s %s %s;' % (item['name'],
+                                                               item['numerator_value'],
+                                                               item['numerator_unit'])
+                        if 'active_moieties' in item:
+                            active = item['active_moieties'][0]['name']
+                        else:
+                            active = ''
+                        data['spl_ingredients'] += '%s[%s];' % (item['name'], active)
+
+                    if key == 'inactive':
+                        data['spl_inactive_ing'] += '%s;' % item['name']
+
+                    ingredient_id = item['id']
+                    updated_values = {
+                        'code_system': item['code_system'],
+                        'name': item['name'],
+                        'class_code': item['class_code']
+                    }
+
+                    obj, created = Ingredient.objects.get_or_create(spl_id=ingredient_id, defaults=updated_values)
 
             # Update pills
             updated_values = data

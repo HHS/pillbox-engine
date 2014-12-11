@@ -162,7 +162,7 @@ class XPath(object):
                     else:
                         output.update(self._get_generic(counter, setid))
                         output.update(self._get_specific())
-                        output['ssp'] = self._generate_id(output, counter)
+                        output['ssp'] = self._generate_id(output)
                         output['ingredients'] = self._get_ingredients()
                         product_set.append(output)
                         counter += 1
@@ -188,7 +188,10 @@ class XPath(object):
         """
 
         ingredients = self._xpath('t:*//t:ingredient')
-        output = []
+        output = {
+            'active': [],
+            'inactive': []
+        }
 
         for item in ingredients:
             ingredient = {}
@@ -198,7 +201,7 @@ class XPath(object):
                 if self._simple_tag(sub.tag) == 'quantity':
                     numerator = self._xpath_with_tree(sub, 't:numerator')[0]
                     denominator = self._xpath_with_tree(sub, 't:denominator')[0]
-                    ingredient['ingredient_type'] = 'acitve'
+                    ingredient['active'] = True
                     ingredient['denominator_unit'] = denominator.get('unit')
                     ingredient['denominator_value'] = denominator.get('value')
                     ingredient['numerator_unit'] = numerator.get('unit')
@@ -218,19 +221,27 @@ class XPath(object):
                                 'name': children[1].text
                             })
 
-            output.append(ingredient)
+            if 'active' in ingredient:
+                output['active'].append(ingredient)
+            else:
+                output['inactive'].append(ingredient)
 
         return output
 
-    def _generate_id(self, output, counter):
+    def _generate_id(self, output, part_counter=0):
         """ Generates unique id for pills """
-        return output['setid_id'] + '-' + output['product_code'] + '-' + str(counter)
+        return output['setid_id'] + '-' + output['product_code'] + '-' + str(part_counter)
 
     def _get_generic(self, counter, setid):
         """ Retrieves the product information shared by multiple products in an XML file """
         output = {}
         output['setid_id'] = setid
-        output['product_code'] = self._get_attribute('t:*//t:code[1]', 'code')
+
+        manufactured = self._xpath('t:*//t:containerPackagedProduct//t:code')
+        if not manufactured:
+            manufactured = self._xpath('t:*//t:containerPackagedMedicine//t:code')
+
+        output['product_code'] = [i.get('code') for i in manufactured if i.get('code')][0]
         output['ndc9'] = output['product_code'].replace('-', '')
         output['ndc'] = '%s-%s' % (output['product_code'], counter)
         output['equal_product_code'] = self._get_attribute('t:*//t:definingMaterialKind/t:code', 'code')
@@ -324,28 +335,11 @@ if __name__ == '__main__':
 
     x = XPath()
 
-    d = '../tmp-unzipped/HRX'
-    o = x.pills('000b54bf-b411-4d28-b22d-df1bd8b6d9ca.xml', d)
+    d = '../../downloads/unzip/HOMEO'
+    # o = x.pills('0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml', d)
+    o = x.pills('0055b112-9820-4fad-b7e0-58264b97fb60.xml', d)
     print(o)
-    # x.test('0548145e-6b20-4843-9bcc-cf270ea2f072.xml', d)
 
-    # folders = ['ANIMAL', 'HOMEO', 'HOTC', 'HRX', 'REMAIN']
-
-    # for folder in folders:
-    #     d = '../tmp-unzipped/%s' % folder
-    #     files = os.listdir(d)
-
-    #     for f in files:
-    #         if fnmatch.fnmatch(f, '*.xml'):
-    # print(f)
-    #             print(x.parse_set_info(f, d))
-    # print('hit:%s | skip:%s | error:%s' % (x.counter, x.skip, x.error), end='\r')
-
-    # print('\nErrors: %s' % x.error)
-    # x.parse("0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml")
-    # x.parse('006572e2-0f86-4be3-81cd-91e230cce852.xml')
-
-    # print x.get_source('../tmp-unzipped/HRX')
     end = time.time()
 
     print('Time spent : %s seconds' % (end - start))
