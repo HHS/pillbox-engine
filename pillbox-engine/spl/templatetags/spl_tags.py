@@ -38,7 +38,7 @@ def spl_widgets():
             'icon': 'fa-dot-circle-o',
             'name': 'Missing RXNorm',
             'count': rxnorm_count,
-            'text': 'View Details',
+            'text': 'Synx RXNorm',
             'link': '#',
             'color': 'yellow',
             'action_name': None,
