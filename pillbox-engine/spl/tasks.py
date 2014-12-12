@@ -150,9 +150,10 @@ def folder_size_count(path):
     }
     for dirpath, folders, filenames in os.walk(path):
         total['count'] += len(filenames)
-        for filename in filenames:
-            _file = os.path.join(dirpath, filename)
-            total['size'] += os.path.getsize(_file)
+        if 'tmp' not in dirpath:
+            for filename in filenames:
+                _file = os.path.join(dirpath, filename)
+                total['size'] += os.path.getsize(_file)
 
     return total
 
