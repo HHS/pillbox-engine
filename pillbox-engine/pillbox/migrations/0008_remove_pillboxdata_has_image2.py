@@ -7,14 +7,12 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pillbox', '0002_auto_20141202_1806'),
+        ('pillbox', '0007_pillboxdata_has_image'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
             model_name='pillboxdata',
-            name='setid',
-            field=models.CharField(max_length=200, serialize=False, verbose_name=b'setid', primary_key=True),
-            preserve_default=True,
+            name='has_image2',
         ),
     ]

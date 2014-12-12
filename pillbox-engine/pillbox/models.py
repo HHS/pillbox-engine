@@ -14,7 +14,7 @@ class CommonInfo(models.Model):
 class PillBoxData(CommonInfo):
 
     # Extracted from DailyMed
-    setid = models.CharField('setid', max_length=250, primary_key=True)
+    setid = models.CharField('setid', max_length=250, unique=True)
     setid_product = models.CharField('setid_product', max_length=250)
     splsize = models.CharField('SPLSIZE', max_length=250, null=True, blank=True)
     splshape = models.CharField('SPLSHAPE', max_length=250, null=True, blank=True)
@@ -47,15 +47,18 @@ class PillBoxData(CommonInfo):
 
     # Extracted from other Sources
     image_source = models.CharField('Image Source', max_length=250, null=True, blank=True)
-    image_id = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    has_image = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    from_sis = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    version_number = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    clinical_setid = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    unii_code = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    physical_characteristics = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    laberer_code = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
-    application_number = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
+    splimage = models.FileField('Image Name', upload_to='pillbox', max_length=250, null=True, blank=True)
+    has_image = models.BooleanField('Has Image', default=False)
+    from_sis = models.CharField('From SIS', max_length=250, null=True, blank=True)
+    version_number = models.CharField('Version Number', max_length=250, null=True, blank=True)
+    clinical_setid = models.CharField('Clinical Set ID', max_length=250, null=True, blank=True)
+    unii_code = models.CharField('UNII Code', max_length=250, null=True, blank=True)
+    physical_characteristics = models.CharField('Physical Characteristics', max_length=250, null=True, blank=True)
+    laberer_code = models.CharField('Laberer Code', max_length=250, null=True, blank=True)
+    application_number = models.CharField('Application Number', max_length=250, null=True, blank=True)
+    updated = models.BooleanField('Is updated from SPL?', default=False)
+    stale = models.BooleanField('Does not exist on SPL (Stale)', default=True)
+    new = models.BooleanField('Just added from SPL (New)', default=False)
 
     class Meta:
         verbose_name = 'Pillbox Data'

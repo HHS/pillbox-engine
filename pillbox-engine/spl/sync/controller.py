@@ -1,14 +1,13 @@
-from __future__ import print_function
+from __future__ import print_function, division
 
 import os
 import sys
 import time
-from django.utils import timezone
 import fnmatch
 
 from django.conf import settings
 
-from spl.models import SetInfo, ProductData, Source, Ingredient, Task
+from spl.models import Product, Pill, Source, Ingredient, Task
 from spl.sync.xpath import XPath
 
 
@@ -17,6 +16,9 @@ class Controller(object):
 
     def __init__(self, task_id=None, stdout=None):
         self.stdout = stdout
+        self.total = 0
+        self.action = None
+        self.update_interval = 0
         try:
             self.task = Task.objects.get(pk=task_id)
         except Task.DoesNotExist:
@@ -37,20 +39,25 @@ class Controller(object):
 
     def _update(self, action):
         start = time.time()
+        self.action = action
 
         x = XPath()
 
-        sources = Source.objects.all().values('title')
+        sources = Source.objects.all()
 
-        folders = [s['title'] for s in sources]
+        self.total = sum([s.xml_count for s in sources])
+
+        if action == 'pills':
+            # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
+            self.total = self.total * 0.55
 
         counter = {
             'added': 0,
             'updated': 0
         }
 
-        for folder in folders:
-            d = '%s/%s' % (settings.SOURCE_PATH, folder)
+        for source in sources:
+            d = os.path.join(settings.SOURCE_PATH, source.title)
             files = os.listdir(d)
 
             for f in files:
@@ -84,7 +91,7 @@ class Controller(object):
 
         updated_values = data
 
-        obj, created = SetInfo.objects.update_or_create(setid=setid, defaults=updated_values)
+        obj, created = Product.objects.update_or_create(setid=setid, defaults=updated_values)
 
         if created:
             counter['added'] += 1
@@ -96,27 +103,49 @@ class Controller(object):
     def _pills(self, data_set, counter):
 
         for data in data_set:
-            id = data['id']
-            data.pop('id')
+            ssp = data.pop('ssp')
 
-            ingredients = data['ingredients']
-            data.pop('ingredients')
+            # Find the related product and get it's db id
+            setid = data.pop('setid_id')
+            product = Product.objects.get(setid=setid)
+            product.is_osdf = True
+            product.save()
+            data['setid_id'] = product.id
 
-            # Update ingredients
-            for item in ingredients:
-                ingredient_id = item['id']
-                updated_values = {
-                    'code_system': item['code_system'],
-                    'name': item['name'],
-                    'class_code': item['class_code']
-                }
+            ingredients = data.pop('ingredients')
 
-                obj, created = Ingredient.objects.get_or_create(id=ingredient_id, defaults=updated_values)
+            data['spl_strength'] = ''
+            data['spl_ingredients'] = ''
+            data['spl_inactive_ing'] = ''
+
+            for key, items in ingredients.iteritems():
+                for item in items:
+                    if key == 'active':
+                        data['spl_strength'] += '%s %s %s;' % (item['name'],
+                                                               item['numerator_value'],
+                                                               item['numerator_unit'])
+                        if 'active_moieties' in item:
+                            active = item['active_moieties'][0]['name']
+                        else:
+                            active = ''
+                        data['spl_ingredients'] += '%s[%s];' % (item['name'], active)
+
+                    if key == 'inactive':
+                        data['spl_inactive_ing'] += '%s;' % item['name']
+
+                    ingredient_id = item['id']
+                    updated_values = {
+                        'code_system': item['code_system'],
+                        'name': item['name'],
+                        'class_code': item['class_code']
+                    }
+
+                    obj, created = Ingredient.objects.get_or_create(spl_id=ingredient_id, defaults=updated_values)
 
             # Update pills
             updated_values = data
 
-            obj, created = ProductData.objects.update_or_create(id=id, defaults=updated_values)
+            obj, created = Pill.objects.update_or_create(ssp=ssp, defaults=updated_values)
 
             if created:
                 counter['added'] += 1
@@ -131,12 +160,6 @@ class Controller(object):
         minutes = spent / 60
         seconds = spent % 60
 
-        if self.task:
-            self.task.time_ended = timezone.now()
-            self.task.duration = spent
-            self.task.status = 'SUCCESSFUL'
-            self.task.save()
-
         if self.stdout:
             self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
 
@@ -144,17 +167,27 @@ class Controller(object):
 
     def _status(self, **kwarg):
 
+        processed = kwarg['added'] + kwarg['updated']
+        percent = round((processed / self.total) * 100, 2)
+
         if self.stdout:
-            self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s' %
-                              (kwarg['added'], kwarg['updated'], kwarg['error'], kwarg['skipped']), ending='\r')
+            self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
+                              (kwarg['added'], kwarg['updated'],
+                               kwarg['error'], kwarg['skipped'], percent), ending='\r')
             sys.stdout.flush()
 
         if self.task:
-            meta = {'added': kwarg['added'],
-                    'updated': kwarg['updated'],
-                    'error': kwarg['error'],
-                    'skipped': kwarg['skipped'],
-                    'action': kwarg['action']}
-            self.task.meta = meta
-            self.task.status = 'PROGRESS'
 
+            ## To decrease the number of times the database is called, update meta data
+            ## in integer intervals
+            if int(percent) > self.update_interval:
+                self.update_interval = int(percent)
+                meta = {'added': kwarg['added'],
+                        'updated': kwarg['updated'],
+                        'error': kwarg['error'],
+                        'skipped': kwarg['skipped'],
+                        'action': kwarg['action'],
+                        'percent': percent}
+                self.task.meta.update(meta)
+                self.task.status = 'PROGRESS: SYNC %s' % kwarg['action']
+                self.task.save()

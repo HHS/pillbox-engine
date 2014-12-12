@@ -21,6 +21,7 @@ class Source(CommonInfo):
     last_downloaded = models.DateTimeField('Last Downloaded and Unzipped', null=True, blank=True)
     zip_size = models.FloatField('Total zip folder size (bytes)', null=True, blank=True)
     unzip_size = models.FloatField('Total unzip folder size (bytes)', null=True, blank=True)
+    xml_count = models.IntegerField('Total xml files', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -28,7 +29,7 @@ class Source(CommonInfo):
 
 class Ingredient(CommonInfo):
 
-    id = models.CharField('Unii Code', max_length=100, primary_key=True)
+    spl_id = models.CharField('Unii Code', max_length=100, unique=True)
     code_system = models.CharField('Code System', max_length=200, null=True, blank=True)
     name = models.CharField('Name', max_length=300)
     class_code = models.CharField('Class Code', max_length=100, null=True, blank=True)
@@ -40,9 +41,9 @@ class Ingredient(CommonInfo):
         return self.name
 
 
-class SetInfo(CommonInfo):
+class Product(CommonInfo):
 
-    setid = models.CharField('setid', max_length=200, primary_key=True)
+    setid = models.CharField('setid', max_length=200, unique=True)
     id_root = models.CharField('id root', max_length=200)
     title = models.TextField('Title', null=True, blank=True)
     effective_time = models.CharField('Effective Time', max_length=100)
@@ -66,21 +67,22 @@ class SetInfo(CommonInfo):
             return self.setid
 
 
-class ProductData(CommonInfo):
+class Pill(CommonInfo):
 
-    id = models.CharField('id', max_length=200, primary_key=True)
-    setid = models.ForeignKey(SetInfo)
+    ssp = models.CharField('Pillbox Unique ID', max_length=200, unique=True)
+    setid = models.ForeignKey(Product)
     dosage_form = models.CharField('Dosage Form', max_length=20)
     ndc = models.CharField('NDC9', max_length=100, null=True, blank=True)
     ndc9 = models.CharField('NDC9', max_length=100, null=True, blank=True)
     product_code = models.CharField('Product Code', max_length=60, null=True, blank=True)
+    produce_code = models.CharField('Produce Code', max_length=60, null=True, blank=True)
     equal_product_code = models.CharField('Equal Product Code', max_length=30, null=True, blank=True)
     approval_code = models.CharField('approval_code', max_length=100, null=True, blank=True)
     medicine_name = models.CharField('Medicine Name', max_length=300)
     part_num = models.IntegerField('Part Number', default=0)
     part_medicine_name = models.CharField('Part Medicine Name', max_length=200, null=True, blank=True)
     rxtty = models.CharField('rxtty', max_length=100, null=True, blank=True)
-    rxstring = models.CharField('rxttystring', max_length=100, null=True, blank=True)
+    rxstring = models.TextField('rxttystring', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=100, null=True, blank=True)
     dea_schedule_code = models.CharField('DEA_SCHEDULE_CODE', max_length=100, null=True, blank=True)
     dea_schedule_name = models.CharField('DEA_SCHEDULE_NAME', max_length=100, null=True, blank=True)
@@ -89,8 +91,11 @@ class ProductData(CommonInfo):
     splsize = models.CharField('SPL Size', max_length=100, null=True, blank=True)
     splshape = models.CharField('SPL Shape', max_length=100, null=True, blank=True)
     splimprint = models.CharField('SPL Imprint', max_length=100, null=True, blank=True)
-    splimage = models.CharField('SPL Image', max_length=100, null=True, blank=True)
+    splimage = models.FileField('SPL Image', upload_to='spl', max_length=100, null=True, blank=True)
     splscore = models.CharField('SPL Score', max_length=100, null=True, blank=True)
+    spl_strength = models.TextField('SPL_STRENGTH', null=True, blank=True)
+    spl_ingredients = models.TextField('SPL_INGREDIENTS', null=True, blank=True)
+    spl_inactive_ing = models.TextField('SPL_INACTIVE_ING', null=True, blank=True)
 
     class Meta:
         verbose_name = 'SPL OSDF Pill'
@@ -108,7 +113,7 @@ class Task(models.Model):
     time_ended = models.DateTimeField('Time Ended', null=True, blank=True)
     duration = models.FloatField('Duration', default=0)
     status = models.CharField('Status', max_length=200, null=True, blank=True)
-    meta = JSONField('Meta', null=True, blank=True)
+    meta = JSONField('Meta', default={})
     pid = models.CharField('PID', max_length=100, null=True, blank=True)
     is_active = models.BooleanField('Task is active (running)?', default=True)
     download_type = models.CharField('Download source name', max_length=200, null=True, blank=True)

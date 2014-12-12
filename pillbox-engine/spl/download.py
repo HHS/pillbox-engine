@@ -11,7 +11,7 @@ from spl.ftp import PillboxFTP
 
 class DownloadAndUnzip(object):
 
-    def __init__(self, task_id, source, files, host, ftp_path):
+    def __init__(self, task_id, source_title, files, host, ftp_path):
         """
         @param
         task_id - The id of the task created in the task model of spl
@@ -19,7 +19,7 @@ class DownloadAndUnzip(object):
         files - the list of files associated with the source e.g. dm_spl_release_animal.zip
         """
         self.task = Task.objects.get(pk=task_id)
-        self.source = source
+        self.source = source_title
         self.files = files
         self.host = host
         self.ftp_path = ftp_path
@@ -56,6 +56,7 @@ class DownloadAndUnzip(object):
 
         percent = 0.0
 
+        self.task = Task.objects.get(pk=self.task.id)
         self.task.status = 'PROGRESS: UNZIP'
         meta = {
             'action': 'unzip',
@@ -112,11 +113,13 @@ class DownloadAndUnzip(object):
         # delete tmp files
         try:
             shutil.rmtree(tmp_path)
-            shutil.rmtree(tmp_path2)
+            # shutil.rmtree(tmp_path2)
         except OSError as exc:
             if exc.errno != errno.ENOENT:
                 raise
 
+        self.task.meta['percent'] = 100
+        self.task.save()
         return True
 
 

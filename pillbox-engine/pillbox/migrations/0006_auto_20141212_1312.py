@@ -7,14 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pillbox', '0005_auto_20141202_2027'),
+        ('pillbox', '0005_auto_20141212_1223'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RenameField(
             model_name='pillboxdata',
-            name='spl_inactive_ing',
-            field=models.TextField(null=True, verbose_name=b'SPL_INACTIVE_ING', blank=True),
-            preserve_default=True,
+            old_name='has_image',
+            new_name='has_image2',
         ),
     ]

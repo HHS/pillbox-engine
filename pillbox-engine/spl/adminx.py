@@ -5,7 +5,7 @@ import signal
 import xadmin
 from xadmin import views
 
-from spl.models import Source, Ingredient, SetInfo, ProductData, Task
+from spl.models import Source, Ingredient, Product, Pill, Task
 
 
 class GlobalSetting(object):
@@ -25,8 +25,10 @@ class SourceAdmin(object):
     reversion_enable = True
 
     list_display = ('title', 'host', 'path', 'files', 'last_downloaded')
-    readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size']
+    readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size', 'xml_count']
     model_icon = 'fa fa-download'
+
+    list_editable = ('files')
 
 
 class IngredientAdmin(object):
@@ -40,7 +42,7 @@ class IngredientAdmin(object):
     model_icon = 'fa fa-dot-circle-o'
 
 
-class SetInfoAdmin(object):
+class ProductAdmin(object):
     def name(self, instance):
         if instance.title:
             check = re.match('[a-zA-Z]', instance.title)
@@ -61,9 +63,9 @@ class SetInfoAdmin(object):
     list_per_page = 10
 
 
-class ProductDataAdmin(object):
+class PillAdmin(object):
 
-    fields = ['id', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
+    fields = ['id', 'ssp', 'setid', 'dosage_form', 'ndc', 'ndc9', 'product_code',
               'equal_product_code', 'approval_code', 'medicine_name', 'part_num',
               'part_medicine_name', 'rxtty', 'rxstring', 'rxcui', 'dea_schedule_code',
               'dea_schedule_name', 'marketing_act_code', 'splcolor', 'splsize',
@@ -74,7 +76,7 @@ class ProductDataAdmin(object):
     list_display = ('medicine_name', 'product_code', 'part_num', 'dosage_form')
     list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
-    search_fields = ['medicine_name', 'part_medicine_name']
+    search_fields = ['medicine_name', 'part_medicine_name', 'setid__setid']
     reversion_enable = True
 
     model_icon = 'fa fa-medkit'
@@ -125,6 +127,6 @@ class TaskAdmin(object):
 
 xadmin.site.register(Source, SourceAdmin)
 xadmin.site.register(Ingredient, IngredientAdmin)
-xadmin.site.register(SetInfo, SetInfoAdmin)
-xadmin.site.register(ProductData, ProductDataAdmin)
+xadmin.site.register(Product, ProductAdmin)
+xadmin.site.register(Pill, PillAdmin)
 xadmin.site.register(Task, TaskAdmin)

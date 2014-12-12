@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spl', '0017_download_task_id'),
+        ('pillbox', '0006_auto_20141212_1312'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='pid',
-            field=models.CharField(max_length=100, null=True, verbose_name=b'PID', blank=True),
+            model_name='pillboxdata',
+            name='has_image',
+            field=models.BooleanField(default=False, verbose_name=b'Has Image'),
             preserve_default=True,
         ),
     ]

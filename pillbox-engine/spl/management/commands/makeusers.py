@@ -20,10 +20,14 @@ class Command(BaseCommand):
             pass
 
         # Pillbox Group
-        group = Group()
+        try:
+            group = Group()
 
-        group.name = 'Pillbox'
-        group.save()
+            group.name = 'Pillbox'
+            group.save()
+        except IntegrityError:
+            # Group already exists, so just pass
+            group = Group.objects.filter(name='Pillbox')[:1].get()
 
         # Grab need permission ids
         permissions = Permission.objects.all()
@@ -40,6 +44,7 @@ class Command(BaseCommand):
             user.groups.add(group)
             user.save()
         except IntegrityError:
+            # User already exists, so just passs
             pass
 
 

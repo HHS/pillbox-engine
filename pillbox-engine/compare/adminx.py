@@ -5,8 +5,21 @@ from compare.models import Color, Score, Size, Shape, Image, Imprint
 
 
 class GenericAdmin(object):
+    def image_column(self, instance):
+        return '<img height="90" src="%s" />' % instance.pillbox.splimage.url
+    image_column.short_description = "Image"
+    image_column.allow_tags = True
+    image_column.is_column = True
 
-    list_display = ('spl_value', 'pillbox_value')
+    list_editable = ('pillbox_value', 'verified')
+
+    list_display = ('spl_value', 'pillbox_value', 'verified', 'image_column')
+
+    readonly_fields = ['spl', 'pillbox', 'spl_value']
+
+    fields = ['spl', 'pillbox', 'spl_value', 'pillbox_value', 'verified',
+              'is_different', 'reason']
+
 
 
 class ColorAdmin(GenericAdmin):

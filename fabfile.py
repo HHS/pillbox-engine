@@ -15,7 +15,7 @@ def initial_setup():
                                 ' installed on your computer before proceeding further \n' +
                                 '(1) Sqlite3 \n' +
                                 '(2) MySql \n' +
-                                '(3) Postgres \n' +
+                                '(3) Postgres (recommended) \n' +
                                 ': '))
 
             if choice == 1:
@@ -37,7 +37,7 @@ def initial_setup():
         except ValueError:
             print 'Try again! You should enter a number.'
 
-        local('python pillbox-engine/manage.py collectstatic')
+        local('python pillbox-engine/manage.py collectstatic --noinput')
 
 
 def push():
@@ -52,14 +52,19 @@ def pull():
 
 def serve():
     """ Run the server in production mode """
-    print 'Launching Pillbox Engine ...'
-    foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        print 'Launching Pillbox Engine ...'
+        foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Wait for 3 seconds to ensure the process is launched
-    time.sleep(3)
-    local('open "http://localhost:5000"')
-    print 'To exit Pillbox Engine use Control + C'
-    print foreman.stdout.read()
+        # Wait for 3 seconds to ensure the process is launched
+        time.sleep(3)
+        local('open "http://localhost:5000"')
+        print 'To exit Pillbox Engine use Control + C'
+        print foreman.stdout.read()
+
+    except KeyboardInterrupt:
+        foreman.terminate()
+        print 'Goodbye'
 
 
 def test():
@@ -82,6 +87,12 @@ def migrate():
     with shell_env(**kwarg):
         local('python pillbox-engine/manage.py makemigrations')
         local('python pillbox-engine/manage.py migrate')
+
+
+def makemigrations(app):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py makemigrations %s' % app)
 
 
 def collect():

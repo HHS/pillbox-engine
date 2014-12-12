@@ -2,6 +2,10 @@
     font-size: 40px;
 }
 
+.tab-pane {
+    padding: 10px;
+}
+
 .panel-green {
     border-color: #5cb85c;
     .panel-heading {
@@ -73,4 +77,8 @@
     a:hover {
         color: #b52b27;
     }
+}
+
+.progress {
+    background-color: #CCCCCC;
 }

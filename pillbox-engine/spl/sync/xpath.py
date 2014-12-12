@@ -1,10 +1,13 @@
 from __future__ import print_function
-
+from os.path import join
+import shutil
 import time
 import re
 from collections import OrderedDict
 
 from lxml import etree
+from django.conf import settings
+from spl.download import check_create_folder
 
 
 class XPath(object):
@@ -145,8 +148,8 @@ class XPath(object):
                             continue
                         else:
                             output.update(generic)
-                            output.update(self._get_specific(part_counter, part=True))
-                            output['id'] = self._generate_id(output, part_counter)
+                            output.update(self._get_specific(path, part_counter, part=True))
+                            output['ssp'] = self._generate_id(output, part_counter)
                             output['ingredients'] = self._get_ingredients()
                             product_set.append(output)
                             part_counter += 1
@@ -161,8 +164,8 @@ class XPath(object):
                         continue
                     else:
                         output.update(self._get_generic(counter, setid))
-                        output.update(self._get_specific())
-                        output['id'] = self._generate_id(output, counter)
+                        output.update(self._get_specific(path))
+                        output['ssp'] = self._generate_id(output)
                         output['ingredients'] = self._get_ingredients()
                         product_set.append(output)
                         counter += 1
@@ -188,7 +191,10 @@ class XPath(object):
         """
 
         ingredients = self._xpath('t:*//t:ingredient')
-        output = []
+        output = {
+            'active': [],
+            'inactive': []
+        }
 
         for item in ingredients:
             ingredient = {}
@@ -198,7 +204,7 @@ class XPath(object):
                 if self._simple_tag(sub.tag) == 'quantity':
                     numerator = self._xpath_with_tree(sub, 't:numerator')[0]
                     denominator = self._xpath_with_tree(sub, 't:denominator')[0]
-                    ingredient['ingredient_type'] = 'acitve'
+                    ingredient['active'] = True
                     ingredient['denominator_unit'] = denominator.get('unit')
                     ingredient['denominator_value'] = denominator.get('value')
                     ingredient['numerator_unit'] = numerator.get('unit')
@@ -218,27 +224,36 @@ class XPath(object):
                                 'name': children[1].text
                             })
 
-            output.append(ingredient)
+            if 'active' in ingredient:
+                output['active'].append(ingredient)
+            else:
+                output['inactive'].append(ingredient)
 
         return output
 
-    def _generate_id(self, output, counter):
+    def _generate_id(self, output, part_counter=0):
         """ Generates unique id for pills """
-        return output['setid_id'] + '-' + output['product_code'] + '-' + str(counter)
+        return output['setid_id'] + '-' + output.pop('produce_code') + '-' + str(part_counter)
 
     def _get_generic(self, counter, setid):
         """ Retrieves the product information shared by multiple products in an XML file """
         output = {}
         output['setid_id'] = setid
-        output['product_code'] = self._get_attribute('t:*//t:code[1]', 'code')
-        output['ndc9'] = output['product_code'].replace('-', '')
-        output['ndc'] = '%s-%s' % (output['product_code'], counter)
+
+        manufactured = self._xpath('t:*//t:containerPackagedProduct//t:code')
+        if not manufactured:
+            manufactured = self._xpath('t:*//t:containerPackagedMedicine//t:code')
+
+        output['product_code'] = [i.get('code') for i in manufactured if i.get('code')][0]
+        output['produce_code'] = self._get_attribute('t:*//t:code[1]', 'code')
+        output['ndc9'] = output['produce_code'].replace('-', '')
+        output['ndc'] = '%s-%s' % (output['produce_code'], counter)
         output['equal_product_code'] = self._get_attribute('t:*//t:definingMaterialKind/t:code', 'code')
         output['medicine_name'] = self._get_text('t:*//t:name[1]')
 
         return output
 
-    def _get_specific(self, part_counter=0, part=False):
+    def _get_specific(self, path, part_counter=0, part=False):
 
         output = {}
         output['part_num'] = part_counter
@@ -252,11 +267,7 @@ class XPath(object):
         output['dea_schedule_name'] = self._get_attribute('t:*//t:policy[@classCode="DEADrugSchedule"]/t:code',
                                                           'displayName')
         output['splscore'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSCORE"]')[0].getnext().get('value')
-
-        try:
-            output['splimage'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLIMAGE"]')[0].getnext().getchildren()[0].get('value')
-        except IndexError:
-            output['splimage'] = ''
+        output['splimage'] = self._get_image(path)
 
         try:
             output['splimprint'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLIMPRINT"]')[0].getnext().text
@@ -274,9 +285,37 @@ class XPath(object):
             output['splsize'] = ''
 
         colors = self._xpath('t:*//t:characteristic/t:code[@code="SPLCOLOR"]')
-        output['splcolor'] = [color.getnext().get('code') for color in colors]
+        try:
+            output['splcolor'] = ";".join([color.getnext().get('code') for color in colors])
+        except TypeError:
+            pass
 
         return output
+
+    def _get_image(self, path):
+
+        try:
+            image = self._xpath(
+                't:*//t:characteristic/t:code[@code="SPLIMAGE"]'
+            )[0].getnext().getchildren()[0].get('value')
+        except IndexError:
+            image = ''
+
+        if image:
+            # get source name
+            source = self._get_source(path)
+
+            #make sure spl media folder exist
+            media_path = check_create_folder(join(settings.MEDIA_ROOT, 'pillbox'))
+
+            #copy image file to the media root if exist
+            try:
+                source_path = join(join(settings.SOURCE_PATH, source), 'tmp2')
+                shutil.copy(join(source_path, image), media_path)
+            except IOError:
+                pass
+
+        return image
 
     def _get_source(self, path):
         """ separates source name from them give path """
@@ -318,34 +357,27 @@ class XPath(object):
 
         return tree.xpath(path, namespaces=self.namespaces)
 
+
+def test():
+
+    x = XPath()
+
+    d = join(settings.SOURCE_PATH, 'HOMEO')
+    # o = x.pills('0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml', d)
+    o = x.pills('03e598d8-8da4-2dd0-e054-00144ff88e88.xml', d)
+    print(o)
+
 if __name__ == '__main__':
 
     start = time.time()
 
     x = XPath()
 
-    d = '../tmp-unzipped/HRX'
-    o = x.pills('000b54bf-b411-4d28-b22d-df1bd8b6d9ca.xml', d)
+    d = '../../downloads/unzip/HOTC'
+    # o = x.pills('0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml', d)
+    o = x.pills('03e598d8-8da4-2dd0-e054-00144ff88e88.xml', d)
     print(o)
-    # x.test('0548145e-6b20-4843-9bcc-cf270ea2f072.xml', d)
 
-    # folders = ['ANIMAL', 'HOMEO', 'HOTC', 'HRX', 'REMAIN']
-
-    # for folder in folders:
-    #     d = '../tmp-unzipped/%s' % folder
-    #     files = os.listdir(d)
-
-    #     for f in files:
-    #         if fnmatch.fnmatch(f, '*.xml'):
-    # print(f)
-    #             print(x.parse_set_info(f, d))
-    # print('hit:%s | skip:%s | error:%s' % (x.counter, x.skip, x.error), end='\r')
-
-    # print('\nErrors: %s' % x.error)
-    # x.parse("0013824B-6AEE-4DA4-AFFD-35BC6BF19D91.xml")
-    # x.parse('006572e2-0f86-4be3-81cd-91e230cce852.xml')
-
-    # print x.get_source('../tmp-unzipped/HRX')
     end = time.time()
 
     print('Time spent : %s seconds' % (end - start))
