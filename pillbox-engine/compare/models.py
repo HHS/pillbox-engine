@@ -10,6 +10,7 @@ class CommonInfo(models.Model):
     pillbox_value = models.CharField('Pillbox Value', max_length=200)
     pillbox = models.ForeignKey(PillBoxData)
     spl = models.ForeignKey(Pill)
+    verified = models.BooleanField('Verified?', default=False)
     is_different = models.BooleanField('Is Different?', default=False)
     reason = models.TextField('Reason', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
