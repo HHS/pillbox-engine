@@ -113,7 +113,7 @@ class DownloadAndUnzip(object):
         # delete tmp files
         try:
             shutil.rmtree(tmp_path)
-            shutil.rmtree(tmp_path2)
+            # shutil.rmtree(tmp_path2)
         except OSError as exc:
             if exc.errno != errno.ENOENT:
                 raise
