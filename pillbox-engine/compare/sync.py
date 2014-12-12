@@ -115,51 +115,57 @@ def update(pillbox, spl_pill, action='new'):
     if action == 'new':
         # add items to the pillboxdata model
         for key, value in check_map.iteritems():
+            setattr(pillbox, key, getattr(spl_pill, key))
             if key == 'splimage':
                 if getattr(spl_pill, key):
                     pillbox.has_image = True
                     pillbox.image_source = 'NLM'
-            setattr(pillbox, key, getattr(spl_pill, key))
+                    pillbox.splimage = 'pillbox/' + getattr(spl_pill, key)
 
         # for new items with need to save first to get a pillbox id
         pillbox.save()
 
-        for key, value in check_map.iteritems():
-            new_value = getattr(spl_pill, key)
-            if new_value:
-                new_obj = value()
-                new_obj.spl_value = new_value
-                new_obj.pillbox_value = new_value
-                new_obj.spl_id = spl_pill.id
-                new_obj.pillbox_id = pillbox.id
-
-                new_obj.save()
-
-    else:
-        pillbox.save()
-        for key, value in check_map.iteritems():
-            spl_value = getattr(spl_pill, key)
-            pillbox_value = getattr(pillbox, key)
-
-            if spl_value != pillbox_value and pillbox_value:
-
-                # Check if there is a record already
-                try:
-                    obj = value.objects.get(spl=spl_pill.id, pillbox=pillbox.id)
-                    obj.spl_value = spl_value
-                    obj.pillbox_value = pillbox_value
-                    obj.is_different = True
-                    obj.save()
-
-                except value.DoesNotExist:
+        ## only add to compare if there is an image
+        if spl_pill.splimage:
+            for key, value in check_map.iteritems():
+                new_value = getattr(spl_pill, key)
+                if new_value:
                     new_obj = value()
                     new_obj.spl_value = new_value
                     new_obj.pillbox_value = new_value
                     new_obj.spl_id = spl_pill.id
                     new_obj.pillbox_id = pillbox.id
-                    new_obj.is_different = True
 
                     new_obj.save()
+
+    else:
+        pillbox.save()
+
+        #Only add if there is an image
+        if pillbox.splimage:
+            for key, value in check_map.iteritems():
+                spl_value = getattr(spl_pill, key)
+                pillbox_value = getattr(pillbox, key)
+
+                if spl_value != pillbox_value and pillbox_value:
+
+                    # Check if there is a record already
+                    try:
+                        obj = value.objects.get(spl=spl_pill.id, pillbox=pillbox.id)
+                        obj.spl_value = spl_value
+                        obj.pillbox_value = pillbox_value
+                        obj.is_different = True
+                        obj.save()
+
+                    except value.DoesNotExist:
+                        new_obj = value()
+                        new_obj.spl_value = new_value
+                        new_obj.pillbox_value = new_value
+                        new_obj.spl_id = spl_pill.id
+                        new_obj.pillbox_id = pillbox.id
+                        new_obj.is_different = True
+
+                        new_obj.save()
 
 
 def clear_compare_tables():
