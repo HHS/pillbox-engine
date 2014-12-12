@@ -14,7 +14,7 @@ from _celery import app
 from spl.sync.controller import Controller
 from spl.sync.rxnorm import ThreadXNorm
 from spl.download import DownloadAndUnzip
-from spl.models import Task, Source, Pill
+from spl.models import Task, Source, Pill, Product
 
 
 @app.task(bind=True, ignore_result=True)
@@ -73,8 +73,12 @@ def sync(self, action, task_id):
     task.save()
 
     if action in arguments:
-        controller = Controller(task.id)
-        controller.sync(action)
+        try:
+            controller = Controller(task.id)
+            controller.sync(action)
+        except Product.DoesNotExist:
+            record_error(task, start, sys.exc_info())
+            return
 
     end = time.time()
     spent = end - start
