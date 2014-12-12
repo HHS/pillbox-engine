@@ -9,9 +9,9 @@ from spl.models import Task
 
 class PillBoxDataAdmin(object):
 
-    list_display = ('medicine_name', 'source', 'author', 'has_image')
+    list_display = ('medicine_name', 'source', 'new', 'updated', 'stale')
     # list_filter = ['product_code', 'dosage_form']
-    list_quick_filter = ['splcolor', 'splsize', 'splscore']
+    list_quick_filter = ['new', 'updated', 'stale']
     search_fields = ['medicine_name', 'part_medicine_name']
     reversion_enable = True
 
