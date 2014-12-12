@@ -1,4 +1,5 @@
 from __future__ import division
+import datetime
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -60,22 +61,35 @@ class Transfer(viewsets.ViewSet):
                                 status=status.HTTP_200_OK)
 
         except Task.DoesNotExist:
-            task = Task()
-            task.name = 'transfer'
-            task.status = 'PENDING'
-            task.time_started = timezone.now()
-            task.save()
 
-            t = transfer_task.delay(task.id)
+            try:
+                task = Task.objects.filter(
+                    name='transfer',
+                    status='SUCCESS',
+                    time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
+                )[:1].get()
 
-            task.task_id = t.task_id
-            task.save()
+                return Response({'message': 'Just Transfered! Wait 24 hours for a re-transfer!'},
+                                status=status.HTTP_200_OK)
 
-            return Response({
-                'message': 'Transfer started',
-                'status': task.status,
-                'meta': task.meta,
-                'task_id': task.task_id,
-                'pid': task.pid},
-                status=status.HTTP_200_OK
-            )
+            except Task.DoesNotExist:
+
+                task = Task()
+                task.name = 'transfer'
+                task.status = 'PENDING'
+                task.time_started = timezone.now()
+                task.save()
+
+                t = transfer_task.delay(task.id)
+
+                task.task_id = t.task_id
+                task.save()
+
+                return Response({
+                    'message': 'Transfer started',
+                    'status': task.status,
+                    'meta': task.meta,
+                    'task_id': task.task_id,
+                    'pid': task.pid},
+                    status=status.HTTP_200_OK
+                )
