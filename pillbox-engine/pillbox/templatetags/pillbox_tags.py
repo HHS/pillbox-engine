@@ -19,7 +19,18 @@ def pillbox_widgets():
             'link': '#',
             'color': 'primary',
             'action': '/pillbox/status/'
-        }]
+        },
+        {
+            'icon': 'fa-arrows-h ',
+            'name': 'Transfer',
+            'subtitle': 'SPL to Pillbox',
+            # 'count': pillbox_count,
+            'text': 'Transfer from SPL',
+            'link': '#',
+            'color': 'primary',
+            'action': '/pillbox/transfer/'
+        }
+    ]
 
     return {'boxes': boxes}
 

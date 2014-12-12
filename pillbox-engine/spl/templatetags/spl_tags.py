@@ -73,6 +73,7 @@ def download_widgets():
             'icon': 'fa-download',
             'name': source.title,
             'text': 'Download New Data',
+            'subtitle': 'Download Now!',
             'link': '#',
             'color': colors.next(),
             'action': '/spl/download/%s/' % source.id,
