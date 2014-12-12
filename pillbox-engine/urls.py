@@ -37,9 +37,13 @@ urlpatterns = patterns('',
     url(r'^spl/', include(spl.urls)),
     url(r'^pillbox/', include(pillbox.urls)),
     url(r'^', include(xadmin.site.urls)),
+    (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': settings.MEDIA_ROOT, 'show_indexes': True }),
     # Your stuff: custom urls go here
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
 
 ### This hack let static files be served with DEBUG false
 if not settings.DEBUG:
