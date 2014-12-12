@@ -55,7 +55,7 @@ def importer(csv_path, task_id=None):
         'RXCUI': 'rxcui',
         'RXTTY': 'rxtty',
         'RXSTRING': 'rxstring',
-        'image_id': 'image_id',
+        'image_id': 'splimage',
         'HAS_IMAGE': 'has_image',
         'INGREDIENTS': '',
         'SPL_INGREDIENTS': 'spl_ingredients',
