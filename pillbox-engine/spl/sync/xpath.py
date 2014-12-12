@@ -246,8 +246,8 @@ class XPath(object):
 
         output['product_code'] = [i.get('code') for i in manufactured if i.get('code')][0]
         output['produce_code'] = self._get_attribute('t:*//t:code[1]', 'code')
-        output['ndc9'] = output['product_code_old'].replace('-', '')
-        output['ndc'] = '%s-%s' % (output['product_code_old'], counter)
+        output['ndc9'] = output['produce_code'].replace('-', '')
+        output['ndc'] = '%s-%s' % (output['produce_code'], counter)
         output['equal_product_code'] = self._get_attribute('t:*//t:definingMaterialKind/t:code', 'code')
         output['medicine_name'] = self._get_text('t:*//t:name[1]')
 
@@ -306,7 +306,7 @@ class XPath(object):
             source = self._get_source(path)
 
             #make sure spl media folder exist
-            media_path = check_create_folder(join(settings.MEDIA_ROOT, 'spl'))
+            media_path = check_create_folder(join(settings.MEDIA_ROOT, 'pillbox'))
 
             #copy image file to the media root if exist
             try:
