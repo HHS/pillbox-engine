@@ -1,5 +1,4 @@
 from __future__ import print_function, division
-import sys
 from spl.models import Pill, Task
 from pillbox.models import PillBoxData
 from compare.models import Color, Score, Size, Shape, Imprint, Image
@@ -9,6 +8,11 @@ def compare(task_id):
 
     task = Task.objects.get(pk=task_id)
     task.status = 'TRANSFERING'
+    meta = {'updated': 0,
+            'new': 0,
+            'action': 'transfer',
+            'percent': 0}
+    task.meta.update(meta)
     task.save()
 
     percent = 0
@@ -44,16 +48,10 @@ def compare(task_id):
 
         if int(percent) > interval:
             interval = int(percent)
-
-            meta = {'updated': counter['exist'],
-                    'new': counter['new'],
-                    'action': 'transfer',
-                    'percent': percent}
-            task.meta.update(meta)
+            task.meta['percent'] = percent
+            task.meta['updated'] = counter['exist']
+            task.meta['new'] = counter['new']
             task.save()
-
-        print(counter, end='\r')
-        sys.stdout.flush()
 
     #flag stale records
     PillBoxData.objects.filter(new=False, updated=False).update(stale=True)
