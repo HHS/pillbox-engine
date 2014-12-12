@@ -20,6 +20,7 @@ class GenericAdmin(object):
     fields = ['spl', 'pillbox', 'spl_value', 'pillbox_value', 'verified',
               'is_different', 'reason']
 
+    list_filter = ['pillbox__new', 'pillbox__updated']
 
 
 class ColorAdmin(GenericAdmin):
