@@ -108,6 +108,15 @@ def importer(csv_path, task_id=None):
 
         setid = new['setid'].replace('_', '-').replace(' ', '')
         new.pop('setid')
+
+        if new['has_image'] == '1':
+            new['has_image'] = True
+        else:
+            new['has_image'] = False
+
+        if new['splimage']:
+            new['splimage'] = 'pillbox/' + new['splimage'] + '.jpg'
+
         obj, created = PillBoxData.objects.update_or_create(setid=setid, defaults=new)
 
         if created:
