@@ -2,6 +2,7 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 from pillbox.models import PillBoxData
+from spl.models import Task
 
 register = template.Library()
 
@@ -31,6 +32,14 @@ def pillbox_widgets():
             'action': '/pillbox/transfer/'
         }
     ]
+
+    try:
+        task = Task.objects.filter(is_active=True, name='transfer')[:1].get()
+        boxes[1]['meta'] = task.meta
+        boxes[1]['status'] = task.status
+
+    except Task.DoesNotExist:
+        pass
 
     return {'boxes': boxes}
 
