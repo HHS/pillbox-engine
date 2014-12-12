@@ -11,7 +11,7 @@ register = template.Library()
 def spl_widgets():
     products_count = Product.objects.all().count()
     pills_count = Pill.objects.all().count()
-    ingredient_count = Ingredient.objects.all().count()
+    rxnorm_count = Pill.objects.filter(rxcui__isnull=True).count()
 
     boxes = [
         {
@@ -36,12 +36,14 @@ def spl_widgets():
         },
         {
             'icon': 'fa-dot-circle-o',
-            'name': 'Ingredients',
-            'count': ingredient_count,
+            'name': 'Missing RXNorm',
+            'count': rxnorm_count,
             'text': 'View Details',
-            'link': '/spl/ingredient/',
+            'link': '#',
             'color': 'yellow',
-            'action_name': None
+            'action_name': None,
+            'action': '/spl/sync/rxnorm/',
+            'action_name': 'rxnorm'
         }]
 
     try:
