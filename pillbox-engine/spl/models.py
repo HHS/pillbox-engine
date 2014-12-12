@@ -81,7 +81,7 @@ class Pill(CommonInfo):
     part_num = models.IntegerField('Part Number', default=0)
     part_medicine_name = models.CharField('Part Medicine Name', max_length=200, null=True, blank=True)
     rxtty = models.CharField('rxtty', max_length=100, null=True, blank=True)
-    rxstring = models.CharField('rxttystring', max_length=100, null=True, blank=True)
+    rxstring = models.TextField('rxttystring', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=100, null=True, blank=True)
     dea_schedule_code = models.CharField('DEA_SCHEDULE_CODE', max_length=100, null=True, blank=True)
     dea_schedule_name = models.CharField('DEA_SCHEDULE_NAME', max_length=100, null=True, blank=True)
