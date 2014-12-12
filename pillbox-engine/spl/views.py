@@ -7,7 +7,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from spl import tasks
-from spl.models import Task, Product, Pill, Source
+from spl.models import Task, Source
 
 
 class DownloadViewSet(viewsets.ViewSet):
@@ -51,7 +51,7 @@ class DownloadViewSet(viewsets.ViewSet):
                 # Start a new task
                 task = Task()
                 task.status = 'PENDING'
-                task.name = 'Download/Unzip'
+                task.name = 'download'
                 task.download_type = source.title
                 task.time_started = timezone.now()
                 task.save()
@@ -86,15 +86,12 @@ class SyncSpl(viewsets.ViewSet):
         return self.sync('products')
 
     @list_route()
-    def all(self, request):
-        return self.sync('all')
+    def rxnorm(self, request):
+        return self.sync('rxnorm')
 
     def sync(self, action):
 
-        model_map = {
-            'pills': Pill,
-            'products': Product
-        }
+        model_map = ['pills', 'products', 'rxnorm']
 
         if action in model_map:
             try:
@@ -134,7 +131,10 @@ class SyncSpl(viewsets.ViewSet):
                     task.time_started = timezone.now()
                     task.save()
 
-                    sync = tasks.sync.delay(action, task.id)
+                    if action == 'rxnorm':
+                        sync = tasks.rxnorm_task.delay(task.id)
+                    else:
+                        sync = tasks.sync.delay(action, task.id)
 
                     task.task_id = sync.task_id
                     task.save()

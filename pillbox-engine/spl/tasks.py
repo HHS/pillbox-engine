@@ -2,6 +2,7 @@ from __future__ import absolute_import, division
 import time
 import os
 import sys
+import Queue
 
 from django.utils import timezone
 from django.conf import settings
@@ -11,13 +12,54 @@ from ftputil.error import TemporaryError, FTPOSError
 
 from _celery import app
 from spl.sync.controller import Controller
+from spl.sync.rxnorm import ThreadXNorm
 from spl.download import DownloadAndUnzip
-from spl.models import Task, Source
+from spl.models import Task, Source, Pill
 
 
-@app.task()
-def add(x, y):
-    print '%s' % (x + y)
+@app.task(bind=True, ignore_result=True)
+def rxnorm_task(self, task_id):
+    start = time.time()
+
+    pills = Pill.objects.all().values('id')
+    total = pills.count()
+
+    task = Task.objects.get(pk=task_id)
+    task.status = 'STARTED'
+    task.pid = os.getpid()
+    task.meta = {
+        'action': 'rxnom sync',
+        'processed': 0,
+        'total': total,
+        'percent': 0
+    }
+    task.save()
+
+    queue = Queue.Queue()
+
+    print "starting the threads"
+    for i in range(20):
+        t = ThreadXNorm(queue, task.id)
+        t.daemon = True
+        t.start()
+
+    print "queuing jobs"
+    for pill in pills:
+        queue.put(pill['id'])
+
+    queue.join()
+
+    end = time.time()
+    spent = end - start
+
+    task = Task.objects.get(pk=task_id)
+    task.status = 'SUCCESS'
+    task.duration = round(spent, 2)
+    task.time_ended = timezone.now()
+    task.is_active = False
+    task.save()
+
+    return
 
 
 @app.task(bind=True, ignore_result=True)
