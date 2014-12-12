@@ -120,7 +120,7 @@ def update(pillbox, spl_pill, action='new'):
                 if getattr(spl_pill, key):
                     pillbox.has_image = True
                     pillbox.image_source = 'NLM'
-                    pillbox.splimage = 'pillbox/' + getattr(spl_pill, key)
+                    pillbox.splimage = 'pillbox/' + getattr(spl_pill, key).name
 
         # for new items with need to save first to get a pillbox id
         pillbox.save()
