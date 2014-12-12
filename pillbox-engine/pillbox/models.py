@@ -47,7 +47,7 @@ class PillBoxData(CommonInfo):
 
     # Extracted from other Sources
     image_source = models.CharField('Image Source', max_length=250, null=True, blank=True)
-    splimage = models.CharField('Image Name', max_length=250, null=True, blank=True)
+    splimage = models.FileField('Image Name', upload_to='pillbox', max_length=250, null=True, blank=True)
     has_image = models.CharField('MARKETING_ACT_CODE', max_length=250, null=True, blank=True)
     from_sis = models.CharField('From SIS', max_length=250, null=True, blank=True)
     version_number = models.CharField('Version Number', max_length=250, null=True, blank=True)
