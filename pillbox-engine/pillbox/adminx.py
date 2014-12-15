@@ -2,7 +2,7 @@ from django.utils import timezone
 import xadmin
 
 from xadmin.views.base import filter_hook
-from pillbox.models import PillBoxData, Import
+from pillbox.models import PillBoxData, Import, Color, Shape
 from pillbox.tasks import import_task
 from spl.models import Task
 
@@ -49,5 +49,16 @@ class ImportAdmin(object):
 
     model_icon = 'fa fa-paperclip'
 
+
+class ColorAdmin(object):
+
+    list_display = ('display_name', 'code')
+
+
+class ShapeAdmin(ColorAdmin):
+    pass
+
 xadmin.site.register(PillBoxData, PillBoxDataAdmin)
 xadmin.site.register(Import, ImportAdmin)
+xadmin.site.register(Color, ColorAdmin)
+xadmin.site.register(Shape, ShapeAdmin)
