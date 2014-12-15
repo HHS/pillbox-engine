@@ -87,3 +87,21 @@ class Import(CommonInfo):
         verbose_name = 'Data Import'
         verbose_name_plural = 'Data Import'
 
+
+class Color(models.Model):
+
+    display_name = models.CharField('SPL Display Name', max_length=250)
+    code = models.CharField('SPL Code', max_length=250)
+    hex_value = models.CharField('HEX Value', max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.display_name
+
+
+class Shape(models.Model):
+
+    display_name = models.CharField('SPL Display Name', max_length=250)
+    code = models.CharField('SPL Code', max_length=250)
+
+    def __unicode__(self):
+        return self.display_name
