@@ -6,8 +6,8 @@ from pillbox.models import PillBoxData
 
 # Abstract Model
 class CommonInfo(models.Model):
-    spl_value = models.CharField('SPL Value', max_length=200)
-    pillbox_value = models.CharField('Pillbox Value', max_length=200)
+    spl_value = models.CharField('SPL Value', max_length=200, null=True, blank=True)
+    pillbox_value = models.CharField('Pillbox Value', max_length=200, null=True, blank=True)
     pillbox = models.ForeignKey(PillBoxData)
     spl = models.ForeignKey(Pill)
     verified = models.BooleanField('Verified?', default=False)
