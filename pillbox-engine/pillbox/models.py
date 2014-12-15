@@ -61,7 +61,7 @@ class PillBoxData(CommonInfo):
     laberer_code = models.CharField('Laberer Code', max_length=250, null=True, blank=True)
     application_number = models.CharField('Application Number', max_length=250, null=True, blank=True)
     updated = models.BooleanField('Is updated from SPL?', default=False)
-    stale = models.BooleanField('Does not exist on SPL (Stale)', default=True)
+    stale = models.BooleanField('Does not exist on SPL (Stale)', default=False)
     new = models.BooleanField('Just added from SPL (New)', default=False)
 
     class Meta:
