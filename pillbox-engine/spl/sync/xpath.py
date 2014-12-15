@@ -320,6 +320,8 @@ class XPath(object):
             except IOError:
                 pass
 
+            image = 'pillbox/' + image
+
         return image
 
     def _get_source(self, path):
