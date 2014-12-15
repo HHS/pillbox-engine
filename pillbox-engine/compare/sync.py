@@ -4,12 +4,11 @@ from pillbox.models import PillBoxData
 from compare.models import Color, Score, Size, Shape, Imprint, Image
 
 
-def compare(task_id):
+def transfer_new(task_id):
 
     task = Task.objects.get(pk=task_id)
     task.status = 'TRANSFERING'
-    meta = {'updated': 0,
-            'new': 0,
+    meta = {'new': 0,
             'action': 'transfer',
             'percent': 0}
     task.meta.update(meta)
@@ -19,44 +18,74 @@ def compare(task_id):
     interval = 0
 
     # reset all the records
-    PillBoxData.objects.all().update(updated=False, stale=False, new=False)
+    PillBoxData.objects.all().update(new=False)
 
     spl_pills = Pill.objects.all()
     total = spl_pills.count()
 
-    counter = {
-        'exist': 0,
-        'new': 0
-    }
+    counter = 0
     for pill in spl_pills:
 
         try:
             pillbox = PillBoxData.objects.get(setid=pill.ssp)
-            counter['exist'] += 1
-            pillbox.updated = True
-            pillbox.save()
-            update(pillbox, pill)
 
         except PillBoxData.DoesNotExist:
-            counter['new'] += 1
+            counter += 1
             pillbox = PillBoxData()
             pillbox.new = True
             update(pillbox, pill)
 
-        processed = counter['exist'] + counter['new']
-        percent = round((processed/total)*100, 2)
+        percent = round((counter/total)*100, 2)
 
         if int(percent) > interval:
             interval = int(percent)
             task.meta['percent'] = percent
-            task.meta['updated'] = counter['exist']
-            task.meta['new'] = counter['new']
+            task.meta['new'] = counter
+            task.save()
+
+
+def compare(task_id):
+
+    task = Task.objects.get(pk=task_id)
+    task.status = 'COMPARING'
+    meta = {'updated': 0,
+            'action': 'transfer',
+            'percent': 0}
+    task.meta.update(meta)
+    task.save()
+
+    percent = 0
+    interval = 0
+
+    # reset all the records
+    PillBoxData.objects.all().update(updated=False, stale=False)
+
+    spl_pills = Pill.objects.all()
+    total = spl_pills.count()
+
+    counter = 0
+    for pill in spl_pills:
+
+        try:
+            pillbox = PillBoxData.objects.get(setid=pill.ssp)
+            counter += 1
+            pillbox.updated = True
+            pillbox.save()
+            update(pillbox, pill, 'update')
+
+        except PillBoxData.DoesNotExist:
+            pass
+
+        percent = round((counter/total)*100, 2)
+
+        if int(percent) > interval:
+            interval = int(percent)
+            task.meta['percent'] = percent
+            task.meta['updated'] = counter
             task.save()
 
     #flag stale records
-    PillBoxData.objects.filter(new=False, updated=False).update(stale=True)
-
-    print(counter)
+    PillBoxData.objects.filter(updated=False, new=False).update(stale=True)
 
 
 def update(pillbox, spl_pill, action='new'):
@@ -71,6 +100,8 @@ def update(pillbox, spl_pill, action='new'):
         'dea_schedule_code': 'dea_schedule_code',
         'spl_inactive_ing': 'spl_inactive_ing',
         'spl_ingredients': 'spl_ingredients',
+        'splcolor': 'splcolor',
+        'splshape': 'splshape',
         'rxcui': 'rxcui',
         'rxtty': 'rxtty',
         'rxstring': 'rxstring',
@@ -92,9 +123,9 @@ def update(pillbox, spl_pill, action='new'):
 
     check_map = {
         'splimprint': Imprint,
-        'splcolor': Color,
+        'splcolor_text': Color,
         'splscore': Score,
-        'splshape': Shape,
+        'splshape_text': Shape,
         'splsize': Size,
         'splimage': Image,
     }
@@ -142,12 +173,13 @@ def update(pillbox, spl_pill, action='new'):
         pillbox.save()
 
         #Only add if there is an image
-        if pillbox.splimage:
+        if pillbox.has_image:
             for key, value in check_map.iteritems():
                 spl_value = getattr(spl_pill, key)
                 pillbox_value = getattr(pillbox, key)
 
-                if spl_value != pillbox_value and pillbox_value:
+                #only add if the values are different
+                if spl_value != pillbox_value:
 
                     # Check if there is a record already
                     try:
@@ -159,8 +191,8 @@ def update(pillbox, spl_pill, action='new'):
 
                     except value.DoesNotExist:
                         new_obj = value()
-                        new_obj.spl_value = new_value
-                        new_obj.pillbox_value = new_value
+                        new_obj.spl_value = spl_value
+                        new_obj.pillbox_value = pillbox_value
                         new_obj.spl_id = spl_pill.id
                         new_obj.pillbox_id = pillbox.id
                         new_obj.is_different = True

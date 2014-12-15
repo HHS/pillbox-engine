@@ -17,10 +17,14 @@ class PillBoxData(CommonInfo):
     setid = models.CharField('setid', max_length=250, unique=True)
     setid_product = models.CharField('setid_product', max_length=250)
     splsize = models.CharField('SPLSIZE', max_length=250, null=True, blank=True)
-    splshape = models.CharField('SPLSHAPE', max_length=250, null=True, blank=True)
+    splshape = models.CharField('SPLSHAPE Code', max_length=250, null=True, blank=True)
+    splshape_text = models.CharField('SPLSHAPE Display Name', max_length=250, null=True, blank=True)
+    pillbox_shape_text = models.CharField('Pillbox Shape Display Name', max_length=250, null=True, blank=True)
     splscore = models.CharField('SPLSCORE', max_length=250, null=True, blank=True)
     splimprint = models.CharField('SPLIMPRINT', max_length=250, null=True, blank=True)
-    splcolor = models.CharField('SPLCOLOR', max_length=250, null=True, blank=True)
+    splcolor = models.CharField('SPLCOLOR Code', max_length=250, null=True, blank=True)
+    splcolor_text = models.CharField('SPLCOLOR Display Name', max_length=250, null=True, blank=True)
+    pillbox_color_text = models.CharField('Pillbox COLOR Display Name', max_length=250, null=True, blank=True)
     spl_strength = models.TextField('SPL_STRENGTH', null=True, blank=True)
     spl_ingredients = models.TextField('SPL_INGREDIENTS', null=True, blank=True)
     spl_inactive_ing = models.TextField('SPL_INACTIVE_ING', null=True, blank=True)
@@ -57,7 +61,7 @@ class PillBoxData(CommonInfo):
     laberer_code = models.CharField('Laberer Code', max_length=250, null=True, blank=True)
     application_number = models.CharField('Application Number', max_length=250, null=True, blank=True)
     updated = models.BooleanField('Is updated from SPL?', default=False)
-    stale = models.BooleanField('Does not exist on SPL (Stale)', default=True)
+    stale = models.BooleanField('Does not exist on SPL (Stale)', default=False)
     new = models.BooleanField('Just added from SPL (New)', default=False)
 
     class Meta:
@@ -83,3 +87,21 @@ class Import(CommonInfo):
         verbose_name = 'Data Import'
         verbose_name_plural = 'Data Import'
 
+
+class Color(models.Model):
+
+    display_name = models.CharField('SPL Display Name', max_length=250)
+    code = models.CharField('SPL Code', max_length=250)
+    hex_value = models.CharField('HEX Value', max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.display_name
+
+
+class Shape(models.Model):
+
+    display_name = models.CharField('SPL Display Name', max_length=250)
+    code = models.CharField('SPL Code', max_length=250)
+
+    def __unicode__(self):
+        return self.display_name

@@ -275,9 +275,13 @@ class XPath(object):
             output['splimprint'] = ''
 
         try:
-            output['splshape'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSHAPE"]')[0].getnext().get('code')
+            shape = self._xpath('t:*//t:characteristic/t:code[@code="SPLSHAPE"]')[0].getnext()
+            output['splshape'] = shape.get('code')
+            # Make sure extra spaces are removed
+            output['splshape_text'] = re.sub('[ \f\t\v]$', '', shape.get('displayName').upper())
         except IndexError:
             output['splshape'] = ''
+            output['splshape_text'] = ''
 
         try:
             output['splsize'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSIZE"]')[0].getnext().get('value')
@@ -287,6 +291,7 @@ class XPath(object):
         colors = self._xpath('t:*//t:characteristic/t:code[@code="SPLCOLOR"]')
         try:
             output['splcolor'] = ";".join([color.getnext().get('code') for color in colors])
+            output['splcolor_text'] = ";".join([color.getnext().get('displayName') for color in colors]).upper()
         except TypeError:
             pass
 
@@ -314,6 +319,8 @@ class XPath(object):
                 shutil.copy(join(source_path, image), media_path)
             except IOError:
                 pass
+
+            image = 'pillbox/' + image
 
         return image
 

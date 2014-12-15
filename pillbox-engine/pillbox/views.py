@@ -40,11 +40,19 @@ class Transfer(viewsets.ViewSet):
     """
 
     def list(self, request):
+        return Response({'message': 'empty'}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+
+        actions = ['transfer', 'compare']
+
+        if pk not in actions:
+            return Response({'message': 'empty'}, status=status.HTTP_200_OK)
 
         try:
             task = Task.objects.filter(is_active=True)[:1].get()
 
-            if task.name == 'transfer':
+            if task.name == pk:
 
                 output = {
                     'message': 'Transfering',
@@ -64,7 +72,7 @@ class Transfer(viewsets.ViewSet):
 
             try:
                 task = Task.objects.filter(
-                    name='transfer',
+                    name=pk,
                     status='SUCCESS',
                     time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
                 )[:1].get()
@@ -75,18 +83,18 @@ class Transfer(viewsets.ViewSet):
             except Task.DoesNotExist:
 
                 task = Task()
-                task.name = 'transfer'
+                task.name = pk
                 task.status = 'PENDING'
                 task.time_started = timezone.now()
                 task.save()
 
-                t = transfer_task.delay(task.id)
+                t = transfer_task.delay(task.id, pk)
 
                 task.task_id = t.task_id
                 task.save()
 
                 return Response({
-                    'message': 'Transfer started',
+                    'message': '%s started' % pk,
                     'status': task.status,
                     'meta': task.meta,
                     'task_id': task.task_id,

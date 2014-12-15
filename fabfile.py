@@ -109,6 +109,7 @@ def update():
     kwarg = _check_env()
     with shell_env(**kwarg):
         local('python pillbox-engine/manage.py migrate')
+        local('python pillbox-engine/manage.py collectstatic --noinput')
 
 
 def spl(choice=None):
@@ -128,6 +129,7 @@ def loaddata():
     kwarg = _check_env()
     with shell_env(**kwarg):
         local('python pillbox-engine/manage.py loaddata spl_sources')
+        local('python pillbox-engine/manage.py loaddata color_shape')
 
 
 def _install_mysql():
@@ -168,6 +170,7 @@ def _db_questions(type, port):
 def _sync_db():
     local('python pillbox-engine/manage.py migrate')
     local('python pillbox-engine/manage.py loaddata spl_sources')
+    local('python pillbox-engine/manage.py loaddata color_shape')
     local('python pillbox-engine/manage.py makeusers')
 
 

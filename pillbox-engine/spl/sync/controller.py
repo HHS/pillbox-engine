@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-
+import shutil
 import os
 import sys
 import time
@@ -69,6 +69,13 @@ class Controller(object):
                     self._status(added=counter['added'], updated=counter['updated'],
                                  error=x.error, skipped=x.skip,
                                  action=action)
+
+            # remove tmp2 folder
+            if action == 'pills':
+                try:
+                    shutil.rmtree(os.path.join(d, 'tmp2'))
+                except OSError:
+                    pass
 
         end = time.time()
 

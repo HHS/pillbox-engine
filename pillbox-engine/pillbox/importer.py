@@ -1,7 +1,7 @@
 from __future__ import division
 import csv
 
-from pillbox.models import PillBoxData
+from pillbox.models import PillBoxData, Shape, Color
 from spl.models import Task
 
 
@@ -47,8 +47,10 @@ def importer(csv_path, task_id=None):
         'author': 'author',
         'SPLIMPRINT': 'splimprint',
         'SPLCOLOR': 'splcolor',
-        'SPLSCORE': 'splscore',
+        'SPLCOLOR_TEXT': 'splcolor_text',
         'SPLSHAPE': 'splshape',
+        'SPLSHAPE_TEXT': 'splshape_text',
+        'SPLSCORE': 'splscore',
         'SPLSIZE': 'splsize',
         'DEA_SCHEDULE_CODE': 'dea_schedule_code',
         'SPL_INACTIVE_ING': 'spl_inactive_ing',
@@ -90,6 +92,14 @@ def importer(csv_path, task_id=None):
     for i in headers:
         new_header.append(pillbox_map[i])
 
+    # Check if splcolor_text and splshape_text are in the import file
+    # if they are not populate the text with the value of the code box
+    if 'SPLCOLOR_TEXT' not in headers:
+        color_from_code = True
+
+    if 'SPLSHAPE_TEXT' not in headers:
+        shape_from_code = True
+
     counter = {
         'added': 0,
         'updated': 0
@@ -101,6 +111,26 @@ def importer(csv_path, task_id=None):
             # if column doesn't exist just pass
             try:
                 new[v] = line[k]
+
+                ## Populate color text based on color code
+                if v == 'splcolor' and color_from_code:
+                    try:
+                        if line[k]:
+                            codes = line[k].split(';')
+                            colors = Color.objects.filter(code__in=codes).values('display_name')
+                        new['splcolor_text'] = ";".join([c['display_name'] for c in colors])
+                    except Color.DoesNotExist:
+                        pass
+
+                # Populate shape text based on shape code
+                if v == 'splshape' and shape_from_code:
+                    try:
+                        if line[k]:
+                            shape = Shape.objects.get(code=line[k])
+                            new['splshape_text'] = shape.display_name
+                    except Shape.DoesNotExist:
+                        pass
+
             except KeyError:
                 pass
 
