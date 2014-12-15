@@ -23,23 +23,39 @@ def pillbox_widgets():
         },
         {
             'icon': 'fa-arrows-h ',
-            'name': 'Transfer',
-            'subtitle': 'SPL to Pillbox',
+            'name': 'Add New',
+            'subtitle': 'New SPL pills to Pillbox',
             # 'count': pillbox_count,
-            'text': 'Transfer from SPL',
+            'text': 'New pills from SPL',
             'link': '#',
-            'color': 'primary',
-            'action': '/pillbox/transfer/'
+            'color': 'green',
+            'action': '/pillbox/transfer/transfer'
+        },
+        {
+            'icon': 'fa-arrows-h ',
+            'name': 'Update',
+            'subtitle': 'Compare SPL With Pillbox',
+            # 'count': pillbox_count,
+            'text': 'Compare',
+            'link': '#',
+            'color': 'yellow',
+            'action': '/pillbox/transfer/compare'
         }
     ]
 
-    try:
-        task = Task.objects.filter(is_active=True, name='transfer')[:1].get()
-        boxes[1]['meta'] = task.meta
-        boxes[1]['status'] = task.status
+    options = {
+        'transfer': 1,
+        'compare': 2
+    }
 
-    except Task.DoesNotExist:
-        pass
+    for k, v in options.iteritems():
+        try:
+            task = Task.objects.filter(is_active=True, name=k)[:1].get()
+            boxes[v]['meta'] = task.meta
+            boxes[v]['status'] = task.status
+
+        except Task.DoesNotExist:
+            pass
 
     return {'boxes': boxes}
 
