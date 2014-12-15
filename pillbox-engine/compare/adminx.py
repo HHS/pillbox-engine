@@ -16,25 +16,27 @@ class GenericAdmin(object):
 
     def spl_image(self, instance):
         if instance.spl.splimage:
-            return '<img height="90" src="/media/pillbox/%s" />' % instance.spl.splimage.name
+            return '<img height="90" src="%s" />' % instance.spl.splimage.url
         else:
             return ''
     spl_image.short_description = "SPL"
     spl_image.allow_tags = True
     spl_image.is_column = True
 
-    list_editable = ('pillbox_value', 'verified')
+    list_editable = ('pillbox_value', 'verified', 'is_different')
 
-    list_display = ('spl_value', 'pillbox_value', 'verified', 'pillbox_image', 'spl_image')
+    list_display = ('spl_value', 'pillbox_value', 'verified', 'is_different', 'pillbox_image', 'spl_image', 'pillbox')
 
     readonly_fields = ['spl', 'pillbox', 'spl_value']
 
     fields = ['spl', 'pillbox', 'spl_value', 'pillbox_value', 'verified',
               'is_different', 'reason']
 
-    list_filter = ['pillbox__new', 'pillbox__updated']
+    list_filter = ['verified', 'pillbox__new', 'pillbox__updated']
 
     list_per_page = 10
+
+    ordering = ['verified']
 
 
 class ColorAdmin(GenericAdmin):
