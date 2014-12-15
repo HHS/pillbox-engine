@@ -151,7 +151,7 @@ def update(pillbox, spl_pill, action='new'):
                 if getattr(spl_pill, key):
                     pillbox.has_image = True
                     pillbox.image_source = 'NLM'
-                    pillbox.splimage = 'pillbox/' + getattr(spl_pill, key).name
+                    pillbox.splimage = getattr(spl_pill, key).name
 
         # for new items with need to save first to get a pillbox id
         pillbox.save()
@@ -180,6 +180,10 @@ def update(pillbox, spl_pill, action='new'):
 
                 #only add if the values are different
                 if spl_value != pillbox_value:
+
+                    # only add images that have values on both spl and pillbox
+                    if key == 'splimage' and not spl_value:
+                        continue
 
                     # Check if there is a record already
                     try:
