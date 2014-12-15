@@ -1,0 +1,230 @@
+[{
+    "pk": "1",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "000000",
+        "code": "C48323",
+        "display_name": "BLACK"
+    }
+}, {
+    "pk": "2",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "0000FF",
+        "code": "C48333",
+        "display_name": "BLUE"
+    }
+}, {
+    "pk": "3",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "964B00",
+        "code": "C48332",
+        "display_name": "BROWN"
+    }
+}, {
+    "pk": "4",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "808080",
+        "code": "C48324",
+        "display_name": "GRAY"
+    }
+}, {
+    "pk": "5",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "008000",
+        "code": "C48329",
+        "display_name": "GREEN"
+    }
+}, {
+    "pk": "6",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "FFA500",
+        "code": "C48331",
+        "display_name": "ORANGE"
+    }
+}, {
+    "pk": "7",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "FFC0CB",
+        "code": "C48328",
+        "display_name": "PINK"
+    }
+}, {
+    "pk": "8",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "800080",
+        "code": "C48327",
+        "display_name": "PURPLE"
+    }
+}, {
+    "pk": "9",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "FF0000",
+        "code": "C48326",
+        "display_name": "RED"
+    }
+}, {
+    "pk": "10",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "30D5C8",
+        "code": "C48334",
+        "display_name": "TURQUOISE"
+    }
+}, {
+    "pk": "11",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "FFFFFF",
+        "code": "C48325",
+        "display_name": "WHITE"
+    }
+}, {
+    "pk": "12",
+    "model": "pillbox.color",
+    "fields": {
+        "hex_value": "FFFF00",
+        "code": "C48330",
+        "display_name": "YELLOW"
+    }
+}, {
+    "pk": "1",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48335",
+        "display_name": "BULLET"
+    }
+}, {
+    "pk": "2",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48336",
+        "display_name": "CAPSULE"
+    }
+}, {
+    "pk": "3",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48337",
+        "display_name": "CLOVER"
+    }
+}, {
+    "pk": "4",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48338",
+        "display_name": "DIAMOND"
+    }
+}, {
+    "pk": "5",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48339",
+        "display_name": "DOUBLE CIRCLE"
+    }
+}, {
+    "pk": "6",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48340",
+        "display_name": "FREEFORM"
+    }
+}, {
+    "pk": "7",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48341",
+        "display_name": "GEAR"
+    }
+}, {
+    "pk": "8",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48342",
+        "display_name": "HEPTAGON (7 SIDES)"
+    }
+}, {
+    "pk": "9",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48343",
+        "display_name": "HEXAGON (6 SIDES)"
+    }
+}, {
+    "pk": "10",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48344",
+        "display_name": "OCTAGON (8 SIDES)"
+    }
+}, {
+    "pk": "11",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48345",
+        "display_name": "OVAL"
+    }
+}, {
+    "pk": "12",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48346",
+        "display_name": "PENTAGON (5 SIDES)"
+    }
+}, {
+    "pk": "13",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48347",
+        "display_name": "RECTANGLE"
+    }
+}, {
+    "pk": "14",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48348",
+        "display_name": "ROUND"
+    }
+}, {
+    "pk": "15",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48349",
+        "display_name": "SEMI-CIRCLE"
+    }
+}, {
+    "pk": "16",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48350",
+        "display_name": "SQUARE"
+    }
+}, {
+    "pk": "17",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48351",
+        "display_name": "TEAR"
+    }
+}, {
+    "pk": "18",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48352",
+        "display_name": "TRAPEZOID"
+    }
+}, {
+    "pk": "19",
+    "model": "pillbox.shape",
+    "fields": {
+        "code": "C48353",
+        "display_name": "TRIANGLE"
+    }
+}]
