@@ -275,9 +275,10 @@ class XPath(object):
             output['splimprint'] = ''
 
         try:
-            output['splshape'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSHAPE"]')[0].getnext().get('code')
-            output['splshape_text'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLSHAPE"]'
-                                                  )[0].getnext().get('displayName').upper()
+            shape = self._xpath('t:*//t:characteristic/t:code[@code="SPLSHAPE"]')[0].getnext()
+            output['splshape'] = shape.get('code')
+            # Make sure extra spaces are removed
+            output['splshape_text'] = re.sub('[ \f\t\v]$', '', shape.get('displayName').upper())
         except IndexError:
             output['splshape'] = ''
             output['splshape_text'] = ''
