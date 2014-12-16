@@ -104,7 +104,7 @@ def collect():
 def update():
     """ Fetch the latest updates from the repo"""
     local('git pull origin master')
-    local('pip install -r requirements.txt')
+    # local('pip install -r requirements.txt')
 
     kwarg = _check_env()
     with shell_env(**kwarg):
