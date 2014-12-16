@@ -101,7 +101,12 @@ def update(pillbox, spl_pill, action='new'):
         'spl_inactive_ing': 'spl_inactive_ing',
         'spl_ingredients': 'spl_ingredients',
         'splcolor': 'splcolor',
+        'splcolor_text': 'splcolor_text',
         'splshape': 'splshape',
+        'splshape_text': 'splshape_text',
+        'splsize': 'splsize',
+        'splimprint': 'splimprint',
+        'splscore': 'splscore',
         'rxcui': 'rxcui',
         'rxtty': 'rxtty',
         'rxstring': 'rxstring',
@@ -144,14 +149,12 @@ def update(pillbox, spl_pill, action='new'):
         pillbox.author = spl_pill.setid.author
 
     if action == 'new':
-        # add items to the pillboxdata model
-        for key, value in check_map.iteritems():
-            setattr(pillbox, key, getattr(spl_pill, key))
-            if key == 'splimage':
-                if getattr(spl_pill, key):
-                    pillbox.has_image = True
-                    pillbox.image_source = 'NLM'
-                    pillbox.splimage = getattr(spl_pill, key).name
+
+        # add splimage if there is one
+        if spl_pill.splimage:
+            pillbox.has_image = True
+            pillbox.image_source = 'NLM'
+            pillbox.splimage = spl_pill.splimage.name
 
         # for new items with need to save first to get a pillbox id
         pillbox.save()
@@ -163,7 +166,6 @@ def update(pillbox, spl_pill, action='new'):
                 if new_value:
                     new_obj = value()
                     new_obj.spl_value = new_value
-                    new_obj.pillbox_value = new_value
                     new_obj.spl_id = spl_pill.id
                     new_obj.pillbox_id = pillbox.id
 
@@ -172,15 +174,25 @@ def update(pillbox, spl_pill, action='new'):
     else:
         pillbox.save()
 
-        #Only add if there is an image
-        if pillbox.has_image:
-            for key, value in check_map.iteritems():
-                spl_value = getattr(spl_pill, key)
-                pillbox_value = getattr(pillbox, key)
+        for key, value in check_map.iteritems():
 
-                #only add if the values are different
-                if spl_value != pillbox_value:
+            if key == 'splimage':
+                pillbox_key = key
+            else:
+                pillbox_key = key.replace('spl', 'pillbox_')
 
+            spl_value = getattr(spl_pill, key)
+            pillbox_value = getattr(pillbox, pillbox_key)
+
+            #if values are the same get rid of pillbox data
+            if spl_value == pillbox_value and key != 'splimage':
+                setattr(pillbox, pillbox_key, None)
+                pillbox.save()
+
+            #only add if the values are different
+            elif spl_value != pillbox_value and pillbox_value:
+                #Only add if there is an image
+                if pillbox.has_image:
                     # only add images that have values on both spl and pillbox
                     if key == 'splimage' and not spl_value:
                         continue
@@ -213,3 +225,10 @@ def clear_compare_tables():
     Shape.objects.all().delete()
     Size.objects.all().delete()
     Image.objects.all().delete()
+
+
+def test_update():
+    pillbox = PillBoxData.objects.get(pk=292717)
+    spl = Pill.objects.get(pk=120844)
+
+    update(pillbox, spl, action='update')
