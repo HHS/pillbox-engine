@@ -133,7 +133,7 @@ def importer(csv_path, task_id=None):
                         if line[k]:
                             codes = line[k].split(';')
                             colors = Color.objects.filter(code__in=codes).values('display_name')
-                        new['splcolor_text'] = ";".join([c['display_name'] for c in colors])
+                        new['pillbox_color_text'] = ";".join([c['display_name'] for c in colors])
                     except Color.DoesNotExist:
                         pass
 
@@ -142,7 +142,7 @@ def importer(csv_path, task_id=None):
                     try:
                         if line[k]:
                             shape = Shape.objects.get(code=line[k])
-                            new['splshape_text'] = shape.display_name
+                            new['pillbox_shape_text'] = shape.display_name
                     except Shape.DoesNotExist:
                         pass
 
