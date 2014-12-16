@@ -17,7 +17,7 @@ class PillBoxData(CommonInfo):
     setid = models.CharField('setid', max_length=250, unique=True)
     setid_product = models.CharField('setid_product', max_length=250)
     splsize = models.CharField('SPLSIZE', max_length=250, null=True, blank=True)
-    pillbox_size = models.CharField('Pillbo SIZE', max_length=250, null=True, blank=True)
+    pillbox_size = models.CharField('Pillbox SIZE', max_length=250, null=True, blank=True)
     splshape = models.CharField('SPLSHAPE Code', max_length=250, null=True, blank=True)
     splshape_text = models.CharField('SPLSHAPE Display Name', max_length=250, null=True, blank=True)
     pillbox_shape_text = models.CharField('Pillbox Shape Display Name', max_length=250, null=True, blank=True)
