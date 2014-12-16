@@ -46,12 +46,17 @@ def importer(csv_path, task_id=None):
         'PART_MEDICINE_NAME': 'part_medicine_name',
         'author': 'author',
         'SPLIMPRINT': 'splimprint',
+        'PILLBOX_IMPRINT': 'pillbox_imprint',
         'SPLCOLOR': 'splcolor',
         'SPLCOLOR_TEXT': 'splcolor_text',
+        'PILLBOX_COLOR_TEXT': 'pillbox_color_text',
         'SPLSHAPE': 'splshape',
         'SPLSHAPE_TEXT': 'splshape_text',
+        'PILLBOX_SHAPE_TEXT': 'pillbox_shape_text',
         'SPLSCORE': 'splscore',
+        'PILLBOX_SCORE': 'pillbox_score',
         'SPLSIZE': 'splsize',
+        'PILLBOX_SIZE': 'pillbox_size',
         'DEA_SCHEDULE_CODE': 'dea_schedule_code',
         'SPL_INACTIVE_ING': 'spl_inactive_ing',
         'RXCUI': 'rxcui',
@@ -94,11 +99,21 @@ def importer(csv_path, task_id=None):
 
     # Check if splcolor_text and splshape_text are in the import file
     # if they are not populate the text with the value of the code box
-    if 'SPLCOLOR_TEXT' not in headers:
+    if 'PILLBOX_COLOR_TEXT' not in headers:
         color_from_code = True
 
-    if 'SPLSHAPE_TEXT' not in headers:
+    if 'PILLBOX_SHAPE_TEXT' not in headers:
         shape_from_code = True
+
+    compatibility = {}
+    if 'PILLBOX_IMPRINT' not in headers:
+        compatibility['splimprint'] = 'pillbox_imprint'
+
+    if 'PILLBOX_SCORE' not in headers:
+        compatibility['splscore'] = 'pillbox_score'
+
+    if 'PILLBOX_SIZE' not in headers:
+        compatibility['splsize'] = 'pillbox_size'
 
     counter = {
         'added': 0,
@@ -118,7 +133,7 @@ def importer(csv_path, task_id=None):
                         if line[k]:
                             codes = line[k].split(';')
                             colors = Color.objects.filter(code__in=codes).values('display_name')
-                        new['splcolor_text'] = ";".join([c['display_name'] for c in colors])
+                        new['pillbox_color_text'] = ";".join([c['display_name'] for c in colors])
                     except Color.DoesNotExist:
                         pass
 
@@ -127,9 +142,13 @@ def importer(csv_path, task_id=None):
                     try:
                         if line[k]:
                             shape = Shape.objects.get(code=line[k])
-                            new['splshape_text'] = shape.display_name
+                            new['pillbox_shape_text'] = shape.display_name
                     except Shape.DoesNotExist:
                         pass
+
+                # If dataset doesn't include pillbox variables populate fields with SPL data
+                if v in compatibility:
+                    new[compatibility[v]] = line[k]
 
             except KeyError:
                 pass
