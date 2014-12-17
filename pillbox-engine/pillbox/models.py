@@ -91,6 +91,28 @@ class Import(CommonInfo):
         verbose_name_plural = 'Data Import'
 
 
+class Export(CommonInfo):
+
+    FILE_TYPE = (
+        ('json', 'JSON'),
+        ('csv', 'CSV'),
+        ('yaml', 'YAML'),
+        ('xml', 'XML')
+    )
+
+    file_type = models.CharField('File Type', max_length=200, choices=FILE_TYPE)
+    file_name = models.CharField('File Name', max_length=200)
+    export_file = models.FileField('Export File', upload_to='export', null=True, blank=True)
+    completed = models.BooleanField('Completed?', default=False)
+    task_id = models.CharField('Task ID', max_length=200, null=True, blank=True)
+    status = models.CharField('Status', max_length=200, null=True, blank=True)
+    duration = models.FloatField('Duration (Sec.)', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Export'
+        verbose_name_plural = 'Export'
+
+
 class Color(models.Model):
 
     display_name = models.CharField('SPL Display Name', max_length=250)
