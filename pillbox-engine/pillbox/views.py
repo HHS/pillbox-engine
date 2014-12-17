@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from pillbox.tasks import transfer_task
 from spl.models import Task
+from pillbox.models import Export
 
 
 class ImportStatus(viewsets.ViewSet):
@@ -29,6 +30,40 @@ class ImportStatus(viewsets.ViewSet):
             output = {
                 'message': 'No Pending Import Tasks'
             }
+
+        return Response(output, status=status.HTTP_200_OK)
+
+
+class ExportStatus(viewsets.ViewSet):
+
+    """
+    Checks status of export tasks
+    """
+
+    def list(self, request):
+
+        try:
+            task = Task.objects.filter(is_active=True, name='export')[:1].get()
+            output = {
+                'message': 'Exporting',
+                'meta': task.meta,
+                'status': task.status,
+                'task_id': task.task_id,
+                'pid': task.pid
+            }
+        except Task.DoesNotExist:
+            try:
+                export = Export.objects.filter(completed=True).order_by('-updated_at')[:1].get()
+
+                output = {
+                    'message': 'Download: <a id="export-file" href="%s" download>%s</a>' % (export.export_file.url,
+                                                                                            export.export_file.name)
+                }
+
+            except Export.DoesNotExist:
+                output = {
+                    'message': 'No Pending Export Tasks'
+                }
 
         return Response(output, status=status.HTTP_200_OK)
 
