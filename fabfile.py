@@ -104,12 +104,13 @@ def collect():
 def update():
     """ Fetch the latest updates from the repo"""
     local('git pull origin master')
-    # local('pip install -r requirements.txt')
+    local('pip install -r requirements.txt')
 
     kwarg = _check_env()
     with shell_env(**kwarg):
         local('python pillbox-engine/manage.py migrate')
         local('python pillbox-engine/manage.py collectstatic --noinput')
+        local('python pillbox-engine/manage.py makeusers')
 
 
 def spl(choice=None):
@@ -117,8 +118,8 @@ def spl(choice=None):
     if choice is None:
         choice = 'all'
 
-    env = _check_env()
-    with shell_env(DJANGO_CONFIGURATION='Production', DATABASE_URL=env[1]):
+    kwarg = _check_env()
+    with shell_env(**kwarg):
         if choice in ['products', 'pills', 'all']:
             local('python pillbox-engine/manage.py syncspl %s' % choice)
         else:
@@ -130,6 +131,12 @@ def loaddata():
     with shell_env(**kwarg):
         local('python pillbox-engine/manage.py loaddata spl_sources')
         local('python pillbox-engine/manage.py loaddata color_shape')
+
+
+def makeuser():
+    kwarg = _check_env()
+    with shell_env(**kwarg):
+        local('python pillbox-engine/manage.py makeusers')
 
 
 def _install_mysql():
