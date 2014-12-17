@@ -26,3 +26,4 @@ SQLAlchemy==0.9.8
 ftputil==3.2
 requests==2.5.0
 simplejson==3.6.5
+django-queryset-csv==0.2.10
