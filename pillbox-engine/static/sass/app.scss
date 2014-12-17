@@ -50,6 +50,16 @@
     }
 }
 
+.widget-footer {
+    cursor: pointer;
+    cursor: hand;
+    text-decoration: underline;
+    color: #5cb85c;
+    &:hover {
+        color: #3d8b3d;
+    }
+}
+
 .panel-green {
     border-color: #5cb85c;
     .panel-heading {

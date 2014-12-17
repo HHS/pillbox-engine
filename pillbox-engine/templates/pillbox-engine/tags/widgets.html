@@ -14,7 +14,6 @@
                     </div>
                 </div>
             </div>
-            <a href="{{box.link}}">
                 <div class="panel-footer widget-footer" data-action="{{box.action}}">
                     <div class="widget-progress {% if not box.meta %} hide {% endif %}">
                         <div class="task-name">{{box.meta.file}}</div>
@@ -28,7 +27,6 @@
                     <span class="pull-right"><i class="fa {% if box.status %} fa-refresh {% else %} fa-arrow-circle-right {% endif %}"></i></span>
                     <div class="clearfix"></div>
                 </div>
-            </a>
         </div>
     </div>
 {% endfor %}

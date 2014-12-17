@@ -38,7 +38,6 @@ $(document).ready(function() {
     }
 
     $('.widget-footer').click(function(event) {
-        event.preventDefault();
         var action = $(this).data('action');
         var that = $(this);
         changeButton(that, 'refresh');

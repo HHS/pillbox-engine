@@ -66,44 +66,56 @@
 }
 
 /* line 53, ../sass/app.scss */
+.widget-footer {
+  cursor: pointer;
+  cursor: hand;
+  text-decoration: underline;
+  color: #5cb85c;
+}
+/* line 58, ../sass/app.scss */
+.widget-footer:hover {
+  color: #3d8b3d;
+}
+
+/* line 63, ../sass/app.scss */
 .panel-green {
   border-color: #5cb85c;
 }
-/* line 55, ../sass/app.scss */
+/* line 65, ../sass/app.scss */
 .panel-green .panel-heading {
   border-color: #5cb85c;
   color: #fff;
   background-color: #5cb85c;
 }
-/* line 60, ../sass/app.scss */
+/* line 70, ../sass/app.scss */
 .panel-green a {
   color: #5cb85c;
 }
-/* line 63, ../sass/app.scss */
+/* line 73, ../sass/app.scss */
 .panel-green a:hover {
   color: #3d8b3d;
 }
 
-/* line 67, ../sass/app.scss */
+/* line 77, ../sass/app.scss */
 .panel-red {
   border-color: #d9534f;
 }
-/* line 69, ../sass/app.scss */
+/* line 79, ../sass/app.scss */
 .panel-red .panel-heading {
   border-color: #d9534f;
   color: #fff;
   background-color: #d9534f;
 }
-/* line 74, ../sass/app.scss */
+/* line 84, ../sass/app.scss */
 .panel-red a {
   color: #d9534f;
 }
-/* line 77, ../sass/app.scss */
+/* line 87, ../sass/app.scss */
 .panel-red a:hover {
   color: #b52b27;
 }
 
-/* line 82, ../sass/app.scss */
+/* line 92, ../sass/app.scss */
 .progress {
   background-color: #CCCCCC;
 }
