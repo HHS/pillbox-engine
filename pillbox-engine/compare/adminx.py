@@ -29,10 +29,11 @@ class GenericAdmin(object):
 
     readonly_fields = ['spl', 'pillbox', 'spl_value']
 
-    fields = ['spl', 'pillbox', 'spl_value', 'pillbox_value', 'verified',
-              'is_different', 'reason']
-
     list_filter = ['verified', 'pillbox__new', 'pillbox__updated']
+
+    form_layout = ('pillbox_image', 'spl_value',
+                   'pillbox_value', 'verified', 'is_different',
+                   'reason', 'spl', 'pillbox', )
 
     list_per_page = 10
 
