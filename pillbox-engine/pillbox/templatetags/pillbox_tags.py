@@ -22,14 +22,6 @@ def pillbox_widgets():
             'action': '/pillbox/status/'
         },
         {
-            'icon': 'fa-sign-out',
-            'name': 'Export',
-            'text': 'Check Export Status',
-            'link': '#',
-            'color': 'red',
-            'action': '/pillbox/export_status/'
-        },
-        {
             'icon': 'fa-arrows-h ',
             'name': 'Add New',
             'subtitle': 'New SPL pills to Pillbox',
@@ -48,6 +40,14 @@ def pillbox_widgets():
             'link': '#',
             'color': 'yellow',
             'action': '/pillbox/transfer/compare'
+        },
+        {
+            'icon': 'fa-sign-out',
+            'name': 'Export',
+            'text': 'Check Export Status',
+            'link': '#',
+            'color': 'red',
+            'action': '/pillbox/export_status/'
         }
     ]
 

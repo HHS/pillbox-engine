@@ -31,29 +31,10 @@
                 <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
             </div>
             <div aria-labelledby="action-tab" id="action" class="tab-pane active fade in" role="tabpanel">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2 class="page-header">SPL <small>updated: {% spl_sync_time %}</small></h2>
-                    </div>
-                </div>
-                <div class="row">
-                    {% spl_widgets %}
-                </div>
-                <div id="spl-sync"></div>
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 class="page-header">Pillbox <small>updated: {% pillbox_sync_time %}</small></h2>
-                    </div>
-                </div>
-
-                <div class="row">
-                    {% pillbox_widgets %}
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2 class="page-header">Download</h2>
+                        <h2 class="page-header">1. Download</h2>
                     </div>
                 </div>
                 <div class="row">
@@ -63,6 +44,28 @@
 
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">2. Sync SPL <small>updated: {% spl_sync_time %}</small></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    {% spl_widgets %}
+                </div>
+                <div id="spl-sync"></div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">3. Process Pillbox <small>updated: {% pillbox_sync_time %}</small></h2>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% pillbox_widgets %}
+                </div>
+
+
             </div>
         </div>
     </div>
