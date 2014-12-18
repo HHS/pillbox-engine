@@ -1,4 +1,6 @@
-{% load url from future %}{% load xadmin_tags %}{% load i18n %}<!DOCTYPE html>
+{% load url from future %}{% load xadmin_tags %}{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
@@ -35,5 +37,14 @@
   {{ media.js }}
   {% block extrabody %}{% endblock %}
   {% view_block 'extrabody' %}
+
+  <script type="text/javascript" src="{% static 'vendor/lightbox/ekko-lightbox.min.js' %}"></script>
+  <script type="text/javascript">
+    $(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+  </script>
+
 </body>
 </html>
