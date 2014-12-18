@@ -5,20 +5,22 @@ from compare.models import Color, Score, Size, Shape, Image, Imprint
 
 
 class GenericAdmin(object):
-    def pillbox_image(self, instance):
-        if instance.pillbox.splimage:
-            return '<img height="90" src="%s" />' % instance.pillbox.splimage.url
+
+    def image_popup(self, image_obj):
+        if image_obj:
+            return '<a data-toggle="lightbox" data-remote="%s"><img height="90" src="%s" /></a>' % (image_obj.url,
+                                                                                                    image_obj.url)
         else:
             return ''
+
+    def pillbox_image(self, instance):
+        return self.image_popup(instance.pillbox.splimage)
     pillbox_image.short_description = "Pillbox"
     pillbox_image.allow_tags = True
     pillbox_image.is_column = True
 
     def spl_image(self, instance):
-        if instance.spl.splimage:
-            return '<img height="90" src="%s" />' % instance.spl.splimage.url
-        else:
-            return ''
+        return self.image_popup(instance.spl.splimage)
     spl_image.short_description = "SPL"
     spl_image.allow_tags = True
     spl_image.is_column = True
