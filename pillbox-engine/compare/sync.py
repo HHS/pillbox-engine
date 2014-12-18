@@ -98,6 +98,7 @@ def update(pillbox, spl_pill, action='new'):
         'medicine_name': 'medicine_name',
         'part_medicine_name': 'part_medicine_name',
         'dea_schedule_code': 'dea_schedule_code',
+        'dea_schedule_name': 'dea_schedule_name',
         'spl_inactive_ing': 'spl_inactive_ing',
         'spl_ingredients': 'spl_ingredients',
         'splcolor': 'splcolor',
