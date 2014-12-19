@@ -26,7 +26,7 @@ We assume you have the following installed:
 If you don't, you can follow these steps to setup pip and virtualenv::
 
     $ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python
-    $ sudo easy_install python-pip
+    $ sudo easy_install pip
     $ sudo easy_install virtualenv
 
 To start a virtualenv simply run::
