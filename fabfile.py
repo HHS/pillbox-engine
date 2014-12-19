@@ -183,12 +183,16 @@ def _sync_db():
 
 def _check_env():
     kwarg = {}
-    with open('.env', 'r') as env:
-        content = env.readlines()
+    try:
+        with open('.env', 'r') as env:
+            content = env.readlines()
 
-    for item in content:
-        split = item.split('=')
-        kwarg[split[0]] = split[1][:-1]
+        for item in content:
+            split = item.split('=')
+            kwarg[split[0]] = split[1][:-1]
+    except IOError:
+        # Ignore if the .env file doesn't exist
+        pass
     return kwarg
 
 
