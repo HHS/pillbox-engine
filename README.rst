@@ -40,7 +40,7 @@ To deactivate run::
 
 You should also consider using a database engine such Postgres or MySQL with this application. Pillbox Engine supports Sqlite3, Postgres and MySQL, however, we highly recommend using Postgres. This program is primarily tested with Postgres.
 
-To setup Postgres on MacOSX, download [postgres.app](http://postgresapp.com).
+To setup Postgres on MacOSX, download `postgres.app<http://postgresapp.com>`_.
 
 If you downloaded and installed the Postgres from the link provided above, you should make sure postgres is probably known to your system path. To achieve this, follow these steps::
 
@@ -95,6 +95,25 @@ Launch
 To run the application run::
 
     $ fab serve
+
+The admin panel is accessible at: http://localhost:5000/
+
+The default username and password is pillbox/pillbox.
+
+The admin username and password is admin/admin
+
+Pillbox Images
+-------------------------
+
+You can download the latest version of Pillbox Images `from here<http://pillbox.nlm.nih.gov/developer.html#images>`_.
+
+You should unzip and copy the content of this image zip file to ``pillbox-engine/media/pillbox/``
+
+
+Pillbox Existing Data
+-------------------------
+
+Download the latest master data `from here<http://pillbox.nlm.nih.gov/developer.html#data>`_. Then use the Graphic Interface to import the data to the system.
 
 Development Version Setup
 -------------------------
