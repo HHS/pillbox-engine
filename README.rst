@@ -40,9 +40,11 @@ To deactivate run::
 
 You should also consider using a database engine such Postgres or MySQL with this application. Pillbox Engine supports Sqlite3, Postgres and MySQL, however, we highly recommend using Postgres. This program is primarily tested with Postgres.
 
-To setup Postgres on MacOSX, download `postgres.app<http://postgresapp.com>`_.
+To setup Postgres on MacOSX, download `postgres app`_.
 
-If you downloaded and installed the Postgres from the link provided above, you should make sure postgres is probably known to your system path. To achieve this, follow these steps::
+.. _postgres app: <http://postgresapp.com>
+
+If you downloaded and installed the Postgres from the link provided above, you should make sure postgres is known to your system path. To achieve this, follow these steps::
 
     $ PATH="/Applications/Postgres.app/Contents/Versions/9.3/bin:$PATH"
     $ export PGHOST=localhost
@@ -52,7 +54,7 @@ For best result, add above command to your .bash_profile.
 Ubuntu 14 Requirements
 ^^^^^^^^^
 
-If you use Ubuntu 14, to prepare the system run::
+If using Ubuntu 14, to prepare the system run::
 
     $ sudo apt-get update
     $ sudo apt-get install ruby
@@ -98,22 +100,25 @@ To run the application run::
 
 The admin panel is accessible at: http://localhost:5000/
 
-The default username and password is pillbox/pillbox.
+The default username and password is pillbox/PillBox.
 
 The admin username and password is admin/admin
 
 Pillbox Images
 -------------------------
 
-You can download the latest version of Pillbox Images `from here<http://pillbox.nlm.nih.gov/developer.html#images>`_.
+You can download the latest version of Pillbox Images `from here`_.
 
 You should unzip and copy the content of this image zip file to ``pillbox-engine/media/pillbox/``
 
+.. _from here: http://pillbox.nlm.nih.gov/developer.html#images
 
 Pillbox Existing Data
 -------------------------
 
-Download the latest master data `from here<http://pillbox.nlm.nih.gov/developer.html#data>`_. Then use the Graphic Interface to import the data to the system.
+Download the latest master data `from here`_. Then use the Graphic Interface to import the data to the system.
+
+.. _from here: http://pillbox.nlm.nih.gov/developer.html#data
 
 Development Version Setup
 -------------------------
