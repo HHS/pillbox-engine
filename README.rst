@@ -11,53 +11,10 @@ If PillBox Engine is already installed, run this to update::
     $ fab update
 
 
-Production Version Setup
+Setup
 -----------------------
 
-If this is the first time you are running the Pillbox Engine, take steps under `Getting Up and Running <#getting-up-and-running>`_ first.
-
-Make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
-
-    $ git clone https://github.com/developmentseed/pillbox-engine.git
-    $ cd pillbox-engine
-    $ pip install -r requirements.txt
-
-.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
-
-Database Setup
-^^^^^^^^^^^^^^
-
-To setup the intital database, run this command::
-
-    $ fab initial_setup
-
-Launch
-^^^^^^^^^^^^^^
-
-To run the application run::
-
-    $ fab serve
-
-Sync SPL DailyMed
-^^^^^^^^^^^^^^^^^
-
-To sync all xml headers from DailyMed::
-
-    $ fab spl products
-
-To sync OSDF information::
-
-    $ fab spl pills
-
-To sync everything::
-
-    $ fab spl all
-
-
-Getting Up and Running
-----------------------
-
-Mac OSX
+Mac OSX Requirements
 ^^^^^^^^
 
 If you use Mac OSX
@@ -66,7 +23,7 @@ We assume you have the following installed:
 * pip
 * virtualenv
 
-If you don't, you can also follow these steps to setup pip and virtualenv::
+If you don't, you can follow these steps to setup pip and virtualenv::
 
     $ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python
     $ sudo easy_install python-pip
@@ -81,14 +38,63 @@ To deactivate run::
 
     $ deactivate
 
-Ubuntu 14
+You should also consider using a database engine such Postgres or MySQL with this application. Pillbox Engine supports Sqlite3, Postgres and MySQL, however, we highly recommend using Postgres. This program is primarily tested with Postgres.
+
+To setup Postgres on MacOSX, download [postgres.app](http://postgresapp.com).
+
+If you downloaded and installed the Postgres from the link provided above, you should make sure postgres is probably known to your system path. To achieve this, follow these steps::
+
+    $ PATH="/Applications/Postgres.app/Contents/Versions/9.3/bin:$PATH"
+    $ export PGHOST=localhost
+
+For best result, add above command to your .bash_profile.
+
+Ubuntu 14 Requirements
 ^^^^^^^^^
 
 If you use Ubuntu 14, to prepare the system run::
 
+    $ sudo apt-get update
     $ sudo apt-get install ruby
     $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev git
 
+To install Postgres, run::
+
+    $  sudo apt-get install postgresql
+
+
+Installation
+^^^^^^^^^
+
+Make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
+
+    $ git clone https://github.com/developmentseed/pillbox-engine.git
+    $ cd pillbox-engine
+    $ pip install -r requirements.txt
+
+.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+Database Setup
+^^^^^^^^^^^^^^
+
+If you use Postgres or MySql, make sure the database engine is started.
+
+You also need to setup a database for pillbox. For postgres, run these commands::
+
+    $ createdb -h localhost pillbox_db
+
+Replace pillbox_db with your preferred name. If you use Postgres.app, your username will be your system username and the password is blank.
+
+To setup the intital database, run this command::
+
+    $ fab initial_setup
+
+Launch
+^^^^^^^^^^^^^^
+
+To run the application run::
+
+    $ fab serve
 
 Development Version Setup
 -------------------------
