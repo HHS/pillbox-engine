@@ -14,7 +14,7 @@ class CommonInfo(models.Model):
 class PillBoxData(CommonInfo):
 
     # Extracted from DailyMed
-    setid = models.CharField('ssp', max_length=250, unique=True)
+    setid = models.CharField('spp', max_length=250, unique=True)
     setid_product = models.CharField('setid', max_length=250)
     splsize = models.CharField('splsize', max_length=250, null=True, blank=True)
     pillbox_size = models.CharField('pillbox_size', max_length=250, null=True, blank=True)
@@ -33,7 +33,7 @@ class PillBoxData(CommonInfo):
     spl_inactive_ing = models.TextField('spl_inactive_ing', null=True, blank=True)
     source = models.CharField('source', max_length=250, null=True, blank=True)
     rxtty = models.CharField('rxtty', max_length=250, null=True, blank=True)
-    rxstring = models.TextField('rxttystring', null=True, blank=True)
+    rxstring = models.TextField('rxtty', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=250, null=True, blank=True)
     produce_code = models.CharField('product_code', max_length=250, null=True, blank=True)
     part_num = models.CharField('part_num', max_length=250, null=True, blank=True)
