@@ -27,3 +27,7 @@ ftputil==3.2
 requests==2.5.0
 simplejson==3.6.5
 django-queryset-csv==0.2.10
+
+# django-debug-toolbar that works with Django 1.5+
+django-debug-toolbar==1.2.1
+coverage==3.7.1

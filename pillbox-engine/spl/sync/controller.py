@@ -45,7 +45,7 @@ class Controller(object):
 
         sources = Source.objects.all()
 
-        self.total = sum([s.xml_count for s in sources])
+        self.total = sum([s.xml_count for s in sources if s.xml_count])
 
         if action == 'pills':
             # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
@@ -58,24 +58,25 @@ class Controller(object):
 
         for source in sources:
             d = os.path.join(settings.SOURCE_PATH, source.title)
-            files = os.listdir(d)
+            try:
+                files = os.listdir(d)
 
-            for f in files:
-                if fnmatch.fnmatch(f, '*.xml'):
-                    output = getattr(x, action)(f, d)
-                    if output:
-                        counter = getattr(self, '_%s' % action)(output, counter)
+                for f in files:
+                    if fnmatch.fnmatch(f, '*.xml'):
+                        output = getattr(x, action)(f, d)
+                        if output:
+                            counter = getattr(self, '_%s' % action)(output, counter)
 
-                    self._status(added=counter['added'], updated=counter['updated'],
-                                 error=x.error, skipped=x.skip,
-                                 action=action)
-
-            # remove tmp2 folder
-            if action == 'pills':
-                try:
+                        self._status(added=counter['added'], updated=counter['updated'],
+                                     error=x.error, skipped=x.skip,
+                                     action=action)
+                # remove tmp2 folder
+                if action == 'pills':
                     shutil.rmtree(os.path.join(d, 'tmp2'))
-                except OSError:
-                    pass
+
+            except OSError:
+                # IGNORE if the file doesn't exist
+                pass
 
         end = time.time()
 

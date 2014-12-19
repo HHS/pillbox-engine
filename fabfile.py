@@ -54,16 +54,26 @@ def serve():
     """ Run the server in production mode """
     try:
         print 'Launching Pillbox Engine ...'
-        foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        # Wait for 3 seconds to ensure the process is launched
-        time.sleep(3)
-        local('open "http://localhost:5000"')
-        print 'To exit Pillbox Engine use Control + C'
-        print foreman.stdout.read()
+        posix = local('uname', capture=True)
+
+        # Only for Mac
+        if posix == 'Darwin':
+
+            foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # Wait for 3 seconds to ensure the process is launched
+            time.sleep(3)
+            local('open "http://localhost:5000"')
+            print 'To exit Pillbox Engine use Control + C'
+            print foreman.stdout.read()
+
+        else:
+            local('honcho start')
 
     except KeyboardInterrupt:
-        foreman.terminate()
+        if posix == 'Darwin':
+            foreman.terminate()
         print 'Goodbye'
 
 
@@ -183,12 +193,16 @@ def _sync_db():
 
 def _check_env():
     kwarg = {}
-    with open('.env', 'r') as env:
-        content = env.readlines()
+    try:
+        with open('.env', 'r') as env:
+            content = env.readlines()
 
-    for item in content:
-        split = item.split('=')
-        kwarg[split[0]] = split[1][:-1]
+        for item in content:
+            split = item.split('=')
+            kwarg[split[0]] = split[1][:-1]
+    except IOError:
+        # Ignore if the .env file doesn't exist
+        pass
     return kwarg
 
 
