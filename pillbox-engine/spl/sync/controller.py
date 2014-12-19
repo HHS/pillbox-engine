@@ -45,7 +45,7 @@ class Controller(object):
 
         sources = Source.objects.all()
 
-        self.total = sum([s.xml_count for s in sources])
+        self.total = sum([s.xml_count for s in sources if s.xml_count])
 
         if action == 'pills':
             # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
