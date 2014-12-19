@@ -233,7 +233,7 @@ class XPath(object):
 
     def _generate_id(self, output, part_counter=0):
         """ Generates unique id for pills """
-        return output['setid_id'] + '-' + output.pop('produce_code') + '-' + str(part_counter)
+        return output['setid_id'] + '-' + output['produce_code'] + '-' + str(part_counter)
 
     def _get_generic(self, counter, setid):
         """ Retrieves the product information shared by multiple products in an XML file """
