@@ -54,16 +54,26 @@ def serve():
     """ Run the server in production mode """
     try:
         print 'Launching Pillbox Engine ...'
-        foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        # Wait for 3 seconds to ensure the process is launched
-        time.sleep(3)
-        local('open "http://localhost:5000"')
-        print 'To exit Pillbox Engine use Control + C'
-        print foreman.stdout.read()
+        posix = local('uname', capture=True)
+
+        # Only for Mac
+        if posix == 'Darwin':
+
+            foreman = subprocess.Popen(['honcho', 'start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # Wait for 3 seconds to ensure the process is launched
+            time.sleep(3)
+            local('open "http://localhost:5000"')
+            print 'To exit Pillbox Engine use Control + C'
+            print foreman.stdout.read()
+
+        else:
+            local('honcho start')
 
     except KeyboardInterrupt:
-        foreman.terminate()
+        if posix == 'Darwin':
+            foreman.terminate()
         print 'Goodbye'
 
 
