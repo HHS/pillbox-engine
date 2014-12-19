@@ -22,7 +22,7 @@ class PillBoxData(CommonInfo):
     splshape_text = models.CharField('splshape_text', max_length=250, null=True, blank=True)
     pillbox_shape_text = models.CharField('pillbox_shape_text', max_length=250, null=True, blank=True)
     splscore = models.CharField('splscore', max_length=250, null=True, blank=True)
-    pillbox_score = models.CharField('splscore', max_length=250, null=True, blank=True)
+    pillbox_score = models.CharField('pillbox_score', max_length=250, null=True, blank=True)
     splimprint = models.CharField('splimprint', max_length=250, null=True, blank=True)
     pillbox_imprint = models.CharField('pillbox_imprint', max_length=250, null=True, blank=True)
     splcolor = models.CharField('splcolor', max_length=250, null=True, blank=True)
