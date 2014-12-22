@@ -1,0 +1,15 @@
+site_name: Pillbox Engine
+site_description: Pillbox Engine Documentation
+docs_dir: .
+pages:
+- [index.md, Home]
+- [install.md, Setup, Installation Guide]
+- [usage/start.md, Usage, Start the App]
+- [usage/tasks.md, Usage, Tasks]
+- [usage/download.md, Usage, Download]
+- [usage/spl.md, Usage, SPL]
+- [usage/pillbox.md, Usage, Pillbox]
+- [about.md, More Info, About]
+- [data.md, More Info, Data]
+- [terms.md, More Info, Terms of Service]
+theme: readthedocs
