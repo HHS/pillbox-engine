@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tasks - Pillbox Engine</title>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script>
+
+  <style>
+    body {font-size: 90%;}
+    pre, code {font-size: 100%;}
+    h3, h4, h5, h6 {color: #2980b9; font-weight: 300}
+  </style> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Pillbox Engine</a>
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+      <ul class="current">
+    
+        
+        <span>Setup</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../install">Installation Guide</a>
+                    
+                </li>
+            
+        
+
+    
+        
+        <span>Usage</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../start">Start the App</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 current">
+                    <a class="current" href=".">Tasks</a>
+                    
+                        <ul>
+                        
+                            <li class="toctree-l2"><a href="#one-task-at-a-time">One Task at a time</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="#cancel-a-task">Cancel a Task</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="#task-types">Task Types</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="#starting-a-task-and-checking-the-progress">Starting a Task and Checking the Progress</a></li>
+                            
+                        
+                        </ul>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../download">Download</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../spl">SPL</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../pillbox">Pillbox</a>
+                    
+                </li>
+            
+        
+
+    
+        
+        <span>More Info</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../about">About</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../data">Data</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../terms">Terms of Service</a>
+                    
+                </li>
+            
+        
+
+    
+</ul>
+
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="../.."></a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    <li>Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              <p>Pillbox Engine runs many backgound tasks. It relies on <a href="http://www.celeryproject.org">Celery</a> to execute and manage background tasks.</p>
+<h3 id="one-task-at-a-time">One Task at a time</h3>
+<p>Because Pillbox Engine's tasks are long intensive processes, we have limited concurrent tasks to only one. The system is designed to run only one task at a time. There task table that shows the status of all tasks, active, failed, canceled or in progress.</p>
+<p><img alt="tasks" src="../../../img/tasks.png" /></p>
+<p>When you click on each task, you can view more information about the task.</p>
+<h3 id="cancel-a-task">Cancel a Task</h3>
+<p>If there is a running task, you always can stop the task by selecting the active task and click on the action as shown below:</p>
+<p><img alt="cancel_task" src="../../../img/cancel_task.gif" /></p>
+<h3 id="task-types">Task Types</h3>
+<p>Some of the tasks are intensive and should only be run once every 24 hours as the data gets updated every 24 hours. The engine enforces the limit.</p>
+<p>This is the list of all tasks and associated limits</p>
+<ul>
+<li>download (every 24 hours for each source)</li>
+<li>products (every 24 hours)</li>
+<li>pills (every 24 hours)</li>
+<li>import (no limit)</li>
+<li>compare (every 24 hours)</li>
+<li>export (no limit)</li>
+</ul>
+<p>You can always overwrite the limit by deleting the the most recent task record. For example if you want to redownload HOTC that was downloaded in hour ago, go to the tasks list, find the download task for the latest HOTC download and delete it. This will overwrite the limit and allow you to re-run the task.</p>
+<h3 id="starting-a-task-and-checking-the-progress">Starting a Task and Checking the Progress</h3>
+<p>You can start most tasks by going to <a href="http://localhost:5000/">main dashboard (home)</a> and click on the relevant action box.</p>
+<p>For example to start an ANIMAL download, click on the ANIMAL action box. If you click again on the action box, you will see the progress of the action.</p>
+<p>If an action has an execution limit, it does not start. If an action running, the other actions do not start.</p>
+<p><img alt="task progress" src="../../../img/task_progress.gif" /></p>
+
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../download" class="btn btn-neutral float-right" title="Download"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../start" class="btn btn-neutral" title="Start the App"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <!-- Copyright etc -->
+    </p>
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        
+      <span><a href="../start" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      <span style="margin-left: 15px"><a href="../download" style="color: #fcfcfc">Next &raquo;</a></span>
+    </span>
+</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SPL - Pillbox Engine</title>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script>
+
+  <style>
+    body {font-size: 90%;}
+    pre, code {font-size: 100%;}
+    h3, h4, h5, h6 {color: #2980b9; font-weight: 300}
+  </style> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Pillbox Engine</a>
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+      <ul class="current">
+    
+        
+        <span>Setup</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../install">Installation Guide</a>
+                    
+                </li>
+            
+        
+
+    
+        
+        <span>Usage</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../start">Start the App</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../tasks">Tasks</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../download">Download</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 current">
+                    <a class="current" href=".">SPL</a>
+                    
+                        <ul>
+                        
+                            <li class="toctree-l2"><a href="#spl-products">SPL Products</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="#osdf-pills-and-ingredients">OSDF Pills and Ingredients</a></li>
+                            
+                        
+                        </ul>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../pillbox">Pillbox</a>
+                    
+                </li>
+            
+        
+
+    
+        
+        <span>More Info</span>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../about">About</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../data">Data</a>
+                    
+                </li>
+            
+                <li class="toctree-l1 ">
+                    <a class="" href="../../terms">Terms of Service</a>
+                    
+                </li>
+            
+        
+
+    
+</ul>
+
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="../.."></a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    <li>SPL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              <p>The Pillbox Engine processes all DailyMed SPL XML files and populates several tables.</p>
+<p>These tables are</p>
+<ul>
+<li>SPL Products</li>
+<li>SPL OSDF Pills</li>
+<li>OSDF Ingredients</li>
+</ul>
+<h2 id="spl-products">SPL Products</h2>
+<p>The SPL products table includes the header information of all xml files.</p>
+<p>The header includes information such as a unique setid, the author, the effective date, etc.</p>
+<p>For the full list of fields included in this table refer to <code>spl.models.Product</code> class.</p>
+<p>To populate or update the products table, click on <code>Sync Data</code> under SPL products action box. To check the progress click on the box again.</p>
+<p><img alt="Sync SPL Products" src="../../../img/spl_products.png" /></p>
+<p>You can view browse and search in the SPL products by going to the SPL Products list page.</p>
+<p><img alt="SPL Products list page" src="../../../img/spl_products_list.png" /></p>
+<h2 id="osdf-pills-and-ingredients">OSDF Pills and Ingredients</h2>
+<p>Each SPL XML file includes multiple product information. The Pillbox Engine identifies those products that are categorized as OSDF (Oral Solid Dosage Form) and sync their information with OSDF Pills and OSDF Ingredients tables.</p>
+<p>For a full list of fields that are populated from xml files look at <code>spl.models.Pill</code> class.</p>
+<p>To populate or update the pills table, click on <code>Sync Data</code> under OSDF Pills action box. To check the progress click on the box again.</p>
+<p><img alt="Sync OSDF Pills" src="../../../img/osdf_pills.png" /></p>
+<p>You can view browse and search in the OSDF Pills and Ingredients by going to the OSDF Pills and Ingredients list page.</p>
+<p><img alt="OSDF Pills Ingredients" src="../../../img/pills_ingredients.png" /></p>
+
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../pillbox" class="btn btn-neutral float-right" title="Pillbox"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../download" class="btn btn-neutral" title="Download"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <!-- Copyright etc -->
+    </p>
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        
+      <span><a href="../download" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      <span style="margin-left: 15px"><a href="../pillbox" style="color: #fcfcfc">Next &raquo;</a></span>
+    </span>
+</div>
+</body>
+</html>
