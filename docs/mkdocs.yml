@@ -1,7 +1,7 @@
 site_name: Pillbox Engine
 site_description: Pillbox Engine Documentation
-site_dir: docs/site
-docs_dir: docs/source
+site_dir: site
+docs_dir: source
 pages:
 - [index.md, Home]
 - [install.md, Setup, Installation Guide]

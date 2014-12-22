@@ -16,11 +16,11 @@ For the full list of fields included in this table refer to `spl.models.Product`
 
 To populate or update the products table, click on `Sync Data` under SPL products action box. To check the progress click on the box again.
 
-![Sync SPL Products](../img/spl_products.png)
+![Sync SPL Products](img/spl_products.png)
 
 You can view browse and search in the SPL products by going to the SPL Products list page.
 
-![SPL Products list page](../img/spl_products_list.png)
+![SPL Products list page](img/spl_products_list.png)
 
 ## OSDF Pills and Ingredients
 
@@ -30,9 +30,9 @@ For a full list of fields that are populated from xml files look at `spl.models.
 
 To populate or update the pills table, click on `Sync Data` under OSDF Pills action box. To check the progress click on the box again.
 
-![Sync OSDF Pills](../img/osdf_pills.png)
+![Sync OSDF Pills](img/osdf_pills.png)
 
 You can view browse and search in the OSDF Pills and Ingredients by going to the OSDF Pills and Ingredients list page.
 
-![OSDF Pills Ingredients](../img/pills_ingredients.png)
+![OSDF Pills Ingredients](img/pills_ingredients.png)
 
