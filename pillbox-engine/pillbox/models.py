@@ -60,9 +60,9 @@ class PillBoxData(CommonInfo):
     version_number = models.CharField('version_number', max_length=250, null=True, blank=True)
     laberer_code = models.CharField('laberer_code', max_length=250, null=True, blank=True)
     application_number = models.CharField('application_number', max_length=250, null=True, blank=True)
-    updated = models.BooleanField('Is updated from SPL?', default=False)
-    stale = models.BooleanField('Does not exist on SPL (Stale)', default=False)
-    new = models.BooleanField('Just added from SPL (New)', default=False)
+    updated = models.BooleanField('updated', default=False)
+    stale = models.BooleanField('stale', default=False)
+    new = models.BooleanField('new', default=False)
 
     class Meta:
         verbose_name = 'Pillbox Data'
