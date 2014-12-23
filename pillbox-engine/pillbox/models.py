@@ -32,7 +32,7 @@ class PillBoxData(CommonInfo):
     spl_ingredients = models.TextField('spl_ingredients', null=True, blank=True)
     spl_inactive_ing = models.TextField('spl_inactive_ing', null=True, blank=True)
     source = models.CharField('source', max_length=250, null=True, blank=True)
-    rxtty = models.CharField('rxtty', max_length=250, null=True, blank=True)
+    rxtty = models.TextField('rxtty', null=True, blank=True)
     rxstring = models.TextField('rxtty', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=250, null=True, blank=True)
     produce_code = models.CharField('product_code', max_length=250, null=True, blank=True)
@@ -60,9 +60,9 @@ class PillBoxData(CommonInfo):
     version_number = models.CharField('version_number', max_length=250, null=True, blank=True)
     laberer_code = models.CharField('laberer_code', max_length=250, null=True, blank=True)
     application_number = models.CharField('application_number', max_length=250, null=True, blank=True)
-    updated = models.BooleanField('Is updated from SPL?', default=False)
-    stale = models.BooleanField('Does not exist on SPL (Stale)', default=False)
-    new = models.BooleanField('Just added from SPL (New)', default=False)
+    updated = models.BooleanField('updated', default=False)
+    stale = models.BooleanField('stale', default=False)
+    new = models.BooleanField('new', default=False)
 
     class Meta:
         verbose_name = 'Pillbox Data'
