@@ -1,7 +1,7 @@
 from __future__ import division
 import csv
 
-from pillbox.models import PillBoxData, Shape, Color
+from pillbox.models import PillBoxData
 from spl.models import Task
 
 
@@ -29,91 +29,17 @@ def importer(csv_path, task_id=None):
     task.save()
 
     csv_file = open(csv_path, 'r')
-    reader = csv.reader(csv_file, delimiter=',')
-
-    headers = reader.next()
+    reader = csv.DictReader(csv_file, delimiter=',')
 
     pillbox_map = {
-        'spp': 'setid',
-        'SETID': 'setid_product',
-        'author_type': 'author_type',
-        'FILE_NAME': 'file_name',
-        'LABEL_EFFECTIVE_TIME': 'effective_time',
-        'PRODUCT_CODE': 'produce_code',
-        'NDC9': 'ndc9',
-        'PART_NUM': 'part_num',
-        'MEDICINE_NAME': 'medicine_name',
-        'PART_MEDICINE_NAME': 'part_medicine_name',
-        'author': 'author',
-        'SPLIMPRINT': 'splimprint',
-        'PILLBOX_IMPRINT': 'pillbox_imprint',
-        'SPLCOLOR': 'splcolor',
-        'SPLCOLOR_TEXT': 'splcolor_text',
-        'PILLBOX_COLOR_TEXT': 'pillbox_color_text',
-        'SPLSHAPE': 'splshape',
-        'SPLSHAPE_TEXT': 'splshape_text',
-        'PILLBOX_SHAPE_TEXT': 'pillbox_shape_text',
-        'SPLSCORE': 'splscore',
-        'PILLBOX_SCORE': 'pillbox_score',
-        'SPLSIZE': 'splsize',
-        'PILLBOX_SIZE': 'pillbox_size',
-        'DEA_SCHEDULE_CODE': 'dea_schedule_code',
-        'SPL_INACTIVE_ING': 'spl_inactive_ing',
-        'RXCUI': 'rxcui',
-        'RXTTY': 'rxtty',
-        'RXSTRING': 'rxstring',
+        'setid': 'setid_product',
+        'label_effective_time': 'effective_time',
+        'product_code': 'produce_code',
         'image_id': 'splimage',
-        'HAS_IMAGE': 'has_image',
-        'INGREDIENTS': '',
-        'SPL_INGREDIENTS': 'spl_ingredients',
-        'PROD_MEDICINES_PRIKEY': '',
-        'DOSAGE_FORM': 'dosage_form',
-        'SPL_STRENGTH': 'spl_strength',
-        'RXNORM_SOURCE': '',
-        'SPL_ID': '',
-        'source': 'source',
-        'document_type': 'document_type',
-        'ACTIVE_MOEITY': '',
-        'MARKETING_ACT_CODE': 'marketing_act_code',
-        'APPROVAL_CODE': 'approval_code',
-        'IMAGE_SOURCE': 'image_source',
-        'EQUAL_PRODUCT_CODE': 'equal_product_code',
-        'VERSION_NUMBER': 'version_number',
-        'SPLIMPRINT_orig': '',
-        'SPLCOLOR_orig': '',
-        'SPLSHAPE_orig': '',
-        'SPLSCORE_orig': '',
-        'SPLSIZE_orig': '',
-        'NO_RXCUI': '',
-        'FROM_SIS': 'from_sis',
-        'SPLIMPRINT_changeCode': '',
-        'SPLCOLOR_changeCode': '',
-        'SPLSHAPE_changeCode': '',
-        'SPLSCORE_changeCode': '',
-        'SPLSIZE_changeCode': '',
+        'epc_match': 'from_sis',
     }
 
-    new_header = []
-    for i in headers:
-        new_header.append(pillbox_map[i])
-
-    # Check if splcolor_text and splshape_text are in the import file
-    # if they are not populate the text with the value of the code box
-    if 'PILLBOX_COLOR_TEXT' not in headers:
-        color_from_code = True
-
-    if 'PILLBOX_SHAPE_TEXT' not in headers:
-        shape_from_code = True
-
-    compatibility = {}
-    if 'PILLBOX_IMPRINT' not in headers:
-        compatibility['splimprint'] = 'pillbox_imprint'
-
-    if 'PILLBOX_SCORE' not in headers:
-        compatibility['splscore'] = 'pillbox_score'
-
-    if 'PILLBOX_SIZE' not in headers:
-        compatibility['splsize'] = 'pillbox_size'
+    pillbox_fields = PillBoxData._meta.get_all_field_names()
 
     counter = {
         'added': 0,
@@ -121,52 +47,50 @@ def importer(csv_path, task_id=None):
     }
 
     for line in reader:
-        new = {}
-        for k, v in enumerate(new_header):
-            # if column doesn't exist just pass
-            try:
-                new[v] = line[k]
+        line_copy = line.copy()
 
-                ## Populate color text based on color code
-                if v == 'splcolor' and color_from_code:
-                    try:
-                        if line[k]:
-                            codes = line[k].split(';')
-                            colors = Color.objects.filter(code__in=codes).values('display_name')
-                        new['pillbox_color_text'] = ";".join([c['display_name'] for c in colors])
-                    except Color.DoesNotExist:
-                        pass
+        # Grap spp first
+        setid = line_copy['spp'].replace('_', '-').replace(' ', '')
 
-                # Populate shape text based on shape code
-                if v == 'splshape' and shape_from_code:
-                    try:
-                        if line[k]:
-                            shape = Shape.objects.get(code=line[k])
-                            new['pillbox_shape_text'] = shape.display_name
-                    except Shape.DoesNotExist:
-                        pass
+        line_copy.pop('spp')
 
-                # If dataset doesn't include pillbox variables populate fields with SPL data
-                if v in compatibility:
-                    new[compatibility[v]] = line[k]
+        # if 'pillbox_color_text' not in line:
 
-            except KeyError:
-                pass
+        for k, v in line.iteritems():
+            # Check if key is in column map
+            key = k.lower()
+            if key in pillbox_map:
+                line_copy.pop(k)
+                line_copy[pillbox_map[key]] = v
 
-        new.pop('')
+            # Remove keys that are not a field
+            if key not in pillbox_fields:
+                try:
+                    line_copy.pop(k)
+                except KeyError:
+                    # If the key is already removed just pass
+                    pass
 
-        setid = new['setid'].replace('_', '-').replace(' ', '')
-        new.pop('setid')
+        update_dict = {}
+        # Make all keys lower cased
+        for k, v in line_copy.iteritems():
+            update_dict[k.lower()] = v
 
-        if new['has_image'] == '1':
-            new['has_image'] = True
-        else:
-            new['has_image'] = False
+        if update_dict['has_image'] == '1':
+            update_dict['has_image'] = True
+        elif update_dict['has_image'] == '0':
+            update_dict['has_image'] = False
 
-        if new['splimage']:
-            new['splimage'] = 'pillbox/' + new['splimage'] + '.jpg'
+        if update_dict['splimage']:
+            # Add pillbox folder path if not already there
+            if 'pillbox/' != update_dict['splimage'][:8]:
+                update_dict['splimage'] = 'pillbox/' + update_dict['splimage']
 
-        obj, created = PillBoxData.objects.update_or_create(setid=setid, defaults=new)
+            # Add jpg format if the value doesn't include format
+            if '.' != update_dict['splimage'][-4:-3]:
+                update_dict['splimage'] = update_dict['splimage'] + '.jpg'
+
+        obj, created = PillBoxData.objects.update_or_create(setid=setid, defaults=update_dict)
 
         if created:
             counter['added'] += 1
