@@ -181,7 +181,7 @@ class Controller(object):
         if self.stdout:
             self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
                               (kwarg['added'], kwarg['updated'],
-                               kwarg['error'], kwarg['skipped'], percent), ending='\r')
+                               len(kwarg['error']), kwarg['skipped'], percent), ending='\r')
             sys.stdout.flush()
 
         if self.task:

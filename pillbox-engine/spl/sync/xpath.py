@@ -32,7 +32,7 @@ class XPath(object):
         self.active_tree = None
         self.counter = 0
         self.skip = 0
-        self.error = 0
+        self.error = []
         self.namespaces = {'t': 'urn:hl7-org:v3'}
         self.output = OrderedDict()
         self.collection = []
@@ -48,8 +48,12 @@ class XPath(object):
                 self.tree = etree.parse(path + '/' + filename)
                 return True
 
-            except etree.XMLSyntaxError:
-                self.error += 1
+            except etree.XMLSyntaxError as e:
+                self.error.append({
+                    'type': 'XML Syntax Error',
+                    'filename': filename,
+                    'message': e
+                })
                 return False
         else:
             return True
