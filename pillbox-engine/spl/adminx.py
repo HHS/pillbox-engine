@@ -54,7 +54,7 @@ class ProductAdmin(object):
     name.is_column = True
 
     list_display = ('name', 'source', 'version_number', 'author', 'is_osdf')
-    list_filter = ['version_number', 'is_osdf']
+    list_filter = ['version_number', 'is_osdf', 'discontinued']
     list_quick_filter = ['is_osdf', 'source']
     search_fields = ['title', 'setid', 'author', 'author_legal', 'filename']
     reversion_enable = True
