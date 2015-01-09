@@ -51,8 +51,9 @@ class XPath(object):
             except etree.XMLSyntaxError as e:
                 self.error.append({
                     'type': 'XML Syntax Error',
+                    'path': path,
                     'filename': filename,
-                    'message': e
+                    'message': e.message
                 })
                 return False
         else:
@@ -99,6 +100,7 @@ class XPath(object):
             output['author'] = self._get_text('t:author/t:assignedEntity/t:representedOrganization/t:name[1]')
             output['author_legal'] = self._get_text('t:legalAuthenticator/t:assignedEntity/t:representedOrganization' +
                                                     '/t:name[1]')
+            output['discontinued'] = False
 
             return output
 

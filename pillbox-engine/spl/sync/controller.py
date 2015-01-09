@@ -51,6 +51,10 @@ class Controller(object):
             # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
             self.total = self.total * 0.55
 
+        # Make all discontinued to true to flag discontinued items
+        if action == 'products':
+            Product.objects.update(discontinued=True)
+
         counter = {
             'added': 0,
             'updated': 0
