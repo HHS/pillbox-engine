@@ -1,6 +1,7 @@
 import re
 import os
 import signal
+import json
 
 import xadmin
 from xadmin import views
@@ -97,14 +98,13 @@ class TaskAdmin(object):
             item.save()
     cancel_task.short_description = "Cancel Running Task"
 
-    def meta_info(self, instance):
-        text = ''
+    def meta_field(self, instance):
         if instance.meta:
-            for k, v in instance.meta.iteritems():
-                text += '%s: %s |' % (k, v)
-        return text
-    meta_info.short_description = "Meta"
-    meta_info.is_column = True
+            jcontent = json.dumps(instance.meta, sort_keys=True, indent=4)
+            return '<pre>%s</pre>' % jcontent
+        return ''
+    meta_field.short_description = "Metadata"
+    meta_field.allow_tags = True
 
     def updated(self, instance):
         if instance.meta:
@@ -116,11 +116,11 @@ class TaskAdmin(object):
 
     actions = ['cancel_task']
 
-    list_display = ('name', 'status', 'duration', 'meta_info',
+    list_display = ('name', 'status', 'duration', 'meta_field',
                     'time_started', 'time_ended')
-    fields = ['is_active', 'task_id', 'name', 'meta', 'status', 'pid',
+    fields = ['is_active', 'task_id', 'name', 'status', 'pid',
               'traceback', 'duration', 'time_started', 'time_ended']
-    readonly_fields = ['is_active', 'task_id', 'meta', 'name', 'status',
+    readonly_fields = ['is_active', 'task_id', 'meta_field', 'name', 'status',
                        'pid', 'traceback', 'duration', 'time_started', 'time_ended']
 
     model_icon = 'fa fa-tasks'
