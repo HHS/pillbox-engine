@@ -1,7 +1,7 @@
 Pillbox Engine
 ==============================
 
-*The full documentation is available at http://devseed.com/pillbox-engine*
+*The full documentation is available at http://hhs.github.io/pillbox-engine/*
 
 This is the new Pillbox Engine, A local web-based application for downloading and management of DailyMed SPL Data.
 
