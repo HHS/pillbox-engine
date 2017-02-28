@@ -2,30 +2,22 @@
 '''
 Production Configurations
 '''
-from configurations import values
+from .common import *  # noqa
 
 
-from .common import Common
+# INSTALLED_APPS
+# END INSTALLED_APPS
 
+# Mail settings
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1025
+EMAIL_BACKEND = env.str('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+# End mail settings
 
-class Production(Common):
+# SITE CONFIGURATION
+# Hosts/domain names that are valid for this site
+# See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ["*"]
+# END SITE CONFIGURATION
 
-    # INSTALLED_APPS
-    INSTALLED_APPS = Common.INSTALLED_APPS
-    # END INSTALLED_APPS
-
-    # Mail settings
-    EMAIL_HOST = "localhost"
-    EMAIL_PORT = 1025
-    EMAIL_BACKEND = values.Value('django.core.mail.backends.console.EmailBackend')
-    # End mail settings
-
-    # SITE CONFIGURATION
-    # Hosts/domain names that are valid for this site
-    # See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
-    ALLOWED_HOSTS = ["*"]
-    # END SITE CONFIGURATION
-
-    INSTALLED_APPS += ("gunicorn", )
-
-    # Your production stuff: Below this line define 3rd party libary settings
+INSTALLED_APPS += ("gunicorn", )

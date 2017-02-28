@@ -23,7 +23,7 @@ xadmin.site.register(views.CommAdminView, GlobalSetting)
 class SourceAdmin(object):
 
     search_fields = ['title']
-    reversion_enable = True
+    # reversion_enable = True
 
     list_display = ('title', 'host', 'path', 'files', 'last_downloaded')
     readonly_fields = ['last_downloaded', 'zip_size', 'unzip_size', 'xml_count']
@@ -38,7 +38,7 @@ class IngredientAdmin(object):
     list_filter = ['code_system', 'class_code']
     list_quick_filter = ['class_code']
     search_fields = ['name']
-    reversion_enable = True
+    # reversion_enable = True
 
     model_icon = 'fa fa-dot-circle-o'
 
@@ -57,7 +57,7 @@ class ProductAdmin(object):
     list_filter = ['version_number', 'is_osdf', 'discontinued']
     list_quick_filter = ['is_osdf', 'source']
     search_fields = ['title', 'setid', 'author', 'author_legal', 'filename']
-    reversion_enable = True
+    # reversion_enable = True
 
     model_icon = 'fa fa-stethoscope'
 
@@ -78,7 +78,7 @@ class PillAdmin(object):
     list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
     search_fields = ['medicine_name', 'part_medicine_name', 'setid__setid']
-    reversion_enable = True
+    # reversion_enable = True
 
     model_icon = 'fa fa-medkit'
     list_per_page = 10

@@ -40,7 +40,6 @@ class Ingredient(CommonInfo):
     def __unicode__(self):
         return self.name
 
-
 class Product(CommonInfo):
 
     setid = models.CharField('setid', max_length=200, unique=True)

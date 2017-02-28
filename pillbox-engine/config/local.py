@@ -6,33 +6,29 @@ Local Configurations
 - Uses console backend for emails
 - Use Django Debug Toolbar
 '''
-from configurations import values
-from .common import Common
+import environ
+BASE_DIR = environ.Path(__file__) - 1  # (/a/myfile.py - 2 = /)
+
+from .common import *  # noqa
 
 
-class Local(Common):
+# DEBUG
+DEBUG = env.bool('DEBUG', True)
+TEMPLATE_DEBUG = DEBUG
+# END DEBUG
 
-    # DEBUG
-    DEBUG = values.BooleanValue(True)
-    TEMPLATE_DEBUG = DEBUG
-    # END DEBUG
+# django-debug-toolbar
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+INSTALLED_APPS += ('debug_toolbar',)
 
-    # INSTALLED_APPS
-    INSTALLED_APPS = Common.INSTALLED_APPS
-    # END INSTALLED_APPS
+INTERNAL_IPS = ('127.0.0.1',)
 
-    # django-debug-toolbar
-    MIDDLEWARE_CLASSES = Common.MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
+DEBUG_TOOLBAR_CONFIG = {
+    'DISABLE_PANELS': [
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+    ],
+    'SHOW_TEMPLATE_CONTEXT': True,
+}
+# end django-debug-toolbar
 
-    INTERNAL_IPS = ('127.0.0.1',)
-
-    DEBUG_TOOLBAR_CONFIG = {
-        'DISABLE_PANELS': [
-            'debug_toolbar.panels.redirects.RedirectsPanel',
-        ],
-        'SHOW_TEMPLATE_CONTEXT': True,
-    }
-    # end django-debug-toolbar
-
-    # Your local stuff: Below this line define 3rd party libary settings
+# Your local stuff: Below this line define 3rd party libary settings

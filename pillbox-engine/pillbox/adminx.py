@@ -190,7 +190,7 @@ class PillBoxDataAdmin(object):
     list_filter = [PillboxFilter, 'new', 'updated', 'stale', 'has_image']
     list_quick_filter = ['new', 'updated', 'stale', 'has_image']
     search_fields = ['medicine_name', 'part_medicine_name', 'produce_code', 'setid', 'setid_product']
-    reversion_enable = True
+    # reversion_enable = True
 
     model_icon = 'fa fa-briefcase'
 
