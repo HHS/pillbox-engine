@@ -237,7 +237,7 @@ LOGGING = {
 # Your common stuff: Below this line define 3rd party library settings
 # Celery settings
 
-# BROKER_URL = values.Value('django://')
+CELERY_BROKER_URL = 'amqp://guest@broker//'
 # CELERY_RESULT_BACKEND = values.Value('djcelery_pillbox.database:DatabaseBackend')
 # CELERY_TASK_RESULT_EXPIRES = values.IntegerValue(3600)
 # CELERY_DISABLE_RATE_LIMITS = values.BooleanValue(True)
