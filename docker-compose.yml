@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+
+  image:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile_engine
+    image: pillbox/engine:latest
+
+  bash:
+    image: pillbox/engine:latest
+    entrypoint: /bin/bash
+    working_dir: /pillbox
+    volumes:
+      - '.:/pillbox'
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    links:
+      - db
+
+  web:
+    image: pillbox/engine:latest
+    command: honcho start
+    working_dir: /pillbox
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    ports:
+      - '5000:5000'
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  collectstatic:
+    image: pillbox/engine:latest
+    command: python pillbox-engine/manage.py collectstatic
+    working_dir: /pillbox
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    links:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  shell:
+    image: pillbox/engine:latest
+    command: python pillbox-engine/manage.py shell
+    working_dir: /pillbox
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    links:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  superuser:
+    image: pillbox/engine:latest
+    command: python pillbox-engine/manage.py createsuperuser
+    working_dir: /pillbox
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    links:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  migrate:
+    image: pillbox/engine:latest
+    command: python pillbox-engine/manage.py migrate
+    environment:
+      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: postgres:9.6.2
+    environment:
+      - POSTGRES_USER=pillbox
+      - POSTGRES_PASSWORD=pillboxdb
+    volumes:
+      - './postgres:/var/lib/postgresql/data'
+
