@@ -16,7 +16,7 @@ from __future__ import absolute_import, unicode_literals
 from os.path import join, dirname
 import environ
 
-BASE_DIR = environ.Path(__file__) - 2  # (/a/myfile.py - 2 = /)
+BASE_DIR = environ.Path(__file__) - 3  # (/a/myfile.py - 2 = /)
 
 env = environ.Env()
 
@@ -94,7 +94,7 @@ SECRET_KEY = "changemetosomethingsecure!"
 # FIXTURE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
 FIXTURE_DIRS = (
-    str(BASE_DIR.path('fixtures')),
+    str(BASE_DIR.path('config/fixtures')),
 )
 # END FIXTURE CONFIGURATION
 
@@ -112,7 +112,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default='sqlite:///%s' % str(BASE_DIR.path('db/db.sqlite3'))),
+    'default': env.db("DATABASE_URL", default='sqlite:///%s' % str(BASE_DIR.path('config/db/db.sqlite3'))),
 }
 # END DATABASE CONFIGURATION
 
@@ -141,7 +141,7 @@ TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
     'DIRS': [
-        str(BASE_DIR.path('templates')),
+        str(BASE_DIR.path('config/templates')),
     ],
     'OPTIONS': {
         'debug': DEBUG,
@@ -160,14 +160,14 @@ TEMPLATES = [{
 
 # STATIC FILE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(BASE_DIR.path('staticfiles'))
+STATIC_ROOT = str(BASE_DIR.path('config/staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
-    str(BASE_DIR.path('static')),
+    str(BASE_DIR.path('config/static')),
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -179,14 +179,14 @@ STATICFILES_FINDERS = (
 
 # MEDIA CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(BASE_DIR.path('media'))
+MEDIA_ROOT = str(BASE_DIR.path('config/media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 # END MEDIA CONFIGURATION
 
 # URL Configuration
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'config.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'wsgi.application'

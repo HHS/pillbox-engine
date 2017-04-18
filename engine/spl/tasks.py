@@ -10,14 +10,14 @@ from django.conf import settings
 from zipfile import BadZipfile
 from ftputil.error import TemporaryError, FTPOSError
 
-# from _celery import app
+from config.celery import app
 from spl.sync.controller import Controller
 from spl.sync.rxnorm import ThreadXNorm
 from spl.download import DownloadAndUnzip
 from spl.models import Task, Source, Pill, Product
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def rxnorm_task(self, task_id):
     start = time.time()
 
@@ -62,7 +62,7 @@ def rxnorm_task(self, task_id):
     return
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def sync(self, action, task_id):
     start = time.time()
     arguments = ['products', 'pills', 'all']
@@ -93,7 +93,7 @@ def sync(self, action, task_id):
     return
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def download_unzip(self, task_id, source_id):
 
     source = Source.objects.get(pk=source_id)

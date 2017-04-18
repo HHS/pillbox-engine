@@ -38,7 +38,7 @@ services:
 
   collectstatic:
     image: pillbox/engine:latest
-    command: python engine/manage.py collectstatic
+    command: python manage.py collectstatic
     working_dir: /pillbox
     environment:
       - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
@@ -49,7 +49,7 @@ services:
 
   shell:
     image: pillbox/engine:latest
-    command: python engine/manage.py shell
+    command: python manage.py shell
     working_dir: /pillbox
     environment:
       - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
@@ -61,7 +61,7 @@ services:
 
   superuser:
     image: pillbox/engine:latest
-    command: python engine/manage.py createsuperuser
+    command: python manage.py createsuperuser
     working_dir: /pillbox
     environment:
       - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
@@ -72,7 +72,7 @@ services:
 
   migrate:
     image: pillbox/engine:latest
-    command: python engine/manage.py migrate
+    command: python manage.py migrate
     environment:
       - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
     depends_on:
@@ -86,7 +86,7 @@ services:
       - POSTGRES_USER=pillbox
       - POSTGRES_PASSWORD=pillboxdb
     volumes:
-      - './postgres:/var/lib/postgresql/data'
+      - './config/db/postgres:/var/lib/postgresql/data'
 
   broker:
     image: rabbitmq:3.6.9
