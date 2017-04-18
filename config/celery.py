@@ -1,12 +1,16 @@
 from __future__ import absolute_import, unicode_literals
 import os
 import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# sys.path.append(BASE_DIR + '/engine')
+sys.path.insert(0, BASE_DIR + '/engine')
+
 from celery import Celery
-
-# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-# sys.path.append(BASE_DIR + '/pillbox-engine')
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'engine.config.production')
+
+from django.conf import settings  # noqa
+
 
 app = Celery('pillbox')
 app.config_from_object('django.conf:settings', namespace='CELERY')
