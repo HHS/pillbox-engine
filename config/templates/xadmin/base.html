@@ -15,8 +15,8 @@
   {% if site_theme %}
   <link rel="stylesheet" type="text/css" id="site-theme" href="{{site_theme}}" />
   {% else %}
-  <link rel="stylesheet" type="text/css" href="{% static "xadmin/css/themes/bootstrap-xadmin.css" %}" />
   <link rel="stylesheet" type="text/css" href="{% static "css/app.css" %}" />
+  <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
   {% endif %}
   {% vendor 'font-awesome.css' 'xadmin.main.css' 'xadmin.plugins.css' 'xadmin.responsive.css' %}
   {{ media.css }}
