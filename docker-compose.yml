@@ -3,9 +3,7 @@ version: '3'
 services:
 
   image:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile_engine
+    build: .
     image: pillbox/engine:latest
 
   base: &base
