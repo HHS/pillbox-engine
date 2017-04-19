@@ -35,10 +35,16 @@ services:
 
   web:
     <<: *base-with-broker
-    #command: honcho start
-    command: python manage.py runserver 0.0.0.0:5000
+    command: honcho start
     ports:
       - '5000:5000'
+
+  runserver:
+    <<: *base-with-broker
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - '8000:8000'
+
 
   collectstatic:
     <<: *base
