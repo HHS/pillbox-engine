@@ -186,7 +186,7 @@ class Controller(object):
 
             ## To decrease the number of times the database is called, update meta data
             ## in integer intervals
-            if (self.processed % 500) == 0.0::
+            if (self.processed % 500) == 0.0:
                 print('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
                       (kwarg['added'], kwarg['updated'],
                        len(kwarg['error']), kwarg['skipped'], percent))
