@@ -16,6 +16,7 @@ class Controller(object):
 
     def __init__(self, task_id=None, stdout=None):
         self.stdout = stdout
+        self.processed = 0
         self.total = 0
         self.action = None
         self.update_interval = 0
@@ -71,6 +72,7 @@ class Controller(object):
                         if output:
                             counter = getattr(self, '_%s' % action)(output, counter)
 
+                        self.processed += 1
                         self._status(added=counter['added'], updated=counter['updated'],
                                      error=x.error, skipped=x.skip,
                                      action=action)
@@ -172,21 +174,17 @@ class Controller(object):
         minutes = spent / 60
         seconds = spent % 60
 
-        if self.stdout:
-            self.stdout.write('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
+        print('\nTime spent : %s minues and %s seconds' % (int(minutes), round(seconds, 2)))
 
         return
 
     def _status(self, **kwarg):
 
-        processed = kwarg['added'] + kwarg['updated']
-        percent = round((processed / self.total) * 100, 2)
+        percent = round((self.processed / self.total) * 100, 2)
 
-        if self.stdout:
-            self.stdout.write('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
-                              (kwarg['added'], kwarg['updated'],
-                               len(kwarg['error']), kwarg['skipped'], percent), ending='\r')
-            sys.stdout.flush()
+        print('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
+              (kwarg['added'], kwarg['updated'],
+               len(kwarg['error']), kwarg['skipped'], percent), ending='\r')
 
         if self.task:
 
