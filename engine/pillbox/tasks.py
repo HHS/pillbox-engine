@@ -11,7 +11,7 @@ from spl.models import Task
 from compare.sync import transfer_new, compare
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def import_task(self, csv_file, task_id, download_id):
     start = time.time()
     task = Task.objects.get(pk=task_id)
@@ -40,7 +40,7 @@ def import_task(self, csv_file, task_id, download_id):
     imprt.save()
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def export_task(self, filename, export_type, task_id, export_id):
     start = time.time()
     task = Task.objects.get(pk=task_id)
@@ -68,7 +68,7 @@ def export_task(self, filename, export_type, task_id, export_id):
     exprt.save()
 
 
-# @app.task(bind=True, ignore_result=True)
+@app.task(bind=True, ignore_result=True)
 def transfer_task(self, task_id, action):
     start = time.time()
     task = Task.objects.get(pk=task_id)
