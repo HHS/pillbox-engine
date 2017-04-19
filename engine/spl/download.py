@@ -162,6 +162,7 @@ class DownloadAndUnzip(object):
         self.task.meta['items_unzipped'] = file_counter
         self.task.save()
 
+        self.source.refresh_from_db()
         self.source.last_unzipped = timezone.now()
         self.source.save()
         return True

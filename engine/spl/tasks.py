@@ -111,6 +111,8 @@ def download_unzip(self, task_id, source_id):
         if dl.run():
 
             # Calculate folder size for zip and unzip files
+            source.refresh_from_db()
+            task.refresh_from_db()
             source.zip_size = folder_size_count(settings.DOWNLOAD_PATH + '/' + source.title)['size']
             unzip_count = folder_size_count(settings.SOURCE_PATH + '/' + source.title)
             source.xml_count = unzip_count['count']
