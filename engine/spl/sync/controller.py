@@ -182,16 +182,14 @@ class Controller(object):
 
         percent = round((self.processed / self.total) * 100, 2)
 
-        print('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
-              (kwarg['added'], kwarg['updated'],
-               len(kwarg['error']), kwarg['skipped'], percent))
-
         if self.task:
 
             ## To decrease the number of times the database is called, update meta data
             ## in integer intervals
-            if int(percent) > self.update_interval:
-                self.update_interval = int(percent)
+            if (self.processed % 500) == 0.0::
+                print('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
+                      (kwarg['added'], kwarg['updated'],
+                       len(kwarg['error']), kwarg['skipped'], percent))
                 meta = {'added': kwarg['added'],
                         'updated': kwarg['updated'],
                         'error': kwarg['error'],
