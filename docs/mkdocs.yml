@@ -3,7 +3,7 @@ site_description: Pillbox Engine Documentation
 site_dir: site
 docs_dir: docs
 pages:
-- [index.md, Home]
+- [README.md, Home]
 - [install.md, Setup, Installation Guide]
 - [start.md, Usage, Start the App]
 - [tasks.md, Usage, Tasks]
