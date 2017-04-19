@@ -26,10 +26,9 @@ $(document).ready(function() {
                 var percent = data.meta.percent;
             }
             if (! typeof data.meta.file !== 'undefined') {
-                // console.log(data.meta.file);
                 obj.find('.task-name').html(data.meta.file);
             }
-            obj.find('.progress-bar').css('width', percent + '%').html(Math.floor(percent) + '%')
+            obj.find('.progress-bar').css('width', percent + '%').html(parseFloat(percent).toFixed(2) + '%')
         }
         else {
             removeBar(obj);
