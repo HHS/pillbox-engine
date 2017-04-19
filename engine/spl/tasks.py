@@ -107,8 +107,7 @@ def download_unzip(self, task_id, source_id):
 
     # RUN THE TASK
     try:
-        dl = DownloadAndUnzip(task.id, source.title, source.files,
-                              source.host, source.path)
+        dl = DownloadAndUnzip(task.id, source.id)
         if dl.run():
 
             # Calculate folder size for zip and unzip files
@@ -128,9 +127,6 @@ def download_unzip(self, task_id, source_id):
             task.time_ended = timezone.now()
             task.is_active = False
             task.save()
-
-            source.last_downloaded = task.time_ended
-            source.save()
 
             return
 

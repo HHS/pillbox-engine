@@ -1,17 +1,19 @@
+from __future__ import division
 import os
 import shutil
 import errno
 import glob
 from django.conf import settings
+from django.utils import timezone
 from zipfile import ZipFile
 
-from spl.models import Task
+from spl.models import Task, Source
 from spl.ftp import PillboxFTP
 
 
 class DownloadAndUnzip(object):
 
-    def __init__(self, task_id, source_title, files, host, ftp_path):
+    def __init__(self, task_id, source_id):
         """
         @param
         task_id - The id of the task created in the task model of spl
@@ -19,10 +21,10 @@ class DownloadAndUnzip(object):
         files - the list of files associated with the source e.g. dm_spl_release_animal.zip
         """
         self.task = Task.objects.get(pk=task_id)
-        self.source = source_title
-        self.files = files
-        self.host = host
-        self.ftp_path = ftp_path
+        self.source = Source.objects.get(pk=source_id)
+        self.files = self.source.files
+        self.host = self.source.host
+        self.ftp_path = self.source.path
 
     def run(self):
 
@@ -30,14 +32,12 @@ class DownloadAndUnzip(object):
         self.task.save()
 
         if self.download():
-            if self.unzip():
-                return True
-        return False
+            return self.unzip()
 
     def download(self):
         # Making necessary folders
         path = check_create_folder(settings.DOWNLOAD_PATH)
-        path = check_create_folder(path + '/' + self.source)
+        path = check_create_folder(path + '/' + self.source.title)
 
         self.task.status = 'PROGRESS: DOWNLOAD'
         self.task.save()
@@ -50,17 +50,42 @@ class DownloadAndUnzip(object):
                              self.task.id)
             ftp.download(self.ftp_path, f, path)
 
+        self.source.last_downloaded = timezone.now()
+        self.source.save()
+
         return True
 
-    def unzip(self):
+    def _unzipWithProgress(self, src, dst, weight = 100, percent=0):
+        zp = ZipFile(src, 'r')
+        total_files = len(zp.infolist())
 
-        percent = 0.0
+        # provider percentage only if there are more than 1000 files to unzip
+        if total_files >= 1000:
+            print('There are %s files to unzip in %s' % (total_files, src))
+
+
+            count = 0
+            for file in zp.infolist():
+                zp.extract(file, path=dst)
+                count += 1
+                if round(count) % 1000 == 0.0:
+                    new_percent = percent + (count / total_files * weight)
+                    self.task.meta['percent'] = float('{0:.2f}'.format(new_percent))
+                    self.task.save()
+        else:
+            zp.extractall(path=dst)
+        zp.close()
+        print('Successfully unzipped all files in %s' % src)
+        return percent + weight
+
+    def unzip(self):
+        percent = 0
 
         self.task = Task.objects.get(pk=self.task.id)
         self.task.status = 'PROGRESS: UNZIP'
         meta = {
             'action': 'unzip',
-            'file': 'Unzip %s' % self.source,
+            'file': 'Unzip %s' % self.source.title,
             'percent': percent,
             'items_unzipped': 0
         }
@@ -70,56 +95,64 @@ class DownloadAndUnzip(object):
         zip_path = settings.DOWNLOAD_PATH
         unzip_path = settings.SOURCE_PATH
 
-        final_path = check_create_folder('%s/%s' % (unzip_path, self.source))
-        tmp_path = check_create_folder('%s/%s/tmp' % (unzip_path, self.source))
-        tmp_path2 = check_create_folder('%s/%s/tmp2' % (unzip_path, self.source))
+        final_path = check_create_folder('%s/%s' % (unzip_path, self.source.title))
         total_weight = len(self.files)
 
+        file_counter = 0
         for zipped in self.files:
-            #Initial Unzip Round
-            # operation weigth 30%
-            weight = 0.3
+            tmp_path = check_create_folder('%s/%s/tmp' % (unzip_path, self.source.title))
+            tmp_path2 = check_create_folder('%s/%s/tmp2' % (unzip_path, self.source.title))
+            weight = 0.3 / total_weight * 100
+            self._unzipWithProgress(
+                '%s/%s/%s' % (zip_path, self.source.title, zipped),
+                tmp_path,
+                weight,
+                percent
+            )
 
-            zip = ZipFile('%s/%s/%s' % (zip_path, self.source, zipped), 'r')
-            zip.extractall(path=tmp_path)
-            zip.close()
-            percent += (weight/total_weight) * 100
-            self.task.meta['percent'] = percent
+            self.task.meta['percent'] = percent + weight
             self.task.save()
 
             # Second round of unzipping of files inside the unzip file
             # operation weight 70%
-            weight = 0.7
+            weight = 0.7 / total_weight * 100
             new_zip_files = glob.glob(tmp_path + '/*/*.zip')
             total_files = len(new_zip_files)
-            file_counter = 0
-            for zipped in new_zip_files:
-                file_counter += 1
 
-                zip = ZipFile(zipped, 'r')
-                zip.extractall(path=tmp_path2)
-                zip.close()
-                percent += (file_counter / total_files) * ((weight/total_weight) * 100)
-                if file_counter % 20 == 0:
-                    self.task.meta['items_unzipped'] = file_counter
-                    self.task.meta['percent'] = percent
+            counter = 0
+            for zipped in new_zip_files:
+                counter += 1
+                self._unzipWithProgress(zipped, tmp_path2)
+                if round(counter) % 1000 == 0.0:
+                    new_percent = percent + (counter / total_files * weight)
+                    self.task.meta['percent'] = float('{0:.2f}'.format(new_percent))
                     self.task.save()
 
-        # copy xml files to the correct place
-        unzipped_files = glob.glob(tmp_path2 + '/*.xml')
-        for item in unzipped_files:
-            shutil.copy(item, final_path)
+            file_counter += counter
 
-        # delete tmp files
-        try:
-            shutil.rmtree(tmp_path)
-            # shutil.rmtree(tmp_path2)
-        except OSError as exc:
-            if exc.errno != errno.ENOENT:
-                raise
+            self.task.meta['percent'] = percent + weight
+            self.task.meta['items_unzipped'] = file_counter
+            self.task.save()
+
+            # copy xml files to the correct place
+            unzipped_files = glob.glob(tmp_path2 + '/*.xml')
+            for item in unzipped_files:
+                shutil.copy(item, final_path)
+
+            # delete tmp files
+            try:
+                shutil.rmtree(tmp_path)
+                shutil.rmtree(tmp_path2)
+            except OSError as exc:
+                if exc.errno != errno.ENOENT:
+                    raise
 
         self.task.meta['percent'] = 100
+        self.task.meta['items_unzipped'] = file_counter
         self.task.save()
+
+        self.source.last_unzipped = timezone.now()
+        self.source.save()
         return True
 
 
