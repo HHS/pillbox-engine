@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import os
 import time
 from django.utils import timezone
-# from _celery import app
+from config.celery import app
 
 from pillbox.models import Import, Export
 from pillbox.importer import importer

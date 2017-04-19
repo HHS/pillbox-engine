@@ -189,7 +189,7 @@ MEDIA_URL = '/media/'
 ROOT_URLCONF = 'config.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 # End URL Configuration
 
 # AUTHENTICATION CONFIGURATION
