@@ -80,7 +80,7 @@ class Pill(CommonInfo):
     produce_code = models.CharField('Produce Code', max_length=60, null=True, blank=True)
     equal_product_code = models.CharField('Equal Product Code', max_length=30, null=True, blank=True)
     approval_code = models.CharField('approval_code', max_length=100, null=True, blank=True)
-    medicine_name = models.CharField('Medicine Name', max_length=300)
+    medicine_name = models.CharField('Medicine Name', max_length=300, null=True, blank=True)
     part_num = models.IntegerField('Part Number', default=0)
     part_medicine_name = models.CharField('Part Medicine Name', max_length=200, null=True, blank=True)
     rxtty = models.TextField('rxtty', null=True, blank=True)
