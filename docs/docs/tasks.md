@@ -4,7 +4,7 @@ Pillbox Engine runs many backgound tasks. It relies on [Celery](http://www.celer
 
 Because Pillbox Engine's tasks are long intensive processes, we have limited concurrent tasks to only one. The system is designed to run only one task at a time. There task table that shows the status of all tasks, active, failed, canceled or in progress.
 
-![tasks](../img/tasks.png?raw=true)
+![tasks](img/tasks.png?raw=true)
 
 When you click on each task, you can view more information about the task.
 
@@ -12,7 +12,7 @@ When you click on each task, you can view more information about the task.
 
 If there is a running task, you always can stop the task by selecting the active task and click on the action as shown below:
 
-![cancel_task](../img/cancel_task.gif?raw=true)
+![cancel_task](img/cancel_task.gif?raw=true)
 
 ### Task Types
 
@@ -37,7 +37,7 @@ For example to start an ANIMAL download, click on the ANIMAL action box. If you 
 
 If an action has an execution limit, it does not start. If an action running, the other actions do not start.
 
-![task progress](../img/task_progress.gif?raw=true)
+![task progress](img/task_progress.gif?raw=true)
 
 
 

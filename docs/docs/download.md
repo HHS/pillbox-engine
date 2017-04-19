@@ -4,7 +4,7 @@ With Pillbox Engine, you can easily download SPL files from DailyMed and unzip t
 
 DailyMed has five sources of SPL data. These five sources are included in the Pillbox Engine under Sources table.
 
-![Sources](../img/sources.png?raw=true)
+![Sources](img/sources.png?raw=true)
 
 The sources are:
 
@@ -33,4 +33,4 @@ Whenever you start a download, the ftp client checks the files on the FTP server
 
 You can keep track of all the downloaded files by visiting [the sources page](http://localhost:5000/spl/source/). If you click on a particular source, you can find more information about the source such as the number of xml files the source include, the name ftp server address and the name of the file that has to be downloaded.
 
-![Animal Source](../img/animal_source.png?raw=true)
+![Animal Source](img/animal_source.png?raw=true)

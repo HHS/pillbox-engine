@@ -10,11 +10,11 @@ Pillbox Engine is a local web-based application faciliate data processing for th
 
 - [Installation Guide](install.md)
 - Usage
-    - [Start the App](usage/start.md)
-    - [Tasks](usage/tasks.md)
-    - [Download](usage/download.md)
-    - [SPL](usage/spl.md)
-    - [Pillbox](usage/pillbox.md)
+    - [Start the App](start.md)
+    - [Tasks](tasks.md)
+    - [Download](download.md)
+    - [SPL](spl.md)
+    - [Pillbox](pillbox.md)
 - More Info
     - [About](about.md)
     - [Data](data.md)
