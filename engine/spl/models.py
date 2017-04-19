@@ -75,6 +75,8 @@ class Pill(CommonInfo):
     ndc = models.CharField('NDC9', max_length=100, null=True, blank=True)
     ndc9 = models.CharField('NDC9', max_length=100, null=True, blank=True)
     product_code = models.CharField('Product Code', max_length=60, null=True, blank=True)
+    ndc_labeler_code = models.CharField('ndc_labeler_code', max_length=60, null=True, blank=True)
+    ndc_product_code = models.CharField('ndc_product_code', max_length=60, null=True, blank=True)
     produce_code = models.CharField('Produce Code', max_length=60, null=True, blank=True)
     equal_product_code = models.CharField('Equal Product Code', max_length=30, null=True, blank=True)
     approval_code = models.CharField('approval_code', max_length=100, null=True, blank=True)

@@ -254,10 +254,11 @@ class XPath(object):
         output['produce_code'] = self._get_attribute('t:*//t:code[1]', 'code')
         if output['produce_code']:
             produce_code_temp = output['produce_code'].split("-")
+            output['ndc_labeler_code'] = produce_code_temp[0]
+            output['ndc_product_code'] = produce_code_temp[1]
             produce_code_temp[0] = produce_code_temp[0].zfill(5)
             produce_code_temp[1] = produce_code_temp[1].zfill(4)
-            produce_code_temp = produce_code_temp[0] + produce_code_temp[1]
-            output['ndc9'] = produce_code_temp
+            output['ndc9'] = produce_code_temp[0] + produce_code_temp[1]
         output['ndc'] = '%s-%s' % (output['produce_code'], counter)
         output['equal_product_code'] = self._get_attribute('t:*//t:definingMaterialKind/t:code', 'code')
         output['medicine_name'] = self._get_text('t:*//t:name[1]')
