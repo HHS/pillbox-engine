@@ -99,10 +99,15 @@ class DownloadAndUnzip(object):
         total_weight = len(self.files)
 
         file_counter = 0
+        tmp_number = 0
         for zipped in self.files:
+            self.task.meta['file'] = 'Unzipping %s' % zipped
+            self.task.save()
+
             tmp_path = check_create_folder('%s/%s/tmp' % (unzip_path, self.source.title))
             tmp_path2 = check_create_folder('%s/%s/tmp2' % (unzip_path, self.source.title))
             weight = 0.5 / total_weight * 100
+
             self._unzipWithProgress(
                 '%s/%s/%s' % (zip_path, self.source.title, zipped),
                 tmp_path,
@@ -110,7 +115,8 @@ class DownloadAndUnzip(object):
                 percent
             )
 
-            self.task.meta['percent'] = percent + weight
+            percent = percent + weight
+            self.task.meta['percent'] = percent
             self.task.save()
 
             weight = 0.5 / total_weight * 100
@@ -118,32 +124,39 @@ class DownloadAndUnzip(object):
             total_files = len(new_zip_files)
 
             counter = 0
+
             for zipped in new_zip_files:
                 counter += 1
                 self._unzipWithProgress(zipped, tmp_path2)
-                if round(counter) % 1000 == 0.0:
+                if round(counter) % 300 == 0.0:
                     new_percent = percent + (counter / total_files * weight)
                     self.task.meta['percent'] = float('{0:.2f}'.format(new_percent))
                     self.task.save()
 
             file_counter += counter
 
-            self.task.meta['percent'] = percent + weight
+            percent = percent + weight
+            self.task.meta['percent'] = percent
             self.task.meta['items_unzipped'] = file_counter
             self.task.save()
 
-            # copy xml files to the correct place
-            unzipped_files = glob.glob(tmp_path2 + '/*.xml')
-            for item in unzipped_files:
-                shutil.copy(item, final_path)
-
             # delete tmp files
             try:
-                shutil.rmtree(tmp_path)
-                shutil.rmtree(tmp_path2)
+                shutil.rmtree(tmp_path, ignore_errors=True)
             except OSError as exc:
                 if exc.errno != errno.ENOENT:
                     raise
+
+            tmp_number += 1
+
+        # copy xml files to the correct place
+        self.task.meta['file'] = 'Copying files to final place'
+        self.task.save()
+
+        unzipped_files = glob.glob(tmp_path2 + '/*.xml')
+        print('Copying files to final location')
+        for item in unzipped_files:
+            shutil.copy(item, final_path)
 
         self.task.meta['percent'] = 100
         self.task.meta['items_unzipped'] = file_counter
