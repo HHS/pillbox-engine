@@ -102,7 +102,7 @@ class DownloadAndUnzip(object):
         for zipped in self.files:
             tmp_path = check_create_folder('%s/%s/tmp' % (unzip_path, self.source.title))
             tmp_path2 = check_create_folder('%s/%s/tmp2' % (unzip_path, self.source.title))
-            weight = 0.3 / total_weight * 100
+            weight = 0.5 / total_weight * 100
             self._unzipWithProgress(
                 '%s/%s/%s' % (zip_path, self.source.title, zipped),
                 tmp_path,
@@ -113,9 +113,7 @@ class DownloadAndUnzip(object):
             self.task.meta['percent'] = percent + weight
             self.task.save()
 
-            # Second round of unzipping of files inside the unzip file
-            # operation weight 70%
-            weight = 0.7 / total_weight * 100
+            weight = 0.5 / total_weight * 100
             new_zip_files = glob.glob(tmp_path + '/*/*.zip')
             total_files = len(new_zip_files)
 
