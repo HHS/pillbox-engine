@@ -5,7 +5,7 @@ import time
 import re
 from collections import OrderedDict
 
-from lxml import etree
+from lxml.etree import XMLParser, parse, XMLSyntaxError
 from django.conf import settings
 from spl.download import check_create_folder
 
@@ -45,10 +45,11 @@ class XPath(object):
         """ Parses the XML Document """
         if not self.all_action:
             try:
-                self.tree = etree.parse(path + '/' + filename)
+                p = XMLParser(huge_tree=True)
+                self.tree = parse(path + '/' + filename, parser=p)
                 return True
 
-            except etree.XMLSyntaxError as e:
+            except XMLSyntaxError as e:
                 self.error.append({
                     'type': 'XML Syntax Error',
                     'path': path,
