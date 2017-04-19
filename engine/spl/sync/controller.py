@@ -184,7 +184,7 @@ class Controller(object):
 
         print('added:%s | updated:%s | error:%s | skipped: %s | percent: %s' %
               (kwarg['added'], kwarg['updated'],
-               len(kwarg['error']), kwarg['skipped'], percent), ending='\r')
+               len(kwarg['error']), kwarg['skipped'], percent))
 
         if self.task:
 
