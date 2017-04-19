@@ -8,77 +8,61 @@ services:
       dockerfile: docker/Dockerfile_engine
     image: pillbox/engine:latest
 
-  bash:
+  base: &base
     image: pillbox/engine:latest
-    entrypoint: /bin/bash
     working_dir: /pillbox
-    volumes:
-      - '.:/pillbox'
     environment:
       - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
     links:
       - db
+    depends_on:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  base-with-broker: &base-with-broker
+    <<: *base
+    links:
+      - db
+      - broker
+    depends_on:
+      - db
+      - broker
+
+  bash:
+    <<: *base
+    entrypoint: /bin/bash
 
   web:
-    image: pillbox/engine:latest
-    command: honcho start
-    working_dir: /pillbox
-    environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+    <<: *base-with-broker
+    #command: honcho start
+    command: python manage.py runserver 0.0.0.0:5000
     ports:
       - '5000:5000'
-    links:
-      - db
-      - broker
-    depends_on:
-      - db
-      - broker
-    volumes:
-      - '.:/pillbox'
 
   collectstatic:
-    image: pillbox/engine:latest
+    <<: *base
     command: python manage.py collectstatic
-    working_dir: /pillbox
-    environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
-    links:
-      - db
-    volumes:
-      - '.:/pillbox'
+
+  loaddata:
+    <<: *base
+    command: bash -c 'python manage.py loaddata spl_sources && python manage.py loaddata color_shape'
 
   shell:
-    image: pillbox/engine:latest
+    <<: *base-with-broker
     command: python manage.py shell
-    working_dir: /pillbox
-    environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
-    links:
-      - db
-      - broker
-    volumes:
-      - '.:/pillbox'
 
   superuser:
-    image: pillbox/engine:latest
+    <<: *base
     command: python manage.py createsuperuser
-    working_dir: /pillbox
-    environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
-    links:
-      - db
-    volumes:
-      - '.:/pillbox'
 
   migrate:
-    image: pillbox/engine:latest
+    <<: *base
     command: python manage.py migrate
-    environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
-    depends_on:
-      - db
-    links:
-      - db
+
+  makemigrations:
+    <<: *base
+    command: python manage.py makemigrations
 
   db:
     image: postgres:9.6.2
