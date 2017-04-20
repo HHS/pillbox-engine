@@ -83,19 +83,18 @@ class DownloadViewSet(viewsets.ViewSet):
 class Status(viewsets.ViewSet):
 
     def list(self, request):
-        response = []
-        tasks = Task.objects.filter(is_active=True)
-        for task in tasks:
-            response.append({
+        try:
+            ## Check if there are any active tasks
+            task = Task.objects.filter(is_active=True)[:1].get()
+            return Response({
                 'meta': task.meta,
                 'status': task.status,
                 'task_id': task.task_id,
                 'pid': task.pid
-            })
+            }, status=status.HTTP_200_OK)
 
-
-        return Response(response, status=status.HTTP_200_OK)
-
+        except Task.DoesNotExist:
+            return Response({'message': 'No Active Tasks'}, status=status.HTTP_200_OK)
 
 
 class SyncSpl(viewsets.ViewSet):
