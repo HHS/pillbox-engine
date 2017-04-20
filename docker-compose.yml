@@ -10,7 +10,7 @@ services:
     image: pillbox/engine:latest
     working_dir: /pillbox
     environment:
-      - database_url=postgres://pillbox:pillboxdb@db:5432/pillbox
+      - DATABASE_URL=postgres://pillbox:pillboxdb@db:5432/pillbox
     links:
       - db
     depends_on:
