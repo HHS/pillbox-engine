@@ -24,6 +24,11 @@ $(document).ready(function() {
         if (typeof data.meta !== 'undefined' && data.meta != null) {
             obj.find('#panel-msg').html(data.status);
             addBar(obj);
+
+            if (data.meta.action && dasta.meta.added && data.meta.updated) {
+               $(`#${data.meta.action}`).html(parseInt(data.meta.add) + parseInt(data.meta.updated));
+            }
+
             if (typeof data.meta.percent === 'undefined') {
                 var percent = 0;
             }
@@ -34,6 +39,7 @@ $(document).ready(function() {
                 obj.find('.task-name').html(data.meta.file);
             }
             obj.find('.progress-bar').css('width', percent + '%').html(parseFloat(percent).toFixed(2) + '%')
+
             if ($('#timer').length === 0) {
               $('<span id="timer"></span>').insertBefore(obj.find('.pull-right>i'));
             }

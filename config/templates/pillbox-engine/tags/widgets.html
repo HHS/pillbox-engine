@@ -9,7 +9,7 @@
                         <i class="fa {{box.icon}} fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">{%if box.count or box.count == 0 %}{{box.count | intcomma}}{% else %}{{box.name}}{% endif %}</div>
+                       <div class="huge" id="{{box.action_name}}">{%if box.count or box.count == 0 %}{{box.count | intcomma}}{% else %}{{box.name}}{% endif %}</div>
                         <div>{% if box.time %}{{box.time|timesince}} ago{% else %}{%if box.count or box.count == 0 %}{{box.name}}{% else %} &nbsp;{% endif %}{% endif %}</div>
                     </div>
                 </div>
