@@ -46,11 +46,11 @@ class Controller(object):
 
         sources = Source.objects.all()
 
-        self.total = sum([s.xml_count for s in sources if s.xml_count])
+        # self.total = sum([s.xml_count for s in sources if s.xml_count])
 
-        if action == 'pills':
+        # if action == 'pills':
             # there are fewer pills. 0.55 is a practical approximation of how many pills are in all xml files
-            self.total = self.total * 0.55
+            # self.total = self.total * 0.55
 
         # Make all discontinued to true to flag discontinued items
         if action == 'products':
@@ -65,14 +65,16 @@ class Controller(object):
             d = os.path.join(settings.SOURCE_PATH, source.title)
             try:
                 files = os.listdir(d)
+                self.total += len(files)
 
                 for f in files:
+                    self.processed += 1
                     if fnmatch.fnmatch(f, '*.xml'):
                         output = getattr(x, action)(f, d)
                         if output:
                             counter = getattr(self, '_%s' % action)(output, counter)
 
-                        self.processed += 1
+
                         self._status(added=counter['added'], updated=counter['updated'],
                                      error=x.error, skipped=x.skip,
                                      action=action)
