@@ -25,7 +25,7 @@ $(document).ready(function() {
             obj.find('#panel-msg').html(data.status);
             addBar(obj);
 
-            if (data.meta.action && data.meta.added && data.meta.updated) {
+           if (data.meta.action && data.meta.added !== 'undefined' && data.meta.updated !== 'undefined') {
                $(`#${data.meta.action}`).html(parseInt(data.meta.add) + parseInt(data.meta.updated));
             }
 
