@@ -346,7 +346,16 @@ class XPath(object):
         """ searches for the search item using _xpath and returns the text of the first time found """
         try:
             code = self._xpath(search)
-            return code[0].text
+            value = code[0].text
+
+            # cleanup the values
+            # replace spaces more than one with one
+            value = re.sub('([\s]{2,})', ' ', value)
+            value = value.replace('\n', ' ')
+            value = value.replace('\t', ' ')
+
+            return value
+
         except IndexError:
             return ''
 
