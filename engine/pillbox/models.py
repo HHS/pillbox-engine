@@ -56,7 +56,7 @@ class PillBoxData(CommonInfo):
     image_source = models.CharField('image_source', max_length=250, null=True, blank=True)
     splimage = models.FileField('splimage', upload_to='pillbox', max_length=250, null=True, blank=True)
     has_image = models.BooleanField('has_image', default=False)
-    from_sis = models.CharField('epc_match', max_length=250, null=True, blank=True)
+    epc_match = models.CharField('epc_match', max_length=250, null=True, blank=True)
     version_number = models.CharField('version_number', max_length=250, null=True, blank=True)
     laberer_code = models.CharField('laberer_code', max_length=250, null=True, blank=True)
     application_number = models.CharField('application_number', max_length=250, null=True, blank=True)

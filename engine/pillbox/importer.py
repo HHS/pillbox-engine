@@ -36,7 +36,6 @@ def importer(csv_path, task_id=None):
         'label_effective_time': 'effective_time',
         'product_code': 'produce_code',
         'image_id': 'splimage',
-        'epc_match': 'from_sis',
     }
 
     pillbox_fields = PillBoxData._meta.get_all_field_names()
