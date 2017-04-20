@@ -26,7 +26,7 @@ $(document).ready(function() {
             addBar(obj);
 
            if (data.meta.action && data.meta.added !== 'undefined' && data.meta.updated !== 'undefined') {
-               $(`#${data.meta.action}`).html(parseInt(data.meta.add) + parseInt(data.meta.updated));
+               $(`#${data.meta.action}`).html(parseInt(data.meta.added) + parseInt(data.meta.updated));
             }
 
             if (typeof data.meta.percent === 'undefined') {
