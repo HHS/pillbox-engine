@@ -1,92 +1,71 @@
-## Mac OSX requirements
 
-If you use Mac OSX We assume you have the following installed:
+There are two ways to install and run the Pillbox Engine: (1) Using Docker (2) Direct Installation.
 
-- pip
-- virtualenv
+We highly recommend using docker for local or web installation of the Pillbox Engine. We have builta special image of the docker engine that has all the requirements for running the engine, which makes the installation and use of the Engine much easier.
 
-If you don't have these requirements, you can follow below steps to setup pip and virtualenv:
+## Docker
 
-    $ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python
-    $ sudo easy_install pip
-    $ sudo easy_install virtualenv
+### Get Docker
 
-To start a new virtualenv run:
+Make sure you have the latest version of [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/) running on your computer.
 
-    $ virtualenv --no-site-packages name_of_the_environment
-    $ source name_of_the_environment/bin/activate
+To install docker on MacOSX, you can simply, you can simpliy downoad the latest version of docker from [here](https://docs.docker.com/docker-for-mac/install/) and install it.
 
-To deactivate run:
+Docker-compose installation is pretty simple for all platforms as long as you follow instructions [here](https://docs.docker.com/compose/install/).
 
-    $ deactivate
+### Run Engine in Docker
 
+#### First Time
 
-You should also consider using a database engine such Postgres or MySQL with this application. Pillbox Engine supports Sqlite3, Postgres and MySQL, however, we highly recommend using Postgres. This program is primarily tested with Postgres.
+First we have to create the database and the necessary tables:
 
-To setup Postgres on MacOSX, download [postgres app](http://postgresapp.com/).
+    $ docker-compose run --rm migrate
 
-If you downloaded and installed the Postgres from the link provided above, you should make sure postgres is known to your system path. To achieve this, follow these steps:
+**Note:** If the above command failed, run it again.
 
-    $ PATH="/Applications/Postgres.app/Contents/Versions/9.3/bin:$PATH"
-    $ export PGHOST=localhost
+Then create a superuser:
 
-For best result, add above command to your `.bash_profile`.
+    $ docker-compose run --rm superuser
 
-## Ubuntu 14 Requirements
+Then load the preconfigured data:
 
-If using Ubuntu 14, to prepare the system run:
+    $ docker-compose run --rm loaddata
 
-    $ sudo apt-get update
-    $ sudo apt-get install ruby
-    $ sudo apt-get install python-pip libxml2-dev libxslt-dev python-dev lib32z1-dev git
+Then copy the staticfiles to the correct folders:
 
-To install Postgres, run:
+    $ docker-compose run --rm collectstatic
 
-    $  sudo apt-get install postgresql
+#### All Other Times
 
+To run the Engine locally just execute this command:
 
-## Installation
+    $ docker-compose up web
 
-Make sure to create and activate a virtualenv, then open a terminal at the project root and install the requirements for local development:
+The site will be accessible at `http://localhost:5000`
 
-    $ git clone https://github.com/developmentseed/pillbox-engine.git
-    $ cd pillbox-engine
+To stop the local version press `Ctrl+C`.
+
+## Direct
+
+### Requirement
+
+- RabbitMQ server
+
+### Installation
+
     $ pip install -r requirements.txt
-
-## Database Setup
-
-If you use Postgres or MySql, make sure the database engine is started.
-
-You also need to setup a database for pillbox. For postgres, run these commands:
-
-    $ createdb -h localhost pillbox_db
-
-Replace pillbox_db with your preferred name. If you use Postgres.app, your username will be your system username and the password is blank.
-
-To setup the intital database, run this command:
-
-    $ fab initial_setup
-
-And follow the instructions.
-
-During the setup you have answer a few questions including what database backend should be used. Choices are Sqlite3, MySQl and Postgres.
-
-If you choose MySQL or Postgres, you should also provide the username and password, the address, port and the name of the database.
-
-Address and port are set by default, so you can just press enter and skip them.
+    $ python manage.py migrate
+    $ python manage.py loadata spl_sources
+    $ python manage.py loaddata color_shape
+    $ python manage.py createsuperuser
+    $ python manage.py collectstatic
 
 ## Launch
 
 To run the application run:
 
-    $ fab serve
+    $ honcho start
 
 The admin panel is accessible at: http://localhost:5000/
-
-type | username | password
------------- | ------------- | ------------
-default | pillbox | pillbox
-admin | admin | admin
-
 
 
