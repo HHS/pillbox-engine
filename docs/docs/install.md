@@ -19,6 +19,7 @@ Docker-compose installation is pretty simple for all platforms as long as you fo
 
 First we have to create the database and the necessary tables:
 
+    $ mkdir -p config/db/postgres
     $ docker-compose run --rm migrate
 
 **Note:** If the above command failed, run it again.
