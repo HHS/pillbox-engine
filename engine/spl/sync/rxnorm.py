@@ -49,7 +49,7 @@ def rxnorm(ndc):
     else:
         # if internet or request throws an error, print out to check connection and exit
         try:
-            baseurl = 'http://rxnav.nlm.nih.gov/REST/'
+            baseurl = 'https://rxnav.nlm.nih.gov/REST/'
 
             # Searching RXNorm API, Search by identifier to find RxNorm concepts
             # http://rxnav.nlm.nih.gov/REST/rxcui?idtype=NDC&id=0591-2234-10
