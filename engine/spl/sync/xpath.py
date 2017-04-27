@@ -360,11 +360,14 @@ class XPath(object):
             code = self._xpath(search)
             value = code[0].text
 
-            # cleanup the values
-            # replace spaces more than one with one
-            value = re.sub('([\s]{2,})', ' ', value)
-            value = value.replace('\n', ' ')
-            value = value.replace('\t', ' ')
+            if value:
+                # cleanup the values
+                # replace spaces more than one with one
+                value = re.sub('([\s]{2,})', ' ', value)
+                value = value.replace('\n', ' ')
+                value = value.replace('\t', ' ')
+            else:
+                value = 'Value Not Provided'
 
             return value
 
