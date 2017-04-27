@@ -87,24 +87,34 @@ class XPath(object):
 
         # Parse XML Document
         if self.parse(filename, path):
-            self.active_tree = self.tree
-            output = {}
 
-            output['setid'] = self._get_attribute('t:setId', 'root')
-            output['id_root'] = self._get_attribute('t:id', 'root')
-            output['title'] = self._get_text('t:title')
-            output['effective_time'] = self._get_attribute('t:effectiveTime', 'value')
-            output['version_number'] = self._get_attribute('t:versionNumber', 'value')
-            output['code'] = self._get_attribute('t:code', 'code')
-            output['filename'] = filename
-            output['source'] = self._get_source(path)
-            output['author'] = self._get_text('t:author/t:assignedEntity/t:representedOrganization/t:name[1]')
-            output['author_legal'] = self._get_text('t:legalAuthenticator/t:assignedEntity/t:representedOrganization' +
-                                                    '/t:name[1]')
-            output['discontinued'] = False
+            try:
+                self.active_tree = self.tree
+                output = {}
 
-            return output
+                output['setid'] = self._get_attribute('t:setId', 'root')
+                output['id_root'] = self._get_attribute('t:id', 'root')
+                output['title'] = self._get_text('t:title')
+                output['effective_time'] = self._get_attribute('t:effectiveTime', 'value')
+                output['version_number'] = self._get_attribute('t:versionNumber', 'value')
+                output['code'] = self._get_attribute('t:code', 'code')
+                output['filename'] = filename
+                output['source'] = self._get_source(path)
+                output['author'] = self._get_text('t:author/t:assignedEntity/t:representedOrganization/t:name[1]')
+                output['author_legal'] = self._get_text('t:legalAuthenticator/t:assignedEntity/t:representedOrganization' +
+                                                        '/t:name[1]')
+                output['discontinued'] = False
 
+                return output
+            except TypeError as e:
+                self.error.append({
+                    'type': 'XML Syntax Error',
+                    'path': path,
+                    'filename': filename,
+                    'message': e.message
+                })
+
+                return False
         else:
             return False
 
