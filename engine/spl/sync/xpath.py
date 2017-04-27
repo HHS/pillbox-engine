@@ -45,7 +45,7 @@ class XPath(object):
         """ Parses the XML Document """
         if not self.all_action:
             try:
-                p = XMLParser(huge_tree=True)
+                p = XMLParser()
                 self.tree = parse(path + '/' + filename, parser=p)
                 return True
 
@@ -121,6 +121,8 @@ class XPath(object):
         """
 
         product_set = []
+
+        print(filename)
 
         # Parse XML Document
         if self.parse(filename, path):
