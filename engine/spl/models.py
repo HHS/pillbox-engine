@@ -136,16 +136,20 @@ class Task(models.Model):
         print('task %s created' % task.id)
         return task
 
-    def cancelled(self):
-        self.status = 'CANCELLED'
+    def cancelled(self, status = 'CANCELLED', traceback=None):
+        self.status = status
         self.time_ended = timezone.now()
         self.is_active = False
+        self.traceback = traceback
         self.save()
 
     def completed(self):
         self.status = 'SUCCESS'
         self.time_ended = timezone.now()
-        self.duration = round(self.time_ended - self.time_started, 2)
+        try:
+            self.duration = round(self.time_ended - self.time_started, 2)
+        except TypeError:
+            pass
         self.is_active = False
         self.save()
 
