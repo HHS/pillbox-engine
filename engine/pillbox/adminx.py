@@ -237,7 +237,7 @@ class ExportAdmin(object):
     export_link.short_description = "Export File"
     export_link.allow_tags = True
 
-    list_display = ('file_name', 'file_type', 'status', 'duration', 'completed')
+    list_display = ('file_name', 'export_link', 'file_type', 'status', 'duration', 'completed')
 
     fields = ['export_link', 'file_type', 'file_name']
     readonly_fields = ['export_link', 'completed', 'task_id', 'status', 'duration', 'created_at']
