@@ -4,6 +4,7 @@ import sys
 import threading
 import requests
 import simplejson as json
+from django.utils import timezone
 
 from spl.models import Pill, Task
 
@@ -65,6 +66,7 @@ class ThreadXNorm(threading.Thread):
                 pill.rxstring = rx['rxstring']
                 pill.rxtty = rx['rxtty']
                 pill.rxcui = rx['rxcui']
+                pill.rx_update_time = timezone.now()
                 pill.save()
 
                 if self.task_id:

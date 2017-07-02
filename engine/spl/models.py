@@ -86,6 +86,7 @@ class Pill(CommonInfo):
     rxtty = models.TextField('rxtty', null=True, blank=True)
     rxstring = models.TextField('rxttystring', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=100, null=True, blank=True)
+    rx_update_time = models.DateTimeField('Time Ended', null=True, blank=True)
     dea_schedule_code = models.CharField('DEA_SCHEDULE_CODE', max_length=100, null=True, blank=True)
     dea_schedule_name = models.CharField('DEA_SCHEDULE_NAME', max_length=100, null=True, blank=True)
     marketing_act_code = models.CharField('MARKETING_ACT_CODE', max_length=100, null=True, blank=True)
