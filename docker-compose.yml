@@ -59,6 +59,10 @@ services:
     <<: *base
     command: python manage.py pills compare
 
+  export:
+    <<: *base
+    command: python manage.py pills export
+
   collectstatic:
     <<: *base
     command: python manage.py collectstatic
