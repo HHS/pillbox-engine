@@ -101,6 +101,8 @@ def update(pillbox, spl_pill, action='new'):
         'ssp': 'setid',
         'produce_code': 'produce_code',
         'ndc9': 'ndc9',
+        'ndc_labeler_code': 'ndc_labeler_code',
+        'ndc_product_code': 'ndc_product_code',
         'part_num': 'part_num',
         'medicine_name': 'medicine_name',
         'part_medicine_name': 'part_medicine_name',

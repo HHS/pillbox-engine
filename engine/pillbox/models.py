@@ -39,6 +39,8 @@ class PillBoxData(CommonInfo):
     part_num = models.CharField('part_num', max_length=250, null=True, blank=True)
     part_medicine_name = models.CharField('part_medicine_name', max_length=250, null=True, blank=True)
     ndc9 = models.CharField('ndc9', max_length=250, null=True, blank=True)
+    ndc_labeler_code = models.CharField('ndc_labeler_code', max_length=60, null=True, blank=True)
+    ndc_product_code = models.CharField('ndc_product_code', max_length=60, null=True, blank=True)
     medicine_name = models.CharField('medicine_name', max_length=250, null=True, blank=True)
     marketing_act_code = models.CharField('marketing_act_code', max_length=250, null=True, blank=True)
     effective_time = models.CharField('effective_time', max_length=250, null=True, blank=True)
