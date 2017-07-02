@@ -46,14 +46,18 @@ services:
   pills:
     <<: *base
     command: python manage.py syncspl pills
-    ports:
-      - '8000:8000'
 
   rxnorm:
     <<: *base
     command: python manage.py rxnorm
-    ports:
-      - '8000:8000'
+
+  transfer:
+    <<: *base
+    command: python manage.py pills transfer
+
+  compare:
+    <<: *base
+    command: python manage.py pills compare
 
   collectstatic:
     <<: *base
