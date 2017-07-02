@@ -161,7 +161,7 @@ def update(pillbox, spl_pill, action='new'):
         # add splimage if there is one
         if spl_pill.splimage:
             pillbox.has_image = True
-            pillbox.image_source = 'NLM'
+            pillbox.image_source = 'SPL'
             pillbox.splimage = spl_pill.splimage.name
 
         # for new items with need to save first to get a pillbox id
