@@ -74,7 +74,7 @@ class PillAdmin(object):
 
     readonly_fields = fields
 
-    list_display = ('medicine_name', 'product_code', 'part_num', 'dosage_form')
+    list_display = ('medicine_name', 'product_code', 'rx_update_time', 'dosage_form')
     list_filter = ['product_code', 'dosage_form']
     list_quick_filter = ['splcolor', 'splsize', 'splscore']
     search_fields = ['medicine_name', 'part_medicine_name', 'setid__setid']
