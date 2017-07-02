@@ -43,6 +43,29 @@ services:
     ports:
       - '8000:8000'
 
+  pills:
+    <<: *base
+    command: python manage.py syncspl pills
+
+  rxnorm:
+    <<: *base
+    command: python manage.py rxnorm
+
+  transfer:
+    <<: *base
+    command: python manage.py pills transfer
+
+  compare:
+    <<: *base
+    command: python manage.py pills compare
+
+  export:
+    <<: *base
+    command: python manage.py pills export
+
+  cleandata:
+    <<: *base
+    command: python manage.py cleandata
 
   collectstatic:
     <<: *base

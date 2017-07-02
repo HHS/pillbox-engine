@@ -132,8 +132,6 @@ class XPath(object):
 
         product_set = []
 
-        print(filename)
-
         # Parse XML Document
         if self.parse(filename, path):
 
@@ -144,7 +142,6 @@ class XPath(object):
             # Check how many products exists in the document
             products = self._xpath('t:component/t:structuredBody/t:component/' +
                                    't:section/t:subject/t:manufacturedProduct')
-
             counter = 0
 
             for product in products:

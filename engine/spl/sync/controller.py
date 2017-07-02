@@ -34,6 +34,7 @@ class Controller(object):
         arguments = ['products', 'pills', 'all']
 
         if action in arguments:
+            print('Starting SPL sync for %s' % action)
             self._update(action)
 
         return
@@ -62,12 +63,14 @@ class Controller(object):
         }
 
         for source in sources:
+            print('Updating source %s' % source)
             d = os.path.join(settings.SOURCE_PATH, source.title)
             try:
                 files = os.listdir(d)
                 self.total += len(files)
 
                 for f in files:
+                    print('Extracting %s info from %s' % (action, f))
                     self.processed += 1
                     if fnmatch.fnmatch(f, '*.xml'):
                         output = getattr(x, action)(f, d)
@@ -123,10 +126,16 @@ class Controller(object):
 
             # Find the related product and get it's db id
             setid = data.pop('setid_id')
-            product = Product.objects.get(setid=setid)
-            product.is_osdf = True
-            product.save()
-            data['setid_id'] = product.id
+            try:
+                product = Product.objects.get(setid=setid)
+                product.is_osdf = True
+                product.save()
+                data['setid_id'] = product.id
+            except Product.DoesNotExist:
+                print('%s setid is not found' % setid)
+                # go to the next round
+                continue
+
 
             ingredients = data.pop('ingredients')
 
@@ -182,6 +191,7 @@ class Controller(object):
 
     def _status(self, **kwarg):
 
+        print('inside status')
         percent = round((self.processed / self.total) * 100, 2)
 
         if self.task:
@@ -201,3 +211,4 @@ class Controller(object):
                 self.task.meta.update(meta)
                 self.task.status = 'PROGRESS: SYNC %s' % kwarg['action']
                 self.task.save()
+        print('status updated')

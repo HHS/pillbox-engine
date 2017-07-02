@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from jsonfield import JSONField
 
 
@@ -86,6 +87,7 @@ class Pill(CommonInfo):
     rxtty = models.TextField('rxtty', null=True, blank=True)
     rxstring = models.TextField('rxttystring', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=100, null=True, blank=True)
+    rx_update_time = models.DateTimeField('RxNorm Update time', null=True, blank=True)
     dea_schedule_code = models.CharField('DEA_SCHEDULE_CODE', max_length=100, null=True, blank=True)
     dea_schedule_name = models.CharField('DEA_SCHEDULE_NAME', max_length=100, null=True, blank=True)
     marketing_act_code = models.CharField('MARKETING_ACT_CODE', max_length=100, null=True, blank=True)
@@ -122,6 +124,34 @@ class Task(models.Model):
     is_active = models.BooleanField('Task is active (running)?', default=True)
     download_type = models.CharField('Download source name', max_length=200, null=True, blank=True)
     traceback = models.TextField('Traceback', null=True, blank=True)
+
+    @classmethod
+    def create(cls, name):
+        task = cls()
+        task.name = name
+        task.status = 'PENDING'
+        task.time_started = timezone.now()
+        task.save()
+
+        print('task %s created' % task.id)
+        return task
+
+    def cancelled(self, status = 'CANCELLED', traceback=None):
+        self.status = status
+        self.time_ended = timezone.now()
+        self.is_active = False
+        self.traceback = traceback
+        self.save()
+
+    def completed(self):
+        self.status = 'SUCCESS'
+        self.time_ended = timezone.now()
+        try:
+            self.duration = round(self.time_ended - self.time_started, 2)
+        except TypeError:
+            pass
+        self.is_active = False
+        self.save()
 
     def __unicode__(self):
         return self.name

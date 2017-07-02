@@ -24,17 +24,19 @@ def transfer_new(task_id):
     total = spl_pills.count()
 
     counter = 0
+    print('transfering new pills')
     for pill in spl_pills:
 
         try:
+            print('transferring %s' % pill.ssp)
             pillbox = PillBoxData.objects.get(setid=pill.ssp)
 
         except PillBoxData.DoesNotExist:
-            counter += 1
             pillbox = PillBoxData()
             pillbox.new = True
             update(pillbox, pill)
 
+        counter += 1
         percent = round((counter/total)*100, 2)
 
         if int(percent) > interval:
@@ -42,10 +44,12 @@ def transfer_new(task_id):
             task.meta['percent'] = percent
             task.meta['new'] = counter
             task.save()
+    print('Transfer completed')
 
 
 def compare(task_id):
 
+    print('Staring data compare')
     task = Task.objects.get(pk=task_id)
     task.status = 'COMPARING'
     meta = {'updated': 0,
@@ -64,9 +68,11 @@ def compare(task_id):
     total = spl_pills.count()
 
     counter = 0
+    print('Getting all SPL pills')
     for pill in spl_pills:
 
         try:
+            print('comparing %s' % pill.ssp)
             pillbox = PillBoxData.objects.get(setid=pill.ssp)
             counter += 1
             pillbox.updated = True
@@ -86,6 +92,7 @@ def compare(task_id):
 
     #flag stale records
     PillBoxData.objects.filter(updated=False, new=False).update(stale=True)
+    print('Compare completed')
 
 
 def update(pillbox, spl_pill, action='new'):
@@ -94,6 +101,8 @@ def update(pillbox, spl_pill, action='new'):
         'ssp': 'setid',
         'produce_code': 'produce_code',
         'ndc9': 'ndc9',
+        'ndc_labeler_code': 'ndc_labeler_code',
+        'ndc_product_code': 'ndc_product_code',
         'part_num': 'part_num',
         'medicine_name': 'medicine_name',
         'part_medicine_name': 'part_medicine_name',
@@ -154,7 +163,7 @@ def update(pillbox, spl_pill, action='new'):
         # add splimage if there is one
         if spl_pill.splimage:
             pillbox.has_image = True
-            pillbox.image_source = 'NLM'
+            pillbox.image_source = 'SPL'
             pillbox.splimage = spl_pill.splimage.name
 
         # for new items with need to save first to get a pillbox id

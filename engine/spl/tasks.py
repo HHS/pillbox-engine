@@ -2,7 +2,9 @@ from __future__ import absolute_import, division
 import time
 import os
 import sys
+import signal
 import Queue
+import threading
 
 from django.utils import timezone
 from django.conf import settings
@@ -12,36 +14,44 @@ from ftputil.error import TemporaryError, FTPOSError
 
 from config.celery import app
 from spl.sync.controller import Controller
-from spl.sync.rxnorm import ThreadXNorm
+from spl.sync.rxnorm import ThreadXNorm, SignalHandler
 from spl.download import DownloadAndUnzip
 from spl.models import Task, Source, Pill, Product
 
 
 @app.task(bind=True, ignore_result=True)
-def rxnorm_task(self, task_id):
+def rxnorm_task(self, task_id=None):
     start = time.time()
 
     pills = Pill.objects.all().values('id')
     total = pills.count()
 
-    task = Task.objects.get(pk=task_id)
-    task.status = 'STARTED'
-    task.pid = os.getpid()
-    task.meta = {
-        'action': 'rxnom sync',
-        'processed': 0,
-        'total': total,
-        'percent': 0
-    }
-    task.save()
+    if task_id:
+        task = Task.objects.get(pk=task_id)
+        task.status = 'STARTED'
+        task.pid = os.getpid()
+        task.meta = {
+            'action': 'rxnom sync',
+            'processed': 0,
+            'total': total,
+            'percent': 0
+        }
+        task.save()
 
     queue = Queue.Queue()
 
     print "starting the threads"
-    for i in range(20):
-        t = ThreadXNorm(queue, task.id)
-        t.daemon = True
-        t.start()
+    workers = []
+    stopper = threading.Event()
+    for i in range(5):
+        workers.append(ThreadXNorm(queue, stopper, task_id))
+
+    # connect threads to stop signal
+    handler = SignalHandler(stopper, workers)
+    signal.signal(signal.SIGINT, handler)
+
+    for worker in workers:
+        worker.start()
 
     print "queuing jobs"
     for pill in pills:
@@ -52,12 +62,13 @@ def rxnorm_task(self, task_id):
     end = time.time()
     spent = end - start
 
-    task = Task.objects.get(pk=task_id)
-    task.status = 'SUCCESS'
-    task.duration = round(spent, 2)
-    task.time_ended = timezone.now()
-    task.is_active = False
-    task.save()
+    if task_id:
+        task = Task.objects.get(pk=task_id)
+        task.status = 'SUCCESS'
+        task.duration = round(spent, 2)
+        task.time_ended = timezone.now()
+        task.is_active = False
+        task.save()
 
     return
 
