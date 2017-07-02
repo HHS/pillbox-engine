@@ -43,6 +43,17 @@ services:
     ports:
       - '8000:8000'
 
+  pills:
+    <<: *base
+    command: python manage.py syncspl pills
+    ports:
+      - '8000:8000'
+
+  rxnorm:
+    <<: *base
+    command: python manage.py rxnorm
+    ports:
+      - '8000:8000'
 
   collectstatic:
     <<: *base
