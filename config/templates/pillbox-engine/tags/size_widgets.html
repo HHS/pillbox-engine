@@ -1,0 +1,25 @@
+
+{% for box in boxes %}
+<div class="col-lg-3 col-md-3">
+    <div class="panel panel-{{box.color}}">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-folder-open fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    <div class="huge">{{box.size}} GB</div>
+                    <div>{{box.name}}</div>
+                </div>
+            </div>
+        </div>
+        <a data-toggle="tooltip" data-original-title="{{box.path}}">
+            <div class="panel-footer">
+                <span class="pull-left" id="panel-msg">Hover here to see the folder path</span>
+                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <div class="clearfix"></div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endfor %}

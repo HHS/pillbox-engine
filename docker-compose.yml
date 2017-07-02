@@ -1,0 +1,104 @@
+version: '2'
+
+services:
+
+  image:
+    build: .
+    image: pillbox/engine:latest
+
+  base: &base
+    image: pillbox/engine:latest
+    working_dir: /pillbox
+    environment:
+      - DATABASE_URL=postgres://pillbox:pillboxdb@db:5432/pillbox
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - '.:/pillbox'
+
+  base-with-broker: &base-with-broker
+    <<: *base
+    links:
+      - db
+      - broker
+    depends_on:
+      - db
+      - broker
+
+  bash:
+    <<: *base
+    entrypoint: /bin/bash
+
+  web:
+    <<: *base-with-broker
+    command: honcho start
+    ports:
+      - '5000:5000'
+
+  runserver:
+    <<: *base-with-broker
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - '8000:8000'
+
+  pills:
+    <<: *base
+    command: python manage.py syncspl pills
+
+  rxnorm:
+    <<: *base
+    command: python manage.py rxnorm
+
+  transfer:
+    <<: *base
+    command: python manage.py pills transfer
+
+  compare:
+    <<: *base
+    command: python manage.py pills compare
+
+  export:
+    <<: *base
+    command: python manage.py pills export
+
+  cleandata:
+    <<: *base
+    command: python manage.py cleandata
+
+  collectstatic:
+    <<: *base
+    command: python manage.py collectstatic
+
+  loaddata:
+    <<: *base
+    command: bash -c 'python manage.py loaddata spl_sources && python manage.py loaddata color_shape'
+
+  shell:
+    <<: *base-with-broker
+    command: python manage.py shell
+
+  superuser:
+    <<: *base
+    command: python manage.py createsuperuser
+
+  migrate:
+    <<: *base
+    command: python manage.py migrate
+
+  makemigrations:
+    <<: *base
+    command: python manage.py makemigrations
+
+  db:
+    image: postgres:9.6.2
+    environment:
+      - POSTGRES_USER=pillbox
+      - POSTGRES_PASSWORD=pillboxdb
+    volumes:
+      - './config/db/postgres:/var/lib/postgresql/data'
+
+  broker:
+    image: rabbitmq:3.6.9
+
