@@ -104,35 +104,22 @@ class Transfer(viewsets.ViewSet):
                                 status=status.HTTP_200_OK)
 
         except Task.DoesNotExist:
+            task = Task()
+            task.name = pk
+            task.status = 'PENDING'
+            task.time_started = timezone.now()
+            task.save()
 
-            try:
-                task = Task.objects.filter(
-                    name=pk,
-                    status='SUCCESS',
-                    time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
-                )[:1].get()
+            t = transfer_task.delay(task.id, pk)
 
-                return Response({'message': 'Just Transfered! Wait 24 hours for a re-transfer!'},
-                                status=status.HTTP_200_OK)
+            task.task_id = t.task_id
+            task.save()
 
-            except Task.DoesNotExist:
-
-                task = Task()
-                task.name = pk
-                task.status = 'PENDING'
-                task.time_started = timezone.now()
-                task.save()
-
-                t = transfer_task.delay(task.id, pk)
-
-                task.task_id = t.task_id
-                task.save()
-
-                return Response({
-                    'message': '%s started' % pk,
-                    'status': task.status,
-                    'meta': task.meta,
-                    'task_id': task.task_id,
-                    'pid': task.pid},
-                    status=status.HTTP_200_OK
-                )
+            return Response({
+                'message': '%s started' % pk,
+                'status': task.status,
+                'meta': task.meta,
+                'task_id': task.task_id,
+                'pid': task.pid},
+                status=status.HTTP_200_OK
+            )

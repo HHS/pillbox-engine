@@ -142,39 +142,28 @@ class SyncSpl(viewsets.ViewSet):
                                     status=status.HTTP_200_OK)
 
             except Task.DoesNotExist:
+                task = Task()
+                task.name = action
+                task.status = 'PENDING'
+                task.time_started = timezone.now()
+                task.save()
 
-                try:
-                    task = Task.objects.filter(
-                        name=action,
-                        time_ended__gte=datetime.datetime.today()-datetime.timedelta(days=1)
-                    )[:1].get()
-                    return Response({'message': 'Sync Done. You can run the sync again in 24 hours.'},
-                                    status=status.HTTP_200_OK)
+                if action == 'rxnorm':
+                    sync = tasks.rxnorm_task.delay(task.id)
+                else:
+                    sync = tasks.sync.delay(action, task.id)
 
-                except Task.DoesNotExist:
+                task.task_id = sync.task_id
+                task.save()
 
-                    task = Task()
-                    task.name = action
-                    task.status = 'PENDING'
-                    task.time_started = timezone.now()
-                    task.save()
-
-                    if action == 'rxnorm':
-                        sync = tasks.rxnorm_task.delay(task.id)
-                    else:
-                        sync = tasks.sync.delay(action, task.id)
-
-                    task.task_id = sync.task_id
-                    task.save()
-
-                    return Response({
-                        'message': 'Sync started',
-                        'status': task.status,
-                        'meta': task.meta,
-                        'task_id': task.task_id,
-                        'pid': task.pid},
-                        status=status.HTTP_200_OK
-                    )
+                return Response({
+                    'message': 'Sync started',
+                    'status': task.status,
+                    'meta': task.meta,
+                    'task_id': task.task_id,
+                    'pid': task.pid},
+                    status=status.HTTP_200_OK
+                )
 
         else:
             return Response({'error': 'Action not supported'}, status=status.HTTP_406_NOT_ACCEPTABLE)
