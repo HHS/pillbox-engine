@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import os
 
+
 from __future__ import absolute_import, unicode_literals
 from os.path import join, dirname
 import environ
@@ -217,11 +218,23 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         }
     },
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/pillbox/downloads/cleanup.log',
+            'formatter': 'standard'
         }
     },
     'loggers': {
@@ -230,6 +243,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'cleanup': {
+            'handlers': ['file'],
+            'level': 'INFO'
+        }
     }
 }
 # END LOGGING CONFIGURATION

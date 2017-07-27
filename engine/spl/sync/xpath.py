@@ -1,5 +1,6 @@
 from __future__ import print_function
 from os.path import join
+import logging
 import shutil
 import time
 import re
@@ -9,6 +10,8 @@ from lxml.etree import XMLParser, parse, XMLSyntaxError
 from django.conf import settings
 from spl.download import check_create_folder
 
+
+logger = logging.getLogger('cleanup')
 
 class XPath(object):
 
@@ -37,12 +40,15 @@ class XPath(object):
         self.output = OrderedDict()
         self.collection = []
         self.all_action = False
+        self.filename = None
 
         # self.xml_source = '../tmp-unzipped/HRX'
         # self.xml_source = '../tmp-unzipped/ANIMAL'
 
     def parse(self, filename, path):
         """ Parses the XML Document """
+        self.filename = filename
+
         if not self.all_action:
             try:
                 p = XMLParser()
@@ -62,6 +68,7 @@ class XPath(object):
 
     def all(self, filename, path):
         """ Extract both product and pill info from an xml file """
+        self.filename = filename
 
         # Parse XML Document
         if self.parse(filename, path):
@@ -84,6 +91,7 @@ class XPath(object):
 
         The method outputs the result in form of a dictionary with above given keys and relevant values
         """
+        self.filename = filename
 
         # Parse XML Document
         if self.parse(filename, path):
@@ -129,6 +137,7 @@ class XPath(object):
         part_num, part_medicine_name
 
         """
+        self.filename = filename
 
         product_set = []
 
@@ -355,6 +364,7 @@ class XPath(object):
         if value:
             # cleanup the values
             # replace spaces more than one with one
+            logger.info('Value (%s) cleaned-up for %s' % (value, self.filename))
             value = re.sub(' +', ' ', value)
             value = value.replace('\n', ' ')
             value = value.replace('\t', ' ')
