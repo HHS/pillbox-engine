@@ -35,6 +35,7 @@ class PillBoxData(CommonInfo):
     rxtty = models.TextField('rxtty', null=True, blank=True)
     rxstring = models.TextField('rxtty', null=True, blank=True)
     rxcui = models.CharField('rxcui', max_length=250, null=True, blank=True)
+    rx_update_time = models.DateTimeField('RxNorm Update time', null=True, blank=True)
     produce_code = models.CharField('product_code', max_length=250, null=True, blank=True)
     part_num = models.CharField('part_num', max_length=250, null=True, blank=True)
     part_medicine_name = models.CharField('part_medicine_name', max_length=250, null=True, blank=True)

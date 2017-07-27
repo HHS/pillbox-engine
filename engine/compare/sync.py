@@ -120,6 +120,7 @@ def update(pillbox, spl_pill, action='new'):
         'rxcui': 'rxcui',
         'rxtty': 'rxtty',
         'rxstring': 'rxstring',
+        'rx_update_time': 'rx_update_time',
         'dosage_form': 'dosage_form',
         'spl_strength': 'spl_strength',
         'marketing_act_code': 'marketing_act_code',
