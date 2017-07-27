@@ -229,7 +229,7 @@ class XPath(object):
                     code = self._xpath_with_tree(sub, 't:code')[0]
                     ingredient['id'] = code.get('code')
                     ingredient['code_system'] = code.get('codeSystem')
-                    ingredient['name'] = self._xpath_with_tree(sub, 't:name')[0].text
+                    ingredient['name'] = self._cleanup(self._xpath_with_tree(sub, 't:name')[0].text)
                     active_moieties = self._xpath_with_tree(sub, 't:activeMoiety/t:activeMoiety')
                     if active_moieties:
                         ingredient['active_moieties'] = []
@@ -237,7 +237,7 @@ class XPath(object):
                             children = am.getchildren()
                             ingredient['active_moieties'].append({
                                 'id': children[0].get('code'),
-                                'name': children[1].text
+                                'name': self._cleanup(children[1].text)
                             })
 
             if 'active' in ingredient:
@@ -292,7 +292,7 @@ class XPath(object):
         output['splimage'] = self._get_image(path)
 
         try:
-            output['splimprint'] = self._xpath('t:*//t:characteristic/t:code[@code="SPLIMPRINT"]')[0].getnext().text
+            output['splimprint'] = self._cleanup(self._xpath('t:*//t:characteristic/t:code[@code="SPLIMPRINT"]')[0].getnext().text)
         except IndexError:
             output['splimprint'] = ''
 
@@ -351,23 +351,23 @@ class XPath(object):
         path_segments = path.split('/')
         return path_segments[len(path_segments) - 1]
 
+    def _cleanup(self, value):
+        if value:
+            # cleanup the values
+            # replace spaces more than one with one
+            value = re.sub(' +', ' ', value)
+            value = value.replace('\n', ' ')
+            value = value.replace('\t', ' ')
+        else:
+            value = 'Value Not Provided'
+
+        return value
+
     def _get_text(self, search):
         """ searches for the search item using _xpath and returns the text of the first time found """
         try:
             code = self._xpath(search)
-            value = code[0].text
-
-            if value:
-                # cleanup the values
-                # replace spaces more than one with one
-                value = re.sub('([\s]{2,})', ' ', value)
-                value = value.replace('\n', ' ')
-                value = value.replace('\t', ' ')
-            else:
-                value = 'Value Not Provided'
-
-            return value
-
+            return self._cleanup(code[0].text)
         except IndexError:
             return ''
 
