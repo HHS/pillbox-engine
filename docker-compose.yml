@@ -59,6 +59,10 @@ services:
     <<: *base
     command: python manage.py pills compare
 
+  custom:
+    <<: *base
+    command: python manage.py custom
+
   export:
     <<: *base
     command: python manage.py pills export
