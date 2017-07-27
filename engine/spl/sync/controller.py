@@ -191,11 +191,9 @@ class Controller(object):
 
     def _status(self, **kwarg):
 
-        print('inside status')
         percent = round((self.processed / self.total) * 100, 2)
 
         if self.task:
-
             ## To decrease the number of times the database is called, update meta data
             ## in integer intervals
             if (self.processed % 500) == 0.0:
@@ -211,4 +209,3 @@ class Controller(object):
                 self.task.meta.update(meta)
                 self.task.status = 'PROGRESS: SYNC %s' % kwarg['action']
                 self.task.save()
-        print('status updated')
