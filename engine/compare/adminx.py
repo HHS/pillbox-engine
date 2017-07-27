@@ -14,7 +14,9 @@ class GenericAdmin(object):
             return ''
 
     def pillbox_image(self, instance):
-        return self.image_popup(instance.pillbox.splimage)
+        if instance.pillbox.image_source != 'SPL' and instance.pillbox.image_source != '':
+            return self.image_popup(instance.pillbox.splimage)
+        return ''
     pillbox_image.short_description = "Pillbox"
     pillbox_image.allow_tags = True
     pillbox_image.is_column = True

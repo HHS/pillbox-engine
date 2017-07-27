@@ -19,11 +19,11 @@ class CommonInfo(models.Model):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+        return str(self.id)
+
 
 class Color(CommonInfo):
-
-    def __unicode__(self):
-        return self.pillbox_value
 
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
@@ -35,9 +35,6 @@ class Color(CommonInfo):
 
 class Score(CommonInfo):
 
-    def __unicode__(self):
-        return self.pillbox_value
-
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
             pill = PillBoxData.objects.get(pk=self.pillbox_id)
@@ -47,9 +44,6 @@ class Score(CommonInfo):
 
 
 class Size(CommonInfo):
-
-    def __unicode__(self):
-        return self.pillbox_value
 
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
@@ -61,9 +55,6 @@ class Size(CommonInfo):
 
 class Shape(CommonInfo):
 
-    def __unicode__(self):
-        return self.pillbox_value
-
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
             pill = PillBoxData.objects.get(pk=self.pillbox_id)
@@ -74,9 +65,6 @@ class Shape(CommonInfo):
 
 class Imprint(CommonInfo):
 
-    def __unicode__(self):
-        return self.pillbox_value
-
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
             pill = PillBoxData.objects.get(pk=self.pillbox_id)
@@ -86,9 +74,6 @@ class Imprint(CommonInfo):
 
 
 class Image(CommonInfo):
-
-    def __unicode__(self):
-        return self.pillbox_value
 
     def save(self, *args, **kwargs):
         if getattr(self, 'verified', True):
