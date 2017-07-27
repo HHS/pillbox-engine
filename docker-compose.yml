@@ -43,6 +43,10 @@ services:
     ports:
       - '8000:8000'
 
+  products:
+    <<: *base
+    command: python manage.py syncspl products
+
   pills:
     <<: *base
     command: python manage.py syncspl pills

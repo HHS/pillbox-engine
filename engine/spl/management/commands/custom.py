@@ -15,5 +15,6 @@ class Command(BaseCommand):
         x = XPath()
 
         v = x.pills('3ebf893d-2100-40c7-8e8f-5fa1b2da41a2.xml', '/pillbox/downloads/unzip/ANIMAL/')
-        print(v[0]['splimprint'])
-        print('\n' in v[0]['splimprint'])
+        for i in v:
+            print(i['splimprint'])
+            print('\n' in i['splimprint'])
