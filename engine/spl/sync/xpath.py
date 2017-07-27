@@ -364,7 +364,15 @@ class XPath(object):
         if value:
             # cleanup the values
             # replace spaces more than one with one
-            logger.info('Value (%s) cleaned-up for %s' % (value, self.filename))
+            if '  ' in value:
+                logger.info('Removed more than 1 space in Value (%s) in %s' % (value, self.filename))
+
+            if '\n' in value:
+                logger.info('Removed line break in Value (%s) in %s' % (value, self.filename))
+
+            if '\t' in value:
+                logger.info('Removed tab in Value (%s) in %s' % (value, self.filename))
+
             value = re.sub(' +', ' ', value)
             value = value.replace('\n', ' ')
             value = value.replace('\t', ' ')
