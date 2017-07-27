@@ -66,10 +66,25 @@ class PillBoxData(CommonInfo):
     updated = models.BooleanField('updated', default=False)
     stale = models.BooleanField('stale', default=False)
     new = models.BooleanField('new', default=False)
+    has_pillbox_value = models.BooleanField('Pillbox Value', default=False)
 
     class Meta:
         verbose_name = 'Pillbox Data'
         verbose_name_plural = 'Pillbox Data'
+
+    def save(self, *args, **kwargs):
+        pillbox_fields = PillBoxData._meta.get_all_field_names()
+
+        self.has_pillbox_value = False
+        for field in pillbox_fields:
+            if 'pillbox_' in field and getattr(self, field):
+                self.has_pillbox_value = True
+                break
+
+        if self.image_source != '' and self.image_source != 'SPL':
+            self.has_pillbox_value = True
+
+        super(PillBoxData, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.medicine_name
