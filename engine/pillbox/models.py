@@ -77,7 +77,7 @@ class PillBoxData(CommonInfo):
 
         self.has_pillbox_value = False
         for field in pillbox_fields:
-            if 'pillbox_' in field and getattr(self, field):
+            if field.startswith('pillbox_') and getattr(self, field):
                 self.has_pillbox_value = True
                 break
 

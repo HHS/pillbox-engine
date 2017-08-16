@@ -75,6 +75,10 @@ services:
     <<: *base
     command: python manage.py cleandata
 
+  pillboxvalue:
+    <<: *base
+    command: python manage.py flag
+
   collectstatic:
     <<: *base
     command: python manage.py collectstatic
