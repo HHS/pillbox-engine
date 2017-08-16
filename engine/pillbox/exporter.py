@@ -16,11 +16,11 @@ def export(filename, export_type, task_id=None):
 
     if export_type in acccepted_types:
 
-        pills = PillBoxData.objects.all()
+        pills = PillBoxData.objects.all().values()
 
         # remove pillbox/ from images path
-        for pill in pills:
-            pill.splimage = pill.splimage.name.replace('pillbox/', '')
+        for i, pill in enumerate(pills):
+            pills[i]['splimage'] = pill['splimage'].replace('pillbox/', '')
 
         export_path = join(settings.MEDIA_ROOT, 'export')
         check_create_folder(export_path)
