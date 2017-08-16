@@ -1,3 +1,31 @@
-# This file is here because many Platforms as a Service look for
-#	requirements.txt in the root directory of a project.
--r requirements/production.txt
+# Bleeding edge Django
+django==1.9.12
+
+# Configuration
+django-configurations==0.8
+dj-database-url==0.4.2
+
+# Models
+xadmin==0.6.1
+django-model-utils==2.6.1
+
+# images
+Pillow==4.0.0
+
+# Your custom requirements go here
+django-environ==0.4.1
+Fabric==1.13.1
+celery==4.0.2
+lxml==3.7.3
+django-crispy-forms==1.6.1
+jsonfield==1.0.3
+djangorestframework==3.5.4
+honcho==0.7.1
+ftputil==3.3.1
+requests==2.13.0
+simplejson==3.10.0
+django-queryset-csv==1.0.0
+psycopg2==2.6.2
+
+gunicorn==19.6.0
+gevent==1.2.1

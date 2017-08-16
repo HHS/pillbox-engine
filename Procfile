@@ -1,2 +1,2 @@
-web: gunicorn --pythonpath="$PWD/pillbox-engine" wsgi:application
-worker: celery worker --app=pillbox-engine._celery -B --loglevel=DEBUG --concurrency=1
+web: gunicorn --pythonpath="$PWD/engine" config.wsgi:application
+worker: celery worker -A config.celery --loglevel=INFO --concurrency=1
