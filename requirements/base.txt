@@ -9,7 +9,7 @@ git+git://github.com/scisco/dj-database-url.git@master
 django-model-utils==2.2
 
 # images
-Pillow==2.6.0
+Pillow==9.0.0
 
 # Your custom requirements go here
 Fabric==1.10.0
