@@ -1,5 +1,5 @@
 # Bleeding edge Django
-django==1.7.1
+django==2.2.28
 
 # Configuration
 django-configurations==0.8
