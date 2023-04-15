@@ -2,5 +2,5 @@
 #	production that isn't in development.
 -r base.txt
 
-gunicorn==19.1.1
+gunicorn==19.5.0
 gevent==1.0.1
