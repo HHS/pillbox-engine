@@ -40,9 +40,9 @@ node_modules/
 .settings
 .env
 
-pillbox_engine.sublime-project
-tmp-unzipped
 celerybeat-schedule
 staticfiles
 media
 downloads
+config/db/postgres/*
+!config/db/postgres/.keep
